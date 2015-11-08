@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# notify me if the battery is too low
+function power_info()
+{
+	pinfo=$(acpi | cut -d: -f 2)
+	state=$(echo $pinfo | cut -d, -f1)
+
+	low=20
+	critical=10
+	least=5
+
+	if [[ "$state" = "Discharging" ]] ; then
+		batt_left=$(echo $pinfo | cut -d, -f2 | sed 's/%//')
+
+		if [[ $batt_left -le "$low" ]] ; then
+			if [[ $batt_left -le "$critical" ]] ; then
+				if [[ $batt_left -le "$least" ]] ; then
+					systemctl suspend
+				fi
+				echo "Battery Critically Low: $batt_left% left" | \
+						dzen2 -ta c -h 200 -p 3 -e 'onstart=raise;button1=exit;' &
+			fi
+			echo "Battery Low: $batt_left% left" |  \
+						dzen2 -ta c -p 3 -e 'onstart=raise;button1=exit;' &
+		fi
+	fi
+
+	# forever and forever
+	sleep 10s
+	power_info
+}
+
+sleep 1m && power_info

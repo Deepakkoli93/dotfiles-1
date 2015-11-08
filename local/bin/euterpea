@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+EUTER_DIR=/datastore/Documents/myspace/haskell/repos/Euterpea
+
+echo 'This is just a temporary script.'
+
+echo 'Removing snd_seq_dummy module.'
+sudo rmmod snd_seq_dummy
+
+echo 'Starting timidity.'
+timidity -iA &
+
+echo "Entering Euterpea's cabal env."
+cd ${EUTER_DIR}
+cabal exec bash
+

@@ -1,0 +1,165 @@
+# mutt general settings | account agnostic
+set send_charset="us-ascii:utf-8"
+set editor=`echo \$EDITOR`
+set signature="~/.mutt/signature"
+
+# auto-view html files in lynx
+auto_view text/html
+
+# primary sort method
+set sort="threads"
+set strict_threads="yes"
+set sort_browser="reverse-date"
+set sort_aux="reverse-last-date-received"
+
+set pager_stop
+set imap_check_subscribed
+set imap_keepalive=300 
+set mail_check=120
+set use_from=yes
+
+# caches
+set header_cache=~/.mutt/cache/headers
+set message_cachedir=~/.mutt/cache/bodies
+set certificate_file=~/.mutt/certificates
+
+# read passwords | mutt custom variables must start with my_
+set my_imap_pass_p=`echo -n 'passwd-p: ' >&2; read -s password; echo $password`
+set my_imap_pass_s=`echo -en '\npasswd-s: ' >&2; read -s password; echo $password`
+
+# open the primary mail account
+source ~/.mutt/.mutt_alpha_account
+
+# key bindings
+bind pager q            exit
+bind pager /            search
+bind pager <up>         previous-line
+bind pager <down>       next-line
+bind pager k            previous-line
+bind pager j            next-line
+bind pager gg           top
+bind pager G            bottom
+bind index gg           first-entry
+bind index G            last-entry
+bind pager K            previous-undeleted
+bind pager J            next-undeleted
+bind index K            previous-unread
+bind index J            next-unread
+bind index W            clear-flag
+bind index w            set-flag
+bind index,pager R      group-reply
+bind attach <return>    view-mailcap
+bind index "^" imap-fetch-mail
+bind index "-" collapse-thread
+bind index "_" collapse-all
+bind index "t" next-thread
+bind index "T" previous-thread
+
+# macros
+macro index ga "<enter-command> source ~/.mutt/.mutt_alpha_account<enter><change-folder><enter>"
+macro index gl "<enter-command> source ~/.mutt/.mutt_beta_account<enter><change-folder><enter>"
+
+
+############################COLORS#########################
+# Palette for use with the Linux console.  Black background.
+## Colours for items in the index                                                                                                                                         
+color index brightcyan black ~N
+color index brightred black ~O
+color index brightyellow black ~F
+color index black green ~T
+color index brightred black ~D
+mono index bold ~N
+mono index bold ~F
+mono index bold ~T
+mono index bold ~D
+
+## Highlights inside the body of a message.                                                                                                                               
+
+## URLs                                                                                                                                                                    
+color body brightgreen black "(http|ftp|news|telnet|finger)://[^ \"\t\r\n]*"
+color body brightgreen black "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+mono body bold "(http|ftp|news|telnet|finger)://[^ \"\t\r\n]*"
+mono body bold "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+
+## Email addresses.                                                                                                                                                       
+color body brightgreen black "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+
+## Header                                                                                                                                                                 
+color header green black "^from:"
+color header green black "^to:"
+color header green black "^cc:"
+color header green black "^date:"
+color header yellow black "^newsgroups:"
+color header yellow black "^reply-to:"
+color header brightcyan black "^subject:"
+color header red black "^x-spam-rule:"
+color header green black "^x-mailer:"
+color header yellow black "^message-id:"
+color header yellow black "^Organization:"
+color header yellow black "^Organisation:"
+color header yellow black "^User-Agent:"
+color header yellow black "^message-id: .*pine"
+color header yellow black "^X-Fnord:"
+color header yellow black "^X-WebTV-Stationery:"
+
+color header red black "^x-spam-rule:"
+color header green black "^x-mailer:"
+color header yellow black "^message-id:"
+color header yellow black "^Organization:"
+color header yellow black "^Organisation:"
+color header yellow black "^User-Agent:"
+color header yellow black "^message-id: .*pine"
+color header yellow black "^X-Fnord:"
+color header yellow black "^X-WebTV-Stationery:"
+color header yellow black "^X-Message-Flag:"
+color header yellow black "^X-Spam-Status:"
+color header yellow black "^X-SpamProbe:"
+color header red black "^X-SpamProbe: SPAM"
+
+## Coloring quoted text - coloring the first 7 levels:                                                                                                                    
+color quoted cyan black
+color quoted1 yellow black
+color quoted2 red black
+color quoted3 green black
+color quoted4 cyan black
+color quoted5 yellow black
+color quoted6 red black
+color quoted7 green black
+
+## Default color definitions                                                                                                                                              
+#color hdrdefault white green                                                                                                                                             
+color signature brightmagenta black
+color indicator black cyan
+color attachment black cyan 
+color error red black
+color message white black
+color search brightwhite magenta
+color status brightyellow blue
+color tree brightblue black
+color normal white black
+color tilde green black
+color bold brightyellow black
+#color underline magenta black                                                                                                                                            
+color markers brightcyan black
+
+## Colour definitions when on a mono screen                                                                                                                               
+mono bold bold
+mono underline underline
+mono indicator reverse
+#############################COLORS_END##################
+
+
+# aliases
+alias little Little Penguin <little@eudyptula-challenge.org>
+alias kernelnewbies kernelnewbies <kernelnewbies@kernelnewbies.org>
+alias narendra Narendra Joshi <narendraj9@gmail.com>
+alias quote.narendra Narendra Joshi <quote.narendra@gmail.com>
+alias edward.kmett Edward Kmett <ekmett@gmail.com> 
+
+
+# mailing-lists
+subscribe kernelnewbies@kernelnewbies.org
+subscribe haskell-cafe@haskell.org
+subscribe xmonad@haskell.org
+subscribe beginners@haskell.org
+

@@ -1,0 +1,48 @@
+[general]
+accounts = primary, secondary
+
+# Primary Account <narendraj9@gmail.com>
+[Account primary]
+localrepository = primary_local
+remoterepository = primary_remote
+#status_backend = sqlite
+
+[Repository primary_local]
+type = Maildir
+localfolders = ~/mail/primary
+
+[Repository primary_remote]
+type = Gmail
+remoteuser = narendraj9
+realdelete = no
+foldfilter = lambda foldername: foldername in [ '[Gmail]/All Mail'
+                                              , '[Gmail]/Sent Mail'
+                                              ]
+nametrans = lambda foldername: re.sub('^\[Gmail\]/All Mail$', 'All',
+                               re.sub('^\[Gmail\]/Sent Mail$', 'Sent',
+                                      foldername))
+                                
+                               
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+
+# Secondary Account <quote.narendra@gmail.com>
+[Account secondary]
+localrepository = secondary_local
+remoterepository = secondary_remote
+status_backend = sqlite
+
+[Repository secondary_local]
+type = Maildir
+localfolders = ~/mail/secondary
+
+[Repository secondary_remote]
+type = Gmail
+remoteuser = quote.narendra
+realdelete = no
+foldfilter = lambda foldername: foldername in [ '[Gmail]/All Mail'
+                                              , '[Gmail]/Sent Mail'
+                                              ]
+nametrans = lambda foldername: re.sub('^\[Gmail\]/All Mail$', 'All',
+                               re.sub('^\[Gmail\]/Sent Mail$', 'Sent',
+                                      foldername))
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt 

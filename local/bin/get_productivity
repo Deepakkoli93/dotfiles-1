@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+# Limitless Productivity
+
+from time import strftime
+import sqlite3
+import json
+import sys
+
+# be_limitless chrome Local Storage database file
+db_file = '/home/nj/.config/google-chrome/Default/Local Storage/'\
+           + 'chrome-extension_jdpnljppdhjpafeaokemhcggofohekbp_0.localstorage'
+# query to perform 
+db_query=' select value from ItemTable where key="productivity" '
+
+# connect to the database
+db = sqlite3.connect(db_file)
+
+# get the data
+try:
+    cursor = db.execute(db_query)
+except sqlite3.OperationalError:
+    print('100') # let's ignore this
+    sys.exit()
+
+
+# I expect just one row.
+prod_json = cursor.fetchone()[0].decode('utf-16')
+# convert the json string to python object, a dictionary in this case
+prod_object = json.loads(prod_json)
+
+# Now that we have the python dictionary.
+# We need the key to get todays productivity.
+today = strftime('%a %b %d %Y')
+now_hour = str(int(strftime('%H')))
+
+# get productivity for current hour
+try:
+    timespent = prod_object[today][now_hour]['timespent']
+    productive = prod_object[today][now_hour]['productive']
+    # add previous hours time as well | So that a change of hour doesn't reset everything completely
+    timespent += prod_object[today][str((int(now_hour)+23)%24)]['timespent']
+    productive += prod_object[today][str((int(now_hour)+23)%24)]['productive']
+except KeyError:
+    print("100") # the extension hasn't yet started or logged this hour/day
+    sys.exit()
+
+# percentage productivity for current hour
+if (timespent != 0):
+    prod_percent = (float(productive)/timespent) * 100
+    print("%.0f" % prod_percent)
+else:
+    print("100")

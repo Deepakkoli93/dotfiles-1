@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+
+echo "Setting routes for IRC servers through Wireless Router"
+
+# get the wlan ip
+inet_line=`ip addr show wlo1 | grep "inet "`
+temp_str=${inet_line%%\/*}
+inet_addr=${temp_str#*t}
+
+# set the routes to irc.gnome.org
+sudo ip route add to 82.99.16.155 src ${inet_addr} via 10.42.0.1
+sudo ip route add to 94.125.182.252 src ${inet_addr}  via 10.42.0.1
+echo "Following Routes Set:"
+echo + ip route add to 82.99.16.155 src ${inet_addr} via 10.42.0.1
+echo + ip route add to 94.125.182.252 src ${inet_addr} via 10.42.0.1

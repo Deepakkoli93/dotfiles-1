@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [[ ! -e /tmp/.0touch-lock ]] ; then
+    xdotool mousemove 1365 767
+	touchpad off
+	touch /tmp/.0touch-lock
+else
+    xdotool mousemove 540 380
+	touchpad on
+	rm /tmp/.0touch-lock
+fi

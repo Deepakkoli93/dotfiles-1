@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# always => always
+set -o nounset
+set -o errexit 
+
+function touchpad-on () {
+	synclient "TouchpadOff=0"
+	[[ -z `pgrep syndaemon` ]] && syndaemon -i 1.0 -d
+}
+
+function touchpad-off () {
+	pkill syndaemon
+	synclient "TouchpadOff=1" 
+}
+
+# touchpad status
+syn_status=$(synclient -l | grep TouchpadOff | cut -d= -f2) 
+
+if [[ $# -ne 1 ]]; then
+    echo "usage: ${0} on/off"
+    exit  
+fi
+
+if [[ ${1} = 'on' ]] ; then
+	touchpad-on
+	echo "Touchpad enabled!" | dzen2 -p 1 &
+elif [[ ${1} = 'off' ]] ; then
+	touchpad-off
+	echo "Touchpad disabled!" | dzen2 -p 1 &
+fi

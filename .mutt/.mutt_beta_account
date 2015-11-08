@@ -1,0 +1,15 @@
+# account specific information | quote.narendra@gmail.com
+set imap_pass=$my_imap_pass_s
+set smtp_pass=$imap_pass
+
+# IMAP settings
+set imap_user="quote.narendra@gmail.com"
+set folder="imaps://imap.gmail.com"
+set spoolfile="+INBOX"
+set record="=[Gmail]/Sent Mail"
+set postponed="=[Gmail]/Drafts"
+
+# SMTP settings
+set smtp_url="smtp://quote.narendra@smtp.gmail.com:587"
+set realname="Narendra Joshi"
+set from="quote.narendra@gmail.com"

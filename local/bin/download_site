@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+[ ! $# -eq 2 ] && echo Usage: download_site link domain && exit 0
+wget \
+     --recursive \
+	 -U Mozilla \
+     --page-requisites \
+     --html-extension \
+     --convert-links \
+     --restrict-file-names=windows \
+     --domains $2 \
+     --no-parent \
+	 $1

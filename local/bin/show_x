@@ -1,0 +1,95 @@
+#!/bin/bash
+# show_x <word> <dict-number>
+# show_x - dictionary + lyrics
+# glyrc must be installed and must be in the PATH
+
+# Proxy?
+unset http_proxy
+unset https_proxy
+
+DOT_DIR=/home/nj/dotfiles
+LOCAL_DIR=${DOT_DIR}/local
+
+# an array of the available dictionaries
+dict_list=('WordNet' 'Free On-Line Dictionary of Computing' 'All')
+
+# background and foreground colors
+bcolor_it=''
+buncolor_it='^bg()'
+color_it='^fg(violet)'
+uncolor_it='^fg()'
+
+# pickup a random color
+function get_color()
+{
+    color_list=(green blue red violet lightgreen orange lightblue)
+    echo "${color_list[${1}]}"
+}
+
+# If no word typed. Show currently playing song's lyrics.
+if [[ -z $1 ]] ; then
+	song_artist=`mpc current -f "%artist%"`
+	song_title=`mpc current -f "%title%"`
+	if [[ ! $? -eq 0 ]] ; then
+		echo "mpc couldn't connect to mpd."
+		exit
+	elif [[ -z ${song_title} ]] ; then
+		echo "No song playing now."
+		exit
+	fi
+
+	# show the artist and song as title
+	echo ${bcolor_it}${color_it} ${song_artist}: ${song_title} ${uncolor_it}${buncolor_it}
+	
+	# check if glyrc in present in the PATH
+	hash glyrc 2>/dev/null || { echo "glyrc wasn't found in the PATH. Can't fetch lyrics!"; exit 1; }
+
+	# stop if it takes more than TIMEOUT seconds
+		glyrc lyrics 2>&1 		       								\
+							--verbosity 1 							\
+							--title "${song_title}"  				\
+							--artist "${song_artist}"  				\
+							--no-color 								\
+							--write stdout 							\
+							--cache ${LOCAL_DIR}  |					\
+	sed 's/\&/\&amp;/g' | 			\
+	sed 's/</\&lt;/g'   | 			\
+	sed 's/>/\&gt;/g'   |
+	sed '1,2d'
+	exit
+fi
+
+# set the dictionary
+dict=${dict_list[1]}
+if [[ ! -z "$2" ]] ; then
+	dict=${dict_list["$2"]}
+fi
+
+# Display usage if full argument isn't given
+if [[ -z "$@" ]]; then
+  echo " $prog <word-to-lookup> <dictionary>"
+  exit
+fi
+
+## colors for the head word
+hstyle='^fg(lightgreen)'
+estyle='^fg()'
+
+# show up the word first
+echo '^uncollapse()'
+echo "${color_it} $1 ${uncolor_it}"
+
+# open up the dictionary
+if [[ "${dict}" = 'All' ]] ; then
+    sdcv "${1}"
+else
+    sdcv -nu "${dict}" "${1}"
+fi |
+# remove the first 3 lines
+sed '1,3 d' | \
+# and color the word looked up
+sed -e "s/\b${1}\b/${hstyle}${1}${estyle}/g" |
+
+# For Longman's Dictionary Replace // with newline and -- with spaces
+sed -e "s/\/\//\n/g" |
+sed -e "s/--/    /g" 

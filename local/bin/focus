@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# text to be displayed
+text=FOCUS
+[[ ! -z $1 ]] && text=${1}
+
+colors=(White Green Blue Red Orange)
+colors_num=${#colors[@]}
+color=${colors[$(($RANDOM % colors_num))]}
+
+dzen2 -p 5 -l 40 -sa c -fn "Comic Sans MS:size=200" -e 'onstart=uncollapse' <<EOF
+^fg(${color})${text}^bg()
+EOF
+

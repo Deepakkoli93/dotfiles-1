@@ -1,0 +1,87 @@
+!! dzen2 configuration
+dzen2.font: Comic Sans MS:size=10
+dzen2.background: black
+dzen2.foreground: white
+
+!! Xft settings | Archlinux wiki
+Xft.autohint: 0
+Xft.lcdfilter:  lcddefault
+Xft.hintstyle:  hintslight
+Xft.rgba: rgb
+Xft.hinting: true 
+Xft.antialias: true 
+
+!! urxvt configuration
+URxvt*font: xft:Monaco:size=10,xft:Monospace:size=11
+Urxvt*boldfont: xft:Monaco:bold:size=10, xft: Monospace
+URxvt.letterSpace: -1
+
+URxvt*scrollBar: false
+URxvt*urgentOnBell: true
+URxvt*visualBell: false
+URxvt*mouseWheelScrollPage: true
+
+URxvt*background: Black
+URxvt*foreground: White
+URxvt*cursorColor: White
+
+URxvt*termName: screen-256color
+URxvt*buffered: true
+URxvt*loginShell: true
+
+! perl extensions
+URxvt.perl-ext-common: default,keyboard-select,url-select,clipboard,font-size
+
+! Change font size on the fly
+URxvt.keysym.C-Up:     perl:font-size:increase
+URxvt.keysym.C-Down:   perl:font-size:decrease
+URxvt.keysym.C-S-Up:   perl:font-size:incglobal
+URxvt.keysym.C-S-Down: perl:font-size:decglobal
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+
+! url-select
+URxvt.url-select.launcher: chromium
+URxvt.keysym.C-i:   perl:url-select:select_next
+URxvt.url-launcher: chromium 
+URxvt.underlineURLs:  True
+URxvt.matcher.button: 1
+
+! copy/paste
+URxvt.keysym.M-Escape:   perl:keyboard-select:activate
+URxvt.keysym.M-c:        perl:clipboard:copy
+URxvt.keysym.M-v:        perl:clipboard:paste
+URxvt.keysym.M-C-v:      perl:clipboard:paste_escaped
+URxvt.clipboard.copycmd:   /usr/bin/env xclip -i -selection clipboard
+URxvt.clipboard.pastecmd:  /usr/bin/env xclip -o -selection clipboard
+
+
+! URxvt*geometry:                       geometry
+! URxvt*chdir:                          string
+! URxvt*reverseVideo:                   boolean
+! URxvt*jumpScroll:                     boolean
+! URxvt*skipScroll:                     boolean
+! URxvt*pastableTabs:                   boolean
+! URxvt*scrollstyle:                    mode
+! URxvt*transparent:                    boolean
+! URxvt*shading:                        number
+
+! Tango color palette
+! Notes:
+!    dark-red: old  #a40000
+URxvt*color0:  #2E3436
+URxvt*color1:  #EF2929
+URxvt*color2:  #4E9A06
+URxvt*color3:  #C4A000
+URxvt*color4:  #3465A4
+URxvt*color5:  #75507B
+URxvt*color6:  #ce5c00
+URxvt*color7:  #babdb9
+URxvt*color8:  #555753
+URxvt*color9:  #F86C6C
+URxvt*color10: #8AE234
+URxvt*color11: #FCE94F
+URxvt*color12: #729FCF
+URxvt*color13: #AD7FA8
+URxvt*color14: #fcaf3e
+URxvt*color15: #EEEEEC

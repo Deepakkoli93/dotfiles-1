@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+wmctrl -l | while read -r line; do
+    window_title=$(echo $line | sed 's/.* [0-9]* vicarie //')
+    echo "--> Closing $window_title" 
+    wmctrl -c $window_title
+done
+
+echo "--> About to power off."
+xset dpms force off
+/usr/bin/poweroff
+

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+echo '+ Flush everything!'
+iptables-restore < /etc/iptables/empty.rules
+
+echo '+ Create TCP and UDP chains'
+iptables -N TCP
+iptables -N UDP
+
+echo '+ DROP policy for FORWARD'
+iptables -P FORWARD DROP
+
+echo '+ ACCEPT policy for OUTPUT'
+iptables -P OUTPUT ACCEPT 
+
+echo '+ DROP policy for INPUT'
+iptables -P INPUT DROP
+
+echo '+ Allow established and related input connections'
+iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+echo '+ Allow input connection from lo interface'
+iptables -A INPUT -i lo -j ACCEPT
+
+echo '+ Drop invalid packets'
+iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+
+echo '+ Allow ping requests'
+iptables -A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
+
+echo '+ Jump to TCP or UDP chain based on protocol if reached the end of INPUT chain'
+iptables -A INPUT -p udp -m conntrack --ctstate NEW -j UDP
+iptables -A INPUT -p tcp -m conntrack --ctstate NEW -j TCP
+
+echo '+ Rejecting everything else input'
+iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+iptables -A INPUT -p tcp -j REJECT --reject-with tcp-rst
+iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
+
+
+
+

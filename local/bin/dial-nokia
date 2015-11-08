@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# redirect stdout and stderr to a temp logfile
+exec > /tmp/dial-nokia.log 2>&1
+
+# Print commands as they are executed
+set -o verbose
+
+# set exit on error
+set -e 
+
+if [[ -e /dev/ttyACM0 ]] ; then
+	export WVCONF=wvdial_usb.conf
+else 
+	echo 'Connecting to moblie through bluetooth:'
+	sudo hciconfig hci0 up
+	echo -e 'power on \n connect F8:5F:2A:3A:C8:3A \n quit' | bluetoothctl 
+
+	echo 'Setting up the modem device:'
+	if [[ -e /dev/rfcomm0 ]] ; then
+		sudo rfcomm release 0
+	fi
+
+	sudo rfcomm bind 0 F8:5F:2A:3A:C8:3A 22
+	sudo chmod +rw /dev/rfcomm0
+
+	export WVCONF=wvdial_bt.conf
+
+fi
+
+# unset exit on error
+set +e
+
+echo 'Dialing...'
+(
+	while : ; do
+		wvdial -C ~/dotfiles/local/${WVCONF} nokia 
+		echo 'Waiting to re-dial...'
+		sleep 10
+		echo 'Re-dialing...'
+	done
+) &
