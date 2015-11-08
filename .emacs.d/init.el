@@ -2,8 +2,17 @@
                                             ;; My init.el   ;;
                                             ;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path "~/.emacs.d/elpa/")
-(add-to-list 'load-path "~/.emacs.d/misc-packages/")
+(setq package-user-dir (expand-file-name "packages/elpa"
+                                         user-emacs-directory))
+
+;; For some reason I don't know
+;; (normal-top-level-add-subdirs-to-load-path) isn't working!
+(let ((default-directory (expand-file-name "packages/rest"
+                                           user-emacs-directory)))
+  (normal-top-level-add-to-load-path '("hledger-mode"
+                                       "powerline")))
+
+;; Custom Themes | Maybe someday!
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 
 ;; package management
@@ -25,11 +34,6 @@
 (setq myspace-dir "/datastore/Documents/myspace")
 (setq blog-dir "~/code/blog/narendraj9.github.io")
 (setq blog-posts-dir (expand-file-name "web/posts/" blog-dir))
-
-;; extempore
-(setq extempore-mode-dir (expand-file-name "others/extempore-mode/"
-                                           user-emacs-directory))
-(setq extempore-dir "~/code/extempore/")
 
 ;; load secrets.el | May use it in future.
 (if (file-exists-p secrets-file)
@@ -465,12 +469,6 @@
                              ;; LUA MODE
 (setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-
-
-                           ; EXTEMPORE-MODE
-(autoload 'extempore-mode (concat extempore-mode-dir "extempore.el") "" t)
-(add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
-(setq user-extempore-directory extempore-dir)
 
                                ;; MAGIT
 (setq magit-auto-revert-mode nil)
