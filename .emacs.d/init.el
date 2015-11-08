@@ -199,6 +199,9 @@
 
 
                            ;; GENERAL STUFF
+;; personal finance
+(require 'hledger-mode)
+
 ;; ido
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
