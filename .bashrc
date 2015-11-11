@@ -102,11 +102,16 @@ share-desktop-readonly() {
     x0vncserver -AlwaysShared -PasswordFile /home/nj/.vnc/passwd -AcceptKeyEvents=0 -AcceptPointerEvents=0
 }
 
-# setup every thing for work
-bootstrap () {
-    emacs &
-    chromium &
-    offlinemap &
+# simple countdown timer for pomodoro technique
+countdown () {
+    if [[ -z $1 ]]; then
+        echo 'Usaage: countdown <time in minutes>'
+    fi
+
+    for ((i = $1; i >= 0; --i)); do
+        focus $i 60
+        play ~/dotfiles/local/assets/tick.wav  
+    done
 }
 
 open-tcp-port() {

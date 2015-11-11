@@ -30,7 +30,10 @@
                              ;; VARIABLES
 (setq secrets-file "~/secrets.el")
 
-;. hakyll blog
+;; personal finance
+(setq fjournal-file "~/miscellany/personal/finance/accounting.journal")
+
+;; hakyll blog
 (setq myspace-dir "/datastore/Documents/myspace")
 (setq blog-dir "~/code/blog/narendraj9.github.io")
 (setq blog-posts-dir (expand-file-name "web/posts/" blog-dir))
@@ -489,7 +492,7 @@
                   (set-appearance)))))
                   
 
-                              ;; WINDOWS
+                              ;; For MS-WINDOWS
 (if (eq system-type 'windows-nt)
     (progn
       (setq default-directory (expand-file-name "~/"))
