@@ -110,8 +110,8 @@ countdown () {
 
     for ((i = $1; i >= 0; --i)); do
         focus $i 60
-        play ~/dotfiles/local/assets/tick.wav  
-    done
+        aplay -q ~/dotfiles/local/assets/tick.wav  
+    done &
 }
 
 open-tcp-port() {
