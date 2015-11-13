@@ -1,22 +1,19 @@
 .emacs.d/*
+
 !.emacs.d/init.el
 !.emacs.d/custom.el
-!.emacs.d/packages/
-!.emacs.d/themes/
 !.emacs.d/abbrev_defs
 !.emacs.d/eshell/alias
 
+!.emacs.d/themes/
+!.emacs.d/packages/
 .emacs.d/packages/elpa/gnupg/
 .emacs.d/packages/elpa/archives/*
 
 .mutt/cache
 
-.xmonad/*.o
-.xmonad/*.hi
-.xmonad/*.errors
-.xmonad/xmonad
-.xmonad/xmonad-x86_64-linux
-.xmonad/history
+.xmonad/*
+!.xmonad/xmonad.hs
 
 .weechat/logs/
 .weechat/weechat.log
