@@ -10,9 +10,6 @@ xscreensaver -no-splash &
 # start pulseaudo
 start-pulseaudio-x11
 
-# emacs
-emacs --name MyEmacs &
-
 # disable bell
 xset -b
 
@@ -35,7 +32,7 @@ case $wm in
 		feh --bg-fill ~/dotfiles/background.png
 
         # start with the touchpad off
-        ~/dotfiles/local/bin/tflip 
+        ~/dotfiles/local/bin/touchpad off
 
 		# start xmonad | /usr/bin/bash so that ~/.bashrc is source and env set up!
 	    /usr/bin/bash --login -c xmonad &> /dev/null

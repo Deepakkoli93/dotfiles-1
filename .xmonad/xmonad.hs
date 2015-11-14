@@ -102,6 +102,8 @@ main = do
   -- spawn the status bars
   d <- spawnPipe $ "dzen2 -p -ta l -e 'onstart=lower' -fn " ++ myPanelFont
   spawn $ "i3status | dzen2 -ta r -x 999 -p -e 'onstart=raise' -fn " ++ myPanelFont
+  -- startup applications
+  bootstrapApps 
   -- xmonad
   xmonad $ withUrgencyHook dzenUrgencyHook { args = ["-bg", "black", "-fg", "white"] }
          $ ewmh defaultConfig
@@ -158,8 +160,7 @@ myXPConfig = greenXPConfig { height = 21
 -- Setup intial applications | Not using now.
 bootstrapApps :: MonadIO m => m ()
 bootstrapApps = do spawn "emacs --name MyEmacs &"
-                   spawn "urxvt -name MyWeechat -e tmux &"
-
+             
 show_x :: String
 show_x = "~/dotfiles/local/bin/show_x "
 
