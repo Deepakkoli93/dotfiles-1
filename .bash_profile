@@ -5,7 +5,6 @@ if [ -f ~/.bashrc ]; then
 	. ~/.bashrc
 fi
                               ## EXPORTS
-
 export HISTSIZE=10000
 export HISTCONTROL=ignoredups
 
@@ -21,6 +20,13 @@ export PATH=$PATH:/usr/local/heroku/bin/
 
 # libglyrc that is used by the show_x script
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:~/.local/lib/
+
+# Java | 
+export JAVA_HOME=/usr/local/java/jdk8
+export JDK_HOME=/usr/local/java/jdk8
+export PATH=$JDK_HOME/bin/:$PATH
+# Java Gui Toolkit fix for XMonad
+export _JAVA_AWT_WM_NONREPARENTING=1 
 
 # Princeton's algo course 
 export CLASSPATH=~/.local/algs4/algs4.jar:$CLASSPATH
