@@ -102,17 +102,38 @@ share-desktop-readonly() {
     x0vncserver -AlwaysShared -PasswordFile /home/nj/.vnc/passwd -AcceptKeyEvents=0 -AcceptPointerEvents=0
 }
 
+################################################
+# This is messy! Fix it! 
 # simple countdown timer for pomodoro technique
-countdown () {
+countdown-internal () {
     if [[ -z $1 ]]; then
-        echo 'Usaage: countdown <time in minutes>'
+        echo 'Usage: countdown <time in minutes>'
+        return
     fi
-
+    
     for ((i = $1; i >= 0; --i)); do
-        focus $i 60
-        aplay -q ~/dotfiles/local/assets/tick.wav  
+        focus $i 60 $size
+        aplay -q ~/dotfiles/local/assets/tick.wav
+    done 
+}
+countdown () {
+    countdown-internal &
+}
+
+# the pomodoro technique
+buckle-up () {
+    while (:) do
+          aplay -d 4 -q ~/dotfiles/local/assets/backToWork.wav
+          focus 'Start!' &
+          espeak 'Start now!'
+          countdown-internal 30
+          espeak "Break Time!" &
+          focus 'Break' 
+          countdown-internal 5
+          espeak "Break Over!"
     done &
 }
+###########################################
 
 open-tcp-port() {
     port=${1}

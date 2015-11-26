@@ -28,6 +28,9 @@ export PATH=$JDK_HOME/bin/:$PATH
 # Java Gui Toolkit fix for XMonad
 export _JAVA_AWT_WM_NONREPARENTING=1 
 
+# Android SDK
+export ANDROID_HOME=~/Android/Sdk
+
 # Princeton's algo course 
 export CLASSPATH=~/.local/algs4/algs4.jar:$CLASSPATH
 export CLASSPATH=~/.local/algs4/stdlib.jar:$CLASSPATH

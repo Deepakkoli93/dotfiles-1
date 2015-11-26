@@ -22,7 +22,8 @@ function install-packages() {
 		  linux-manpages tree 
 		  g++ gcc ghc
 		  cabal-install 
-		  python-pygments python2-pygments"
+		  python-pygments python2-pygments
+          espeak"
 
 
     # Install packages

@@ -1,18 +1,25 @@
 #!/usr/bin/env bash
 
+# if [[ ${1} -eq '-h' ]]; then
+#     echo 'Usage: focus <text> <duration> <height>'
+#     exit 0
+# fi
+
 # text to be displayed
 text=FOCUS
 duration=5
+height=200
 
 # set text and duration if passed as args
 [[ ! -z $1 ]] && text=${1}
 [[ ! -z $2 ]] && duration=${2}
+[[ ! -z $3 ]] && height=${3}
 
 colors=(White Green Blue Red Orange)
 colors_num=${#colors[@]}
 color=${colors[$(($RANDOM % colors_num))]}
 
-dzen2 -p ${duration} -l 40 -sa c -fn "Comic Sans MS:size=200" -e 'onstart=uncollapse' <<EOF
+dzen2 -p ${duration} -sa c -fn "Comic Sans MS:size=${height}" -e 'onstart=uncollapse' <<EOF
 ^fg(${color})${text}^bg()
 EOF
 
