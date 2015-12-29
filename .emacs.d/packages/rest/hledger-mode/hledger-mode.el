@@ -1,6 +1,8 @@
 ;; A mode for writing hledger journal entries
 
-(defvar hledger-mode-hook nil)
+(defcustom hledger-mode-hook nil
+  "Normal hook for entering hledger mode."
+  :type 'hook)
 
 ;; An almost empty key map
 (defvar hledger-mode-map (make-keymap))

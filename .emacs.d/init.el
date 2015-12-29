@@ -204,6 +204,13 @@
                            ;; GENERAL STUFF
 ;; personal finance
 (require 'hledger-mode)
+(add-hook 'hledger-mode-hook 
+          (lambda ()
+            (auto-complete-mode 1)
+            (setq ac-auto-start t)
+            (define-key ac-mode-map (kbd "TAB") 'auto-complete)
+            (setq ac-disable-inline nil)))
+
 
 ;; ido
 (setq ido-enable-flex-matching t)
@@ -319,6 +326,7 @@
   `((".*" ,"~/.autosaves/" t)))
 
 ;; quitely ignore if the abbrev_defs file is missing
+(setq abbrev-file-name (expand-file-name "abbrev_defs" user-emacs-directory))
 (if (file-exists-p abbrev-file-name)
         (quietly-read-abbrev-file))
 
@@ -342,6 +350,9 @@
 
 ;; Ignore consecutive duplicates in eshell history
 (setq eshell-hist-ignoredups t)
+
+;; Don't cycle through possible completions
+(setq eshell-cmpl-cycle-completions nil)
 
 ;; My eshell-prompt
 (setq eshell-highlight-prompt nil)
