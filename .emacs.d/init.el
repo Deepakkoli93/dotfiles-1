@@ -204,15 +204,14 @@
                            ;; GENERAL STUFF
 ;; personal finance
 (require 'hledger-mode)
-(add-hook 'hledger-mode-hook 
-          (lambda ()
-            (auto-complete-mode 1)
-            (setq ac-auto-start t)
-            (define-key ac-mode-map (kbd "TAB") 'auto-complete)
-            (setq ac-disable-inline nil)))
-
+(add-hook 'hledger-mode-hook 'easy-auto-complete-mode-hook)
 
 ;; ido
+;; show completions vertically
+(setq ido-decorations (quote
+                       ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]"
+                        " [Matched]" " [Not readable]" " [Too big]"
+                        " [Confirm]")))
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (setq ido-auto-merge-work-directories-length -1)
@@ -266,12 +265,23 @@
 (ac-config-default)
 (ac-flyspell-workaround)
 
+
+;; Start these modes with auto-complete on
+(add-to-list 'ac-modes 'hledger-mode)
+
 ;; Do not complete automatically
 ;; Auto-complete trigger on Meta-Tab
 (setq ac-auto-start nil)
 (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
 ;; Inline completion suggestions are distracting!
 (setq ac-disable-inline t)
+
+;; Make auto-complete easier for a mode
+(defun easy-auto-complete-mode-hook ()
+  (setq-local ac-auto-start t)
+  (setq-local ac-disable-inline nil)
+  (local-set-key ac-mode-map (kbd "TAB") 'auto-complete))
+
 
 ;; Key bindings for auto-complete-menu
 (setq ac-use-menu-map t)
@@ -508,5 +518,3 @@
     (progn
       (setq default-directory (expand-file-name "~/"))
       (setq interprogram-paste-function 'x-selection-value)))
-            
-
