@@ -2,7 +2,7 @@
 
 show () 
 {
-	shuf -n 1 ~/dotfiles/local/words.txt | dzen2  -p 3 -l 10 -fn Monaco:20 -y 600  -h 200
+	shuf -n 1 ~/dotfiles/local/assets/words.txt | dzen2  -p 3 -l 10 -fn Monaco:20 -y 600  -h 200
 	sleep 2h
 	show
 }

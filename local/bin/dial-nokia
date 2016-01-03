@@ -34,7 +34,7 @@ set +e
 echo 'Dialing...'
 (
 	while : ; do
-		wvdial -C ~/dotfiles/local/${WVCONF} nokia 
+		wvdial -C ~/dotfiles/local/assets/${WVCONF} nokia 
 		echo 'Waiting to re-dial...'
 		sleep 10
 		echo 'Re-dialing...'

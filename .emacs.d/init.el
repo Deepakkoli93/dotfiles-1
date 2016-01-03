@@ -200,7 +200,6 @@
   (other-window 1)
   (eshell))
 
-
                            ;; GENERAL STUFF
 ;; personal finance
 (require 'hledger-mode)
@@ -406,22 +405,23 @@
             (local-set-key (kbd "M-}") 'outline-next-visible-heading)
             (local-set-key (kbd "C-c p") 'org-pomodoro)
             (local-set-key (kbd "C-c a") 'org-agenda)))
-
-;; pomodoro hooks for awesome notifications
-(add-hook 'org-pomodoro-finished-hook
-	  (lambda ()
-	    (notify "BREAK")))
-(add-hook 'org-pomodoro-started-hook
-	  (lambda ()
-	    (notify "START")))
-
 (setq org-agenda-files '("~/org"))
 ;; org-mode inline image size
 (setq org-image-actual-width nil)
 
+                             ;; POMODORO
+;; pomodoro hooks for awesome notifications
+(add-hook 'org-pomodoro-finished-hook
+          (lambda ()
+            (notify "Break!")))
+(add-hook 'org-pomodoro-started-hook
+          (lambda ()
+            (notify "Start!")))
+(add-hook 'org-pomodoro-break-finished-hook
+          (lambda ()
+            (notify "Over!")))
 
                               ;; C-MODE
-
 ;; Use k&r coding style as default
 (setq c-default-style "k&r")
 ;; Use Linus's style while editing a file in linux-folder

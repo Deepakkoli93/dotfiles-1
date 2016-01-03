@@ -9,6 +9,7 @@ unset https_proxy
 
 DOT_DIR=/home/nj/dotfiles
 LOCAL_DIR=${DOT_DIR}/local
+CACHE_DIR=${LOCAL_DIR}/assets
 
 # an array of the available dictionaries
 dict_list=('WordNet' 'Free On-Line Dictionary of Computing' 'All')
@@ -51,7 +52,7 @@ if [[ -z $1 ]] ; then
 							--artist "${song_artist}"  				\
 							--no-color 								\
 							--write stdout 							\
-							--cache ${LOCAL_DIR}  |					\
+							--cache ${CACHE_DIR}  |					\
 	sed 's/\&/\&amp;/g' | 			\
 	sed 's/</\&lt;/g'   | 			\
 	sed 's/>/\&gt;/g'   |
