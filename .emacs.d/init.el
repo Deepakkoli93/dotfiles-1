@@ -31,7 +31,7 @@
 (setq secrets-file "~/secrets.el")
 
 ;; personal finance
-(setq fjournal-file "~/miscellany/personal/finance/accounting.journal")
+(setq jfile "~/miscellany/personal/finance/accounting.journal")
 
 ;; hakyll blog
 (setq myspace-dir "/datastore/Documents/myspace")
@@ -77,8 +77,6 @@
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c r") 'recentf-open-files)
 (global-set-key (kbd "C-c o") 'org-todo-list)
-(global-set-key (kbd "C-c e") 'easy-move)
-(global-set-key (kbd "C-c u") 'uneasy-move)
 (global-set-key (kbd "C-c w") '(lambda ()
                                  (interactive)
                                  "Remove whitespaces. "
@@ -91,6 +89,8 @@
                                   (kill-buffer (current-buffer))
                                   (delete-window)))
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
+(global-set-key (kbd "C-c e") 'jentry)
+(global-set-key (kbd "C-c j") 'jdo)
 
 ;; So that I can use it in eshell
 (defun myspace ()
@@ -188,7 +188,7 @@
 (defun notify (msg)
   "Notify me with a msg"
   (start-process-shell-command "dzen" nil
-   (concat "echo " msg " | dzen2 -p 2 -h 200 -l 200 -fn 'Monaco:size=50'")))
+   (concat "echo " msg " | dzen2 -p 2 -h 200 -l 200 -fn 'Comic Sans MS:size=50'")))
 
 ;; Setup an emacs window into 70-30% horizontally.
 (fset 'split-thirty-seventy
@@ -200,10 +200,46 @@
   (other-window 1)
   (eshell))
 
-                           ;; GENERAL STUFF
-;; personal finance
+                           ;; MISCELLANY
+;; personal finance (Maybe I should move this into hledger-mode?)
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook 'easy-auto-complete-mode-hook)
+(setq jcompletions '("print"
+                     "accounts"
+                     "balancesheet"
+                     "balance"
+                     "register"
+                     "incomestatement"
+                     "balancesheet"
+                     "cashflow"
+                     "activity"
+                     "stats"))
+(defun jentry ()
+  "Make a new entry in the financial journal."
+  (interactive)
+  (progn
+    (find-file jfile)
+    (goto-char (point-max))
+    (yas-insert-snippet "jentry")
+    (recenter)))
+
+(defun jdo (command)
+  "Run a hledger command on the journal file."
+  (interactive (list (completing-read "jdo> " jcompletions)))
+  (let ((jbuffer (get-buffer-create "*Personal Finance*"))
+	(jcommand (concat "hledger -f " jfile " " command)))
+    (with-current-buffer jbuffer
+      (local-set-key (kbd "q")
+                     '(lambda ()
+                        (interactive)
+                        (quit-restore-window (selected-window) 'kill)))
+      (call-process-shell-command jcommand nil t nil)
+      (pop-to-buffer jbuffer))))
+(defun jreg (pattern)
+  "Run hledger register command."
+  (interactive "Mpattern> ")
+  (let ((jcmd (concat "register " pattern)))
+    (jdo jcmd)))
 
 ;; ido
 ;; show completions vertically
@@ -257,13 +293,12 @@
 (setq yas-snippet-dirs (expand-file-name "snippets/" user-emacs-directory))
 (yas-global-mode 1)
 
-
 ;; Auto-complete stuff
 (require 'auto-complete)
 (require 'auto-complete-config)
 (ac-config-default)
+(setq ac-ignore-case nil)
 (ac-flyspell-workaround)
-
 
 ;; Start these modes with auto-complete on
 (add-to-list 'ac-modes 'hledger-mode)
