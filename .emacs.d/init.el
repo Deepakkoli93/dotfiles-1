@@ -30,9 +30,6 @@
                              ;; VARIABLES
 (setq secrets-file "~/secrets.el")
 
-;; personal finance
-(setq jfile "~/miscellany/personal/finance/accounting.journal")
-
 ;; hakyll blog
 (setq myspace-dir "/datastore/Documents/myspace")
 (setq blog-dir "~/code/blog/narendraj9.github.io")
@@ -355,13 +352,10 @@
                               ;; ESHELL
 (defmacro with-face (str &rest properties)
   `(propertize ,str 'face (list ,@properties)))
-
 ;; Ignore consecutive duplicates in eshell history
 (setq eshell-hist-ignoredups t)
-
 ;; Don't cycle through possible completions
 (setq eshell-cmpl-cycle-completions nil)
-
 ;; My eshell-prompt
 (setq eshell-highlight-prompt nil)
 (setq eshell-prompt-function
@@ -372,9 +366,12 @@
          (with-face ")" :foreground "white")
          (with-face (if (= (user-uid) 0) " #" " λ") :foreground "pale green" :bold)
          (with-face " " :foreground "white"))))
-
 (setq eshell-prompt-regexp "^[^#λ\n]* [#λ] ")
-
+;; Set up visual comamnds and sub-commands
+(add-hook 'eshell-mode-hook '(lambda ()
+                               (add-to-list 'eshell-visual-commands "vim")
+                               (add-to-list 'eshell-visual-subcommands
+                                            '("git" "log" "diff" "commit"))))
                            ;; HASKELL-MODE
 
 ;; (load "haskell-mode-autoloads")

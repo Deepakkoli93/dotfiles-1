@@ -39,6 +39,8 @@
                        "incomestatement" "balancesheet" "cashflow" "activity"
                        "stats")
   "A collection of commands that can be passed to `jdo` function defined below.")
+(defvar jfile "~/miscellany/personal/finance/accounting.journal"
+  "Location of the journal file.")
 
 ;;;###autoload
 (defun jentry ()
