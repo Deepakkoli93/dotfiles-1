@@ -159,8 +159,8 @@ myXPConfig = greenXPConfig { height = 21
 
 -- Setup intial applications | Not using now.
 bootstrapApps :: MonadIO m => m ()
-bootstrapApps = do spawn "emacs --name MyEmacs &"
-                   spawn "touchpad off"  -- I am going crazy as to why this isn't working!
+bootstrapApps = do spawn "emacs --name MyEmacs"
+                   spawn "sleep 30s && touchpad off"  -- I am going crazy as to why this isn't working!
 show_x :: String
 show_x = "~/dotfiles/local/bin/show_x "
 
