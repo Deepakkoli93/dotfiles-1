@@ -12,9 +12,9 @@
 
 (defconst hledger-font-lock-keywords-1
   (list
-   '("\\<\\(assets\\|liabilities\\|equity\\|expenses\\|income\\)\\>" . font-lock-variable-name-face)
+   '("\\<\\(assets\\|liabilities\\|equity\\|expenses\\|income\\|zadjustments\\)\\>" . font-lock-variable-name-face)
    '("\\<[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\>" . font-lock-string-face)
-   '("\\<₹ [0-9]+\\(\\.[0-9]+\\)?\\>" . font-lock-constant-face)
+   '("\\<₹ [-]?[0-9]+\\(\\.[0-9]+\\)?\\>" . font-lock-constant-face)
    )
   "Minimal highlighting expressions for hledger mode")
 
