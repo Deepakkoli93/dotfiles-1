@@ -201,45 +201,9 @@
   (eshell))
 
                            ;; MISCELLANY
-;; personal finance (Maybe I should move this into hledger-mode?)
+;; personal finance
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook 'easy-auto-complete-mode-hook)
-(setq jcompletions '("print"
-                     "accounts"
-                     "balancesheet"
-                     "balance"
-                     "register"
-                     "incomestatement"
-                     "balancesheet"
-                     "cashflow"
-                     "activity"
-                     "stats"))
-(defun jentry ()
-  "Make a new entry in the financial journal."
-  (interactive)
-  (progn
-    (find-file jfile)
-    (goto-char (point-max))
-    (yas-insert-snippet "jentry")
-    (recenter)))
-
-(defun jdo (command)
-  "Run a hledger command on the journal file."
-  (interactive (list (completing-read "jdo> " jcompletions)))
-  (let ((jbuffer (get-buffer-create "*Personal Finance*"))
-	(jcommand (concat "hledger -f " jfile " " command)))
-    (with-current-buffer jbuffer
-      (local-set-key (kbd "q")
-                     '(lambda ()
-                        (interactive)
-                        (quit-restore-window (selected-window) 'kill)))
-      (call-process-shell-command jcommand nil t nil)
-      (pop-to-buffer jbuffer))))
-(defun jreg (pattern)
-  "Run hledger register command."
-  (interactive "Mpattern> ")
-  (let ((jcmd (concat "register " pattern)))
-    (jdo jcmd)))
 
 ;; ido
 ;; show completions vertically
