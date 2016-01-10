@@ -212,7 +212,11 @@
 ;; personal finance
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook 'easy-auto-complete-mode-hook)
-
+(add-hook 'hledger-mode-hook (lambda ()
+                               "Add hledger-accounts source for auto completion."
+                               (interactive)
+                               (setq-local ac-sources
+                                           '(ac-source-hledger-source))))
 ;; ido
 ;; show completions vertically
 (setq ido-decorations (quote
@@ -285,6 +289,7 @@
 ;; Make auto-complete easier for a mode
 (defun easy-auto-complete-mode-hook ()
   (setq-local ac-auto-start t)
+  (setq-local ac-auto-show-menu 0.1)
   (setq-local ac-disable-inline nil)
   (local-set-key ac-mode-map (kbd "TAB") 'auto-complete))
 

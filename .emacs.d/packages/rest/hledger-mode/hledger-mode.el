@@ -73,4 +73,19 @@
   (let ((jcmd (concat "register " pattern)))
     (jdo jcmd)))
 
+;; Auto-complete
+(defun hledger-source-init ()
+    "Initialize the candidates list for account completion."
+  (let*
+      ((accounts-string (shell-command-to-string
+                         (concat "hledger -f" jfile " accounts")))
+       (accounts-list (split-string accounts-string)))
+    (setq hledger-source-cache accounts-list)))
+(hledger-source-init)
+
+(defvar ac-source-hledger-source
+  '((init . hledger-source-init)
+    (candidates . hledger-source-cache))
+  "A source for completing account names in a hledger buffer.")
+  
 (provide 'hledger-mode)
