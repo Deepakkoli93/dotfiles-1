@@ -1,45 +1,23 @@
                                             ;;;;;;;;;;;;;;;;;;
                                             ;; My init.el   ;;
                                             ;;;;;;;;;;;;;;;;;;
-
-(setq package-user-dir (expand-file-name "packages/elpa"
-                                         user-emacs-directory))
-
-;; For some reason I don't know
-;; (normal-top-level-add-subdirs-to-load-path) isn't working!
-(let ((default-directory (expand-file-name "packages/rest"
-                                           user-emacs-directory)))
-  (normal-top-level-add-to-load-path '("hledger-mode"
-                                       "powerline")))
-
-;; Custom Themes | Maybe someday!
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-
-;; package management
+;; PACKAGE ARCHIVES
 (require 'package)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/"))
+(setq package-user-dir (expand-file-name "packages/elpa"
+                                         user-emacs-directory))
+;; Add Customized packages to load-path
+(let ((default-directory (expand-file-name "packages/rest"
+                                           user-emacs-directory)))
+  (normal-top-level-add-to-load-path '("hledger-mode"
+                                       "powerline")))
 (package-initialize)
 
-;; Keep a separate custom.el
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file)
-
-                             ;; VARIABLES
-(setq secrets-file "~/secrets.el")
-
-;; hakyll blog
-(setq myspace-dir "/datastore/Documents/myspace")
-(setq blog-dir "~/code/blog/narendraj9.github.io")
-(setq blog-posts-dir (expand-file-name "web/posts/" blog-dir))
-
-;; load secrets.el | May use it in future.
-(if (file-exists-p secrets-file)
-    (load secrets-file))
-
-                            ;; APPEARANCE
+;; APPEARANCE
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (defun set-appearance ()
   (interactive)
   "Set up the appearance of emacs."
@@ -70,49 +48,54 @@
                         :box '(:color "firebrick4" :style 'sunken))))
 (set-appearance)
 
+                             ;; VARIABLES
+(setq secrets-file "~/secrets.el")
+
+;; hakyll blog
+(setq myspace-dir "/datastore/Documents/myspace")
+(setq blog-dir "~/code/blog/narendraj9.github.io")
+(setq blog-posts-dir (expand-file-name "web/posts/" blog-dir))
+
                         ;; GLOBAL KEY BINDINGS
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c r") 'recentf-open-files)
 (global-set-key (kbd "C-c o") 'org-todo-list)
-(global-set-key (kbd "C-c w") '(lambda ()
-                                 (interactive)
-                                 "Remove whitespaces. "
-                                 (whitespace-cleanup)
-                                 (delete-trailing-whitespace)
-                                 (message "Cleaned up whitespaces!")))
-(global-set-key (kbd "C-c k") '(lambda ()
-                                  (interactive)
-                                  "Kills the current buffer and deletes the window."
-                                  (kill-buffer (current-buffer))
-                                  (delete-window)))
+(global-set-key (kbd "C-c w") 'cleanup-whitespace)
+(global-set-key (kbd "C-c k") 'kill-buffer-delete-window)
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 (global-set-key (kbd "C-c e") 'jentry)
 (global-set-key (kbd "C-c j") 'jdo)
+(global-set-key (kbd "C-c d") 'insert-date-at-point)
+(global-set-key (kbd "C-c l") 'linum-mode)
+(global-set-key (kbd "C-c m") 'myspace)
+(global-set-key (kbd "C-c /") 'comment-uncomment-region)
+		
+		   ;; UTILITY FUNCTION DEFINITIONS
 
-;; So that I can use it in eshell
+(defun comment-uncomment-region ()
+  "Comment or uncomment selected region."
+  (interactive)
+  (comment-or-uncomment-region (region-beginning) (region-end)))
+		
+(defun kill-buffer-delete-window ()
+  "Kill current buffer and delete its window."
+  (interactive)
+  "Kills the current buffer and deletes the window."
+  (kill-buffer (current-buffer))
+  (delete-window))
+
 (defun myspace ()
   (interactive)
-  "Go to myspace directory"
+  "Go to myspace directory. Defining so that I can use it in eshell."
   (cd myspace-dir))
-(global-set-key (kbd "C-c m") 'myspace)
 
-(global-set-key (kbd "C-c /") '(lambda ()
-                                 (interactive)
-                                 "Comment-or-uncomment-region"
-                                 (comment-or-uncomment-region (region-beginning) (region-end))))
+(defun cleanup-whitespace ()
+  "Remove whitespaces. "
+  (interactive)
+  (whitespace-cleanup)
+  (delete-trailing-whitespace)
+  (message "Cleaned up whitespaces!"))
 
-(global-set-key (kbd "C-c d") '(lambda ()
-                                 (interactive)
-                                 "Insert date at point."
-                                 (insert-date-at-point)))
-
-(global-set-key (kbd "C-c l") '(lambda ()
-                                 (interactive)
-                                 "Enable linum-mode."
-                                 (linum-mode)))
-
-
-                   ;; Utility Function Definitions
 (defun inhibit-read-only ()
   "Because eshell is silly. Goes into read-only mode on writing over prompt."
   (interactive)
@@ -181,15 +164,15 @@
   (interactive)
   (insert (format-time-string "%Y-%m-%d")))
 
-;; I may need to change it on re-installation
 (defun notify (msg)
-  "Notify me with a msg"
+  "Notify me with a msg. Requires that dzen is installed."
   (start-process-shell-command "dzen" nil
    (concat "echo " msg " | dzen2 -p 2 -h 200 -l 200 -fn 'Comic Sans MS:size=50'")))
 
 ;; Setup an emacs window into 70-30% horizontally.
 (fset 'split-thirty-seventy
       "\C-x2\C-u4\C-x^\C-u4\C-x^")
+
 (defun split-and-shell ()
   "Split the buffer vertically and shart shell in one of the windows."
   (interactive)
@@ -197,7 +180,35 @@
   (other-window 1)
   (eshell))
 
+(defun package-install-missing-packages ()
+  "Function for installing missing packages."
+  (interactive)
+  (setq package-list
+	'(android-mode auto-complete popup clojure-mode cmake-mode
+		       coffee-mode color-theme epl epresent geiser
+		       gh logito pcache ghci-completion haskell-mode
+		       inf-ruby logito magit magit-popup dash async
+		       git-commit with-editor dash async dash with-editor
+		       dash async dash async magit-popup dash async markdown-mode
+		       matlab-mode notmuch org-pomodoro alert log4e gntp pcache
+		       popup powerline python-mode rainbow-delimiters rainbow-mode
+		       sml-mode with-editor dash async yasnippet))
+  (package-refresh-contents)
+  ;; Install missing packages
+  (dolist (package package-list)
+    (unless (package-installed-p package)
+      (package-install package))))
+
                            ;; MISCELLANY
+
+;; Keep a separate custom.el
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
+
+;; load secrets.el 
+(if (file-exists-p secrets-file)
+    (load secrets-file))
+
 ;; personal finance
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook 'easy-auto-complete-mode-hook)
