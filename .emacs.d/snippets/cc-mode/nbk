@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: nbk
+# key: nbk
+# --
+
+{
+    $0
+}

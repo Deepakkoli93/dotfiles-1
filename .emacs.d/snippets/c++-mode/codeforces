@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: codeforces
+# key: codeforces
+# --
+#include <iostream>
+#include <vector>
+#include <map>
+
+
+int main(int ac, char *av[])
+{
+        $0
+        return 0;
+}

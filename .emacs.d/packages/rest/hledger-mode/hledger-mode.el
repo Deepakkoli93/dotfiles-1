@@ -12,16 +12,17 @@
 
 (defconst hledger-font-lock-keywords-1
   (list
-   '("\\<\\(assets\\|liabilities\\|equity\\|expenses\\|income\\|zadjustments\\)\\>" . font-lock-variable-name-face)
+   '("\\<\\(\\(assets\\|liabilities\\|equity\\|expenses\\|income\\|zadjustments\\)\\(:\[a-z--]+\\)*\\)\\>" . font-lock-variable-name-face)
    '("\\<[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\>" . font-lock-string-face)
-   '("\\<₹ [-]?[0-9]+\\(\\.[0-9]+\\)?\\>" . font-lock-constant-face)
-   )
+   '("\\<₹ [-]?[0-9]+\\(\\.[0-9]+\\)?\\>" . font-lock-constant-face))
   "Minimal highlighting expressions for hledger mode")
 
 (defvar hledger-font-lock-keywords hledger-font-lock-keywords-1
   "Default highlighting expressions for hledger mode")
 
-(defvar hledger-mode-syntax-table (make-syntax-table))
+(defvar hledger-mode-syntax-table (let ((st (make-syntax-table)))
+                                    (modify-syntax-entry ?: "_" st)
+                                    st))
 
 ;;;###autoload
 (defun hledger-mode ()

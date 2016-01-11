@@ -4,8 +4,8 @@
 !.emacs.d/custom.el
 !.emacs.d/abbrev_defs
 !.emacs.d/themes/
+!.emacs.d/snippets/
 !.emacs.d/packages/
-
 .emacs.d/packages/elpa/gnupg/
 .emacs.d/packages/elpa/archives/*
 

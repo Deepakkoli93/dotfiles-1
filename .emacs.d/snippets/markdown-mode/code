@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: code
+# key: code
+# --
+~~~~ { $1 }
+     $2
+~~~~
+$0

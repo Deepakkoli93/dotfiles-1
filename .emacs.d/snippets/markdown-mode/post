@@ -1,0 +1,11 @@
+# name: new blog post
+# key: post
+# contributor: Narendra Joshi
+# --
+---
+title: $1
+date: $2
+author: Narendra Joshi
+tags: $3
+---
+$0
