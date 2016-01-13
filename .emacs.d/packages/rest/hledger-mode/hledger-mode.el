@@ -64,6 +64,7 @@
                      '(lambda ()
                         (interactive)
                         (quit-restore-window (selected-window) 'kill)))
+      (erase-buffer)
       (call-process-shell-command jcommand nil t nil)
       (pop-to-buffer jbuffer))))
 

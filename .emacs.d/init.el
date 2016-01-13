@@ -346,10 +346,13 @@
 (setq auto-save-file-name-transforms
   `((".*" ,"~/.autosaves/" t)))
 
-;; quitely ignore if the abbrev_defs file is missing
+;; abbrev-mode
+(setq save-abbrevs nil)
+(setq-default abbrev-mode t)
 (setq abbrev-file-name (expand-file-name "abbrev_defs" user-emacs-directory))
 (if (file-exists-p abbrev-file-name)
-        (quietly-read-abbrev-file))
+    (quietly-read-abbrev-file))
+
 
 ;; general settings
 (show-paren-mode 1)
