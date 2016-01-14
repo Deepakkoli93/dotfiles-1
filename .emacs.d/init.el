@@ -239,12 +239,9 @@
 (setq tramp-default-method "ssh")
 
 ;; spell-checking
-(add-hook 'markdown-mode-hook
-          (lambda ()
-            (flyspell-mode 1)))
-(add-hook 'latex-mode-hook
-          (lambda ()
-            (flyspell-mode 1)))
+(dolist (hook '(markdown-mode-hook latex-mode-hook org-mode-hook))
+  (add-hook hook (lambda ()
+                   (flyspell-mode 1))))
 
 ;; easy-move bindings in man-mode as well
 (add-hook 'Man-mode-hook 'easy-move)
@@ -416,6 +413,7 @@
                              ;; ORG-MODE
 (add-hook 'org-mode-hook
           (lambda ()
+            ; key bindings
             (local-set-key (kbd "M-{") 'outline-previous-visible-heading)
             (local-set-key (kbd "M-}") 'outline-next-visible-heading)
             (local-set-key (kbd "C-c p") 'org-pomodoro)
