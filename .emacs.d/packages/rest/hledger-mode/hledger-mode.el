@@ -75,12 +75,39 @@
     (candidates . hledger-source-cache))
   "A source for completing account names in a hledger buffer.")
 
+;; Indentation
+(defun hledger-indent-line ()
+  "Indent current line in hledger-mode buffer."
+  (interactive)
+  (if (bobp)
+      (indent-line-to 0)
+    (let ((beg-regexp "\\<[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\>")
+          (comment-marker-regexp "^[ \t]*;")
+          cur-indent
+          (saw-comment-p nil))
+      (save-excursion
+        (beginning-of-line)
+        (if (looking-at beg-regexp)
+            (setq cur-indent 0)
+          (progn
+            (forward-line -1)
+            (if (looking-at beg-regexp)     ; if on the second line
+                (setq cur-indent tab-width) ; for now
+              (if (looking-at comment-marker-regexp)
+                  (setf cur-indent (current-indentation)
+                        saw-comment-p t)
+                (setq cur-indent tab-width))))))  ; for now
+          (indent-line-to cur-indent)
+          (if saw-comment-p
+              (insert-before-markers "; ")))))
+
 ;;;###autoload
 (define-derived-mode hledger-mode prog-mode "HLedger" ()
   "Major mode for editing hleder mode files."
   :syntax-table hledger-mode-syntax-table
   (interactive)
   (use-local-map hledger-mode-map)
-  (setq-local 'font-lock-defaults '(hledger-font-lock-keywords)))
+  (setq-local font-lock-defaults '(hledger-font-lock-keywords))
+  (setq-local indent-line-function 'hledger-indent-line))
 
 (provide 'hledger-mode)
