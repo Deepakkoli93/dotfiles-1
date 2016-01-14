@@ -24,41 +24,27 @@
                                     (modify-syntax-entry ?: "_" st)
                                     st))
 
-;;;###autoload
-(defun hledger-mode ()
-  "Major mode for editing hleder mode files."
-  (interactive)
-  (kill-all-local-variables)
-  (set-syntax-table hledger-mode-syntax-table)
-  (use-local-map hledger-mode-map)
-  (set (make-local-variable 'font-lock-defaults) '(hledger-font-lock-keywords))
-  (setq major-mode 'hledger-mode)
-  (setq mode-name "hledger")
-  (run-hooks 'hledger-mode-hook))
-
-(defconst jcompletions '("print" "accounts" "balancesheet" "balance" "register"
+(defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance" "register"
                        "incomestatement" "balancesheet" "cashflow" "activity"
                        "stats")
-  "A collection of commands that can be passed to `jdo` function defined below.")
-(defvar jfile "~/miscellany/personal/finance/accounting.journal"
+  "A collection of commands that can be passed to `hledger-jdo` function defined below.")
+(defvar hledger-jfile "~/miscellany/personal/finance/accounting.journal"
   "Location of the journal file.")
 
-;;;###autoload
-(defun jentry ()
+(defun hledger-jentry ()
   "Make a new entry in the financial journal."
   (interactive)
   (progn
-    (find-file jfile)
+    (find-file hledger-jfile)
     (goto-char (point-max))
     (yas-insert-snippet "jentry")
     (recenter)))
 
-;;;###autoload
-(defun jdo (command)
+(defun hledger-jdo (command)
   "Run a hledger command on the journal file."
-  (interactive (list (completing-read "jdo> " jcompletions)))
+  (interactive (list (completing-read "jdo> " hledger-jcompletions)))
   (let ((jbuffer (get-buffer-create "*Personal Finance*"))
-	(jcommand (concat "hledger -f " jfile " " command)))
+	(jcommand (concat "hledger -f " hledger-jfile " " command)))
     (with-current-buffer jbuffer
       (local-set-key (kbd "q")
                      '(lambda ()
@@ -68,19 +54,18 @@
       (call-process-shell-command jcommand nil t nil)
       (pop-to-buffer jbuffer))))
 
-;;;###autoload
-(defun jreg (pattern)
+(defun hledger-jreg (pattern)
   "Run hledger register command."
   (interactive "Mpattern> ")
   (let ((jcmd (concat "register " pattern)))
-    (jdo jcmd)))
+    (hledger-jdo jcmd)))
 
 ;; Auto-complete
 (defun hledger-source-init ()
     "Initialize the candidates list for account completion."
   (let*
       ((accounts-string (shell-command-to-string
-                         (concat "hledger -f" jfile " accounts")))
+                         (concat "hledger -f" hledger-jfile " accounts")))
        (accounts-list (split-string accounts-string)))
     (setq hledger-source-cache accounts-list)))
 (hledger-source-init)
@@ -89,5 +74,13 @@
   '((init . hledger-source-init)
     (candidates . hledger-source-cache))
   "A source for completing account names in a hledger buffer.")
-  
+
+;;;###autoload
+(define-derived-mode hledger-mode prog-mode "HLedger" ()
+  "Major mode for editing hleder mode files."
+  :syntax-table hledger-mode-syntax-table
+  (interactive)
+  (use-local-map hledger-mode-map)
+  (setq-local 'font-lock-defaults '(hledger-font-lock-keywords)))
+
 (provide 'hledger-mode)
