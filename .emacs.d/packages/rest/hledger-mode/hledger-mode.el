@@ -6,7 +6,11 @@
   :type 'hook)
 
 ;; An almost empty key map
-(defvar hledger-mode-map (make-keymap))
+(defvar hledger-mode-map
+  (let ((map (make-keymap)))
+    (define-key map [backtab] '(lambda ()
+                                 (backward-delete-char-untabify default-tab-width)))
+    map))
 
 (add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
 
@@ -86,7 +90,8 @@
   (if (bobp)
       (indent-line-to 0)
     (let ((beg-regexp "\\<[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\>")
-          (comment-marker-regexp "^[ \t]*;[ \t]*\\w+")
+          (comment-marker-regexp "^[ \t]*;[ \t]*[^;]+")
+          (empty-line-regexp "^\\s-*$")
           cur-indent
           (saw-comment-p nil)
           (insert-comment-p nil))
@@ -96,23 +101,26 @@
             (setq cur-indent 0)
           (progn
             (forward-line -1)
-            (if (looking-at beg-regexp)
-                (setf cur-indent hledger-comments-column
-                      insert-comment-p t)
-              (if (looking-at comment-marker-regexp)
-                  (setf cur-indent (current-indentation)
-                        saw-comment-p t)
-                (setq cur-indent tab-width))))))
+            (cond ((looking-at beg-regexp)
+                   (setf cur-indent hledger-comments-column
+                      insert-comment-p t))
+                  ((looking-at comment-marker-regexp)
+                   (setf cur-indent (current-indentation)
+                         saw-comment-p t))
+                  ((looking-at empty-line-regexp)
+                   (setq cur-indent 0))
+                  (t (setq cur-indent tab-width))))))
       (beginning-of-line)
       (if (and (or saw-comment-p insert-comment-p)
-               (not (looking-at comment-marker-regexp)))
+               (not (looking-at comment-marker-regexp))
+               (looking-at empty-line-regexp))
           (progn
             (indent-line-to cur-indent)
             (insert-before-markers "; "))
         (indent-line-to cur-indent)))))
 
 ;;;###autoload
-(define-derived-mode hledger-mode prog-mode "HLedger" ()
+(define-derived-mode hledger-mode lisp-mode "HLedger" ()
   "Major mode for editing hleder mode files."
   :syntax-table hledger-mode-syntax-table
   (interactive)
