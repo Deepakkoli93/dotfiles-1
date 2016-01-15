@@ -1,7 +1,7 @@
                                             ;;;;;;;;;;;;;;;;;;
                                             ;; My init.el   ;;
                                             ;;;;;;;;;;;;;;;;;;
-;; PACKAGE ARCHIVES
+;;; PACKAGE ARCHIVES
 (require 'package)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
@@ -16,7 +16,7 @@
                                        "powerline")))
 (package-initialize)
 
-;; APPEARANCE
+;;; APPEARANCE
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (defun set-appearance ()
   (interactive)
@@ -48,7 +48,7 @@
                         :box '(:color "firebrick4" :style 'sunken))))
 (set-appearance)
 
-                             ;; VARIABLES
+                             ;;; VARIABLES
 (setq secrets-file "~/secrets.el")
 
 ;; hakyll blog
@@ -70,8 +70,7 @@
 (global-set-key (kbd "C-c m") 'myspace)
 (global-set-key (kbd "C-c /") 'comment-uncomment-region)
 		
-		   ;; UTILITY FUNCTION DEFINITIONS
-
+		   ;;; UTILITY FUNCTION DEFINITIONS
 (defun comment-uncomment-region ()
   "Comment or uncomment selected region."
   (interactive)
@@ -199,7 +198,7 @@
     (unless (package-installed-p package)
       (package-install package))))
 
-                           ;; MISCELLANY
+                           ;;; MISCELLANY
 
 ;; Keep a separate custom.el
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -365,7 +364,7 @@
 (setq inhibit-splash-screen t)
 
 
-                              ;; ESHELL
+                              ;;; ESHELL
 (defmacro with-face (str &rest properties)
   `(propertize ,str 'face (list ,@properties)))
 ;; Ignore consecutive duplicates in eshell history
@@ -388,7 +387,7 @@
                                (add-to-list 'eshell-visual-commands "vim")
                                (add-to-list 'eshell-visual-subcommands
                                             '("git" "commit" "log"))))
-                           ;; HASKELL-MODE
+                           ;;; HASKELL-MODE
 
 ;; (load "haskell-mode-autoloads")
 (add-hook 'haskell-mode-hook 'haskell-doc-mode)
@@ -410,7 +409,7 @@
      (define-key haskell-mode-map (kbd "C-.") 'haskell-move-nested-right)))
 
 
-                             ;; ORG-MODE
+                             ;;; ORG-MODE
 (add-hook 'org-mode-hook
           (lambda ()
             ; key bindings
@@ -422,7 +421,7 @@
 ;; org-mode inline image size
 (setq org-image-actual-width nil)
 
-                             ;; POMODORO
+                             ;;; POMODORO
 ;; pomodoro hooks for awesome notifications
 (add-hook 'org-pomodoro-finished-hook
           (lambda ()
@@ -434,7 +433,7 @@
           (lambda ()
             (notify "Over!")))
 
-                              ;; C-MODE
+                              ;;; C-MODE
 ;; Use k&r coding style as default
 (setq c-default-style "k&r")
 ;; Use Linus's style while editing a file in linux-folder
@@ -481,7 +480,7 @@
             (whitespace-mode)))
 
 
-                             ;; C++-MODE
+                             ;;; C++-MODE
 (c-add-style "cpp-style"
              '("stroustrup"
                (indent-tabs-mode . nil)
@@ -492,8 +491,7 @@
             (c-set-style "cpp-style")))
 
 
-                            ;; PYTHON-MODE
-
+                            ;;; PYTHON-MODE
 (setq py-install-directory  (expand-file-name "elpa//python-mode-20150703.143"
                                               user-emacs-directory))
 (setq-default py-shell-name "ipython2")
@@ -502,18 +500,19 @@
 (setq py-split-windows-on-execute-p nil)
 (setq py-smart-indentation t)
 (require 'python-mode)
-                             ;; RUBY MODE
+
+                             ;;; RUBY MODE
 (autoload 'inf-ruby "inf-ruby" "Run on inferior Ruby process" t)
 (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
 
-                             ;; LUA MODE
+                             ;;; LUA MODE
 (setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 
-                               ;; MAGIT
+                               ;;; MAGIT
 (setq magit-auto-revert-mode nil)
 
-                           ;; EMACS-SERVER
+                           ;;; EMACS-SERVER
 ;; start emacs-server only if it's not running already
 (if (not (and (boundp 'server-process)
               (memq (process-status server-process)
@@ -526,7 +525,7 @@
                   (set-appearance)))))
                   
 
-                              ;; For MS-WINDOWS
+                              ;;; For MS-WINDOWS
 (if (eq system-type 'windows-nt)
     (progn
       (setq default-directory (expand-file-name "~/"))

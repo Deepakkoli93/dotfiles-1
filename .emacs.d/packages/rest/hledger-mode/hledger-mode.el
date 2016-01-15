@@ -17,16 +17,19 @@
    '("\\<₹ [-]?[0-9]+\\(\\.[0-9]+\\)?\\>" . font-lock-constant-face))
   "Minimal highlighting expressions for hledger mode")
 
-(defvar hledger-font-lock-keywords hledger-font-lock-keywords-1
+(defvar hledger-font-lock-defaults '(hledger-font-lock-keywords-1)
   "Default highlighting expressions for hledger mode")
 
 (defvar hledger-mode-syntax-table (let ((st (make-syntax-table)))
                                     (modify-syntax-entry ?: "_" st)
+                                    (modify-syntax-entry ?; "<" st)
+                                    (modify-syntax-entry ?\n ">" st)
                                     st))
 
+;; Functions written for my convenience
 (defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance" "register"
-                       "incomestatement" "balancesheet" "cashflow" "activity"
-                       "stats")
+                                 "incomestatement" "balancesheet" "cashflow" "activity"
+                                 "stats")
   "A collection of commands that can be passed to `hledger-jdo` function defined below.")
 (defvar hledger-jfile "~/miscellany/personal/finance/accounting.journal"
   "Location of the journal file.")
@@ -44,7 +47,7 @@
   "Run a hledger command on the journal file."
   (interactive (list (completing-read "jdo> " hledger-jcompletions)))
   (let ((jbuffer (get-buffer-create "*Personal Finance*"))
-	(jcommand (concat "hledger -f " hledger-jfile " " command)))
+        (jcommand (concat "hledger -f " hledger-jfile " " command)))
     (with-current-buffer jbuffer
       (local-set-key (kbd "q")
                      '(lambda ()
@@ -62,7 +65,7 @@
 
 ;; Auto-complete
 (defun hledger-source-init ()
-    "Initialize the candidates list for account completion."
+  "Initialize the candidates list for account completion."
   (let*
       ((accounts-string (shell-command-to-string
                          (concat "hledger -f" hledger-jfile " accounts")))
@@ -76,30 +79,37 @@
   "A source for completing account names in a hledger buffer.")
 
 ;; Indentation
+(defvar hledger-comments-column 11
+  "Column number where the comments start.")
 (defun hledger-indent-line ()
   "Indent current line in hledger-mode buffer."
-  (interactive)
   (if (bobp)
       (indent-line-to 0)
     (let ((beg-regexp "\\<[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\>")
-          (comment-marker-regexp "^[ \t]*;")
+          (comment-marker-regexp "^[ \t]*;[ \t]*\\w+")
           cur-indent
-          (saw-comment-p nil))
+          (saw-comment-p nil)
+          (insert-comment-p nil))
       (save-excursion
         (beginning-of-line)
         (if (looking-at beg-regexp)
             (setq cur-indent 0)
           (progn
             (forward-line -1)
-            (if (looking-at beg-regexp)     ; if on the second line
-                (setq cur-indent tab-width) ; for now
+            (if (looking-at beg-regexp)
+                (setf cur-indent hledger-comments-column
+                      insert-comment-p t)
               (if (looking-at comment-marker-regexp)
                   (setf cur-indent (current-indentation)
                         saw-comment-p t)
-                (setq cur-indent tab-width))))))  ; for now
-          (indent-line-to cur-indent)
-          (if saw-comment-p
-              (insert-before-markers "; ")))))
+                (setq cur-indent tab-width))))))
+      (beginning-of-line)
+      (if (and (or saw-comment-p insert-comment-p)
+               (not (looking-at comment-marker-regexp)))
+          (progn
+            (indent-line-to cur-indent)
+            (insert-before-markers "; "))
+        (indent-line-to cur-indent)))))
 
 ;;;###autoload
 (define-derived-mode hledger-mode prog-mode "HLedger" ()
@@ -107,7 +117,7 @@
   :syntax-table hledger-mode-syntax-table
   (interactive)
   (use-local-map hledger-mode-map)
-  (setq-local font-lock-defaults '(hledger-font-lock-keywords))
+  (setq-local font-lock-defaults hledger-font-lock-defaults)
   (setq-local indent-line-function 'hledger-indent-line))
 
 (provide 'hledger-mode)
