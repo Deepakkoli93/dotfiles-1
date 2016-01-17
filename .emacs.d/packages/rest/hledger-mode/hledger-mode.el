@@ -8,8 +8,9 @@
 ;; An almost empty key map
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
-    (define-key map [backtab] '(lambda ()
-                                 (backward-delete-char-untabify default-tab-width)))
+    (define-key map [backtab] (lambda ()
+                                (interactive)
+                                (backward-delete-char-untabify default-tab-width)))
     map))
 
 (add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
@@ -28,24 +29,55 @@
                                     (modify-syntax-entry ?: "_" st)
                                     (modify-syntax-entry ?; "<" st)
                                     (modify-syntax-entry ?\n ">" st)
-                                    st))
+                                    st)
+  "Syntax table for hledger mode.")
 
 ;; Functions written for my convenience
-(defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance" "register"
-                                 "incomestatement" "balancesheet" "cashflow" "activity"
-                                 "stats")
-  "A collection of commands that can be passed to `hledger-jdo` function defined below.")
+(defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance"
+                                 "register" "incomestatement" "balancesheet"
+                                 "cashflow" "activity" "stats")
+  "Commands that can be passed to `hledger-jdo` function defined below.")
 (defvar hledger-jfile "~/miscellany/personal/finance/accounting.journal"
   "Location of the journal file.")
 
-(defun hledger-jentry ()
-  "Make a new entry in the financial journal."
+;; A few internal definitions
+(defvar hledger--empty-line "^\\s-*$"
+  "Regular expression for matching line that delimits journal entries.")
+(defun hledger--go-to-starting-line ()
+  "Function to go the first line that stars a new entry."
+  (goto-char (point-max))
+  (beginning-of-line)                     ; Go to the first non-empty
+  (while (looking-at hledger--empty-line) ; line And then
+    (forward-line -1))                    ; insert an empty line
+  (end-of-line)                           ; and then we may expand the snippet
+  (insert "\n\n"))
+(defun hledger--overlay-current-entry ()
   (interactive)
-  (progn
-    (find-file hledger-jfile)
-    (goto-char (point-max))
-    (yas-insert-snippet "jentry")
-    (recenter)))
+  (while (and (not (bobp))
+              (not (looking-at hledger--empty-line)))
+    (forward-line -1))
+  (forward-line 1)
+  (setq begin (point))
+  (forward-line 1)
+  (while (and (not (looking-at hledger--empty-line))
+              (not (eobp)))
+    (forward-line 1))
+  (setq end (point))
+  (setq current-entry (make-overlay begin end))
+  (overlay-put current-entry 'face '(:background "black")))
+
+(defun hledger--clear-undo-list ()
+  "Empty `buffer-undo-list`."
+  (buffer-disable-undo)     
+  (buffer-enable-undo))     
+
+(defun hledger-jentry ()
+  "Make a new entry in the financial journal. Avoids editing old entries."
+  (interactive)
+  (find-file hledger-jfile)
+  (hledger--go-to-starting-line)
+  (yas-insert-snippet "jentry")
+  (recenter))
 
 (defun hledger-jdo (command)
   "Run a hledger command on the journal file."
@@ -63,7 +95,7 @@
 
 (defun hledger-jreg (pattern)
   "Run hledger register command."
-  (interactive "Mpattern> ")
+  (interactive "pattern> ")
   (let ((jcmd (concat "register " pattern)))
     (hledger-jdo jcmd)))
 
@@ -103,7 +135,7 @@
             (forward-line -1)
             (cond ((looking-at beg-regexp)
                    (setf cur-indent hledger-comments-column
-                      insert-comment-p t))
+			 insert-comment-p t))
                   ((looking-at comment-marker-regexp)
                    (setf cur-indent (current-indentation)
                          saw-comment-p t))

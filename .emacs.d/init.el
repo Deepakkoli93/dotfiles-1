@@ -71,6 +71,19 @@
 (global-set-key (kbd "C-c /") 'comment-uncomment-region)
 		
 		   ;;; UTILITY FUNCTION DEFINITIONS
+(defun make-old-content-read-only ()
+    "Only allow for appending new content in the buffer."
+  (interactive)
+  (put-text-property 1 2 'front-sticky '(read-only))
+  (save-excursion
+    (let ((begin (point-min))
+          (end (progn                 
+                 (end-of-buffer)  
+                 (backward-word)  ; Upto the line containing a word
+                 (end-of-line nil)
+                 (point))))
+      (put-text-property begin end 'read-only t))))
+
 (defun comment-uncomment-region ()
   "Comment or uncomment selected region."
   (interactive)
@@ -530,3 +543,5 @@
     (progn
       (setq default-directory (expand-file-name "~/"))
       (setq interprogram-paste-function 'x-selection-value)))
+
+
