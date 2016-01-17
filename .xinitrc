@@ -29,7 +29,7 @@ case $wm in
 		xsetroot -cursor_name left_ptr
 
 		# wallpaper
-		feh --bg-fill ~/dotfiles/background.png
+		feh --bg-fill ~/dotfiles/local/assets/background.png
 
 		# start xmonad | /usr/bin/bash so that ~/.bashrc is source and env set up!
 	    /usr/bin/bash --login -c xmonad &> /dev/null

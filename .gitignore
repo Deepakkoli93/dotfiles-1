@@ -17,3 +17,5 @@
 .weechat/logs/
 .weechat/weechat.log
 .weechat/urlserver_list.txt
+
+.ncmpcpp/*.log
