@@ -5,6 +5,7 @@
 	ui = true
 [core]
 	editor = vim
+    pager = less -+F
 [credential]
 	helper = cache
 [alias]

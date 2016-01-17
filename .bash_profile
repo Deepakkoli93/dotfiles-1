@@ -36,9 +36,3 @@ export CLASSPATH=~/.local/algs4/algs4.jar:$CLASSPATH
 export CLASSPATH=~/.local/algs4/stdlib.jar:$CLASSPATH
 
 export CLOUDSDK_PYTHON=/usr/bin/python2
-
-function setup {
-    # turn of touchpad by default
-    touchpad off
-}
-setup 
