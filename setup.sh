@@ -23,7 +23,8 @@ function install-packages() {
 		  g++ gcc ghc
 		  cabal-install 
 		  python-pygments python2-pygments
-          espeak"
+          espeak
+          glyr"
 
 
     # Install packages

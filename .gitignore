@@ -7,7 +7,7 @@
 !.emacs.d/snippets/
 !.emacs.d/packages/
 .emacs.d/packages/elpa/gnupg/
-.emacs.d/packages/elpa/archives/*
+.emacs.d/packages/elpa/archives/
 
 .mutt/cache
 
@@ -17,4 +17,3 @@
 .weechat/logs/
 .weechat/weechat.log
 .weechat/urlserver_list.txt
-

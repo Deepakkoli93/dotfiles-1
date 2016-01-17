@@ -7,10 +7,6 @@
 unset http_proxy
 unset https_proxy
 
-DOT_DIR=/home/nj/dotfiles
-LOCAL_DIR=${DOT_DIR}/local
-CACHE_DIR=${LOCAL_DIR}/assets
-
 # an array of the available dictionaries
 dict_list=('WordNet' 'Free On-Line Dictionary of Computing' 'All')
 
@@ -47,16 +43,14 @@ if [[ -z $1 ]] ; then
 
 	# stop if it takes more than TIMEOUT seconds
 		glyrc lyrics 2>&1 		       								\
-							--verbosity 1 							\
+							--verbosity 0 							\
 							--title "${song_title}"  				\
 							--artist "${song_artist}"  				\
 							--no-color 								\
-							--write stdout 							\
-							--cache ${CACHE_DIR}  |					\
+							--write stdout 	|                       \
 	sed 's/\&/\&amp;/g' | 			\
 	sed 's/</\&lt;/g'   | 			\
-	sed 's/>/\&gt;/g'   |
-	sed '1,2d'
+	sed 's/>/\&gt;/g'  
 	exit
 fi
 

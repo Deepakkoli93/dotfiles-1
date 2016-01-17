@@ -386,7 +386,7 @@
 (add-hook 'eshell-mode-hook '(lambda ()
                                (add-to-list 'eshell-visual-commands "vim")
                                (add-to-list 'eshell-visual-subcommands
-                                            '("git" "commit" "log"))))
+                                            '("git" "commit" "log" "diff"))))
                            ;;; HASKELL-MODE
 
 ;; (load "haskell-mode-autoloads")
