@@ -6,6 +6,7 @@
 !.emacs.d/themes/
 !.emacs.d/snippets/
 !.emacs.d/packages/
+.emacs.d/packages/elpa/
 .emacs.d/packages/elpa/gnupg/
 .emacs.d/packages/elpa/archives/
 

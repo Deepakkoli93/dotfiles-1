@@ -4,7 +4,7 @@
 ;;; PACKAGE ARCHIVES
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (setq package-user-dir (expand-file-name "packages/elpa"
                                          user-emacs-directory))
 ;; Add Customized packages to load-path
@@ -32,11 +32,11 @@
     (set-background-color black-theme-color)
     (set-foreground-color "white")
 
-    ;; Powerline
-    (require 'powerline)
-    (require 'powerline-custom-theme)
-    (setq powerline-default-separator 'curve)
-    (if (window-system) (powerline-custom-theme))
+    ;; ;; Powerline
+    ;; (require 'powerline)
+    ;; (require 'powerline-custom-theme)
+    ;; (setq powerline-default-separator 'curve)
+    ;; (if (window-system) (powerline-custom-theme))
 
     ;; mode-line color
     (set-face-attribute 'mode-line nil
@@ -195,9 +195,10 @@
   (interactive)
   (setq package-list
         '(powerline auto-complete yasnippet
-                    haskell-mode dash async markdown-mode
-                    org-pomodoro dash async alert
+                    haskell-mode markdown-mode
+                    org-pomodoro dash async alert gntp log4e
                     rainbow-delimiters rainbow-mode
+                    magit cmake-mode
                     sml-mode ))
   (package-refresh-contents)
   ;; Install missing packages
@@ -206,6 +207,9 @@
       (package-install package))))
 
                            ;;; MISCELLANY
+;; Install missing packages if elpa directory doesn't exist
+(or (file-exists-p package-user-dir)
+    (package-install-missing-packages))
 
 ;; Keep a separate custom.el
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
