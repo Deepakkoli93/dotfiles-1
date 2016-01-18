@@ -3,7 +3,9 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil nil ("log4e.el") (21993 54081 137675 835000))
+;;;### (autoloads nil nil ("../../../../../.emacs.d/packages/elpa/log4e-20150105.505/log4e-autoloads.el"
+;;;;;;  "../../../../../.emacs.d/packages/elpa/log4e-20150105.505/log4e.el")
+;;;;;;  (22172 32128 397000 0))
 
 ;;;***
 

@@ -3,9 +3,9 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "cmake-mode" "cmake-mode.el" (22058 25714 620009
-;;;;;;  261000))
-;;; Generated autoloads from cmake-mode.el
+;;;### (autoloads nil "cmake-mode" "../../../../../.emacs.d/packages/elpa/cmake-mode-20151012.726/cmake-mode.el"
+;;;;;;  "5e79680ef88fd3f1b87e273befa64407")
+;;; Generated autoloads from ../../../../../.emacs.d/packages/elpa/cmake-mode-20151012.726/cmake-mode.el
 
 (autoload 'cmake-mode "cmake-mode" "\
 Major mode for editing CMake source files.
@@ -51,6 +51,12 @@ Queries for any of the four available help topics and prints out the approriate 
 (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
 
 (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))
+
+;;;***
+
+;;;### (autoloads nil nil ("../../../../../.emacs.d/packages/elpa/cmake-mode-20151012.726/cmake-mode-autoloads.el"
+;;;;;;  "../../../../../.emacs.d/packages/elpa/cmake-mode-20151012.726/cmake-mode.el")
+;;;;;;  (22172 30752 208000 0))
 
 ;;;***
 

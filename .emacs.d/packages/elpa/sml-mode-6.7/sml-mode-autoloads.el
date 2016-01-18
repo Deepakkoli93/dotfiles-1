@@ -3,9 +3,9 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "sml-mode" "../../../../.emacs.d/elpa/sml-mode-6.7/sml-mode.el"
+;;;### (autoloads nil "sml-mode" "../../../../../.emacs.d/packages/elpa/sml-mode-6.7/sml-mode.el"
 ;;;;;;  "45b048afefd50f0e9e2be1e0719e9417")
-;;; Generated autoloads from ../../../../.emacs.d/elpa/sml-mode-6.7/sml-mode.el
+;;; Generated autoloads from ../../../../../.emacs.d/packages/elpa/sml-mode-6.7/sml-mode.el
 
 (defalias 'run-sml 'sml-run)
 
@@ -55,9 +55,9 @@ Major Mode for editing ML-Yacc files.
 
 ;;;***
 
-;;;### (autoloads nil nil ("../../../../.emacs.d/elpa/sml-mode-6.7/sml-mode-autoloads.el"
-;;;;;;  "../../../../.emacs.d/elpa/sml-mode-6.7/sml-mode.el") (21919
-;;;;;;  57259 800999 921000))
+;;;### (autoloads nil nil ("../../../../../.emacs.d/packages/elpa/sml-mode-6.7/sml-mode-autoloads.el"
+;;;;;;  "../../../../../.emacs.d/packages/elpa/sml-mode-6.7/sml-mode.el")
+;;;;;;  (22172 32139 512000 0))
 
 ;;;***
 

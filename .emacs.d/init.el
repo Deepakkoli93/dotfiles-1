@@ -4,9 +4,7 @@
 ;;; PACKAGE ARCHIVES
 (require 'package)
 (add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/"))
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (setq package-user-dir (expand-file-name "packages/elpa"
                                          user-emacs-directory))
 ;; Add Customized packages to load-path
@@ -196,15 +194,11 @@
   "Function for installing missing packages."
   (interactive)
   (setq package-list
-	'(android-mode auto-complete popup clojure-mode cmake-mode
-		       coffee-mode epl epresent geiser
-		       gh logito pcache ghci-completion haskell-mode
-		       inf-ruby logito magit magit-popup dash async
-		       git-commit with-editor dash async dash with-editor
-		       dash async dash async magit-popup dash async markdown-mode
-		       matlab-mode notmuch org-pomodoro alert log4e gntp pcache
-		       popup powerline python-mode rainbow-delimiters rainbow-mode
-		       sml-mode with-editor dash async yasnippet))
+        '(powerline auto-complete yasnippet
+                    haskell-mode dash async markdown-mode
+                    org-pomodoro dash async alert
+                    rainbow-delimiters rainbow-mode
+                    sml-mode ))
   (package-refresh-contents)
   ;; Install missing packages
   (dolist (package package-list)
@@ -512,7 +506,7 @@
 (setq py-switch-buffers-on-execute-p t)
 (setq py-split-windows-on-execute-p nil)
 (setq py-smart-indentation t)
-(require 'python-mode)
+;(require 'python-mode)
 
                              ;;; RUBY MODE
 (autoload 'inf-ruby "inf-ruby" "Run on inferior Ruby process" t)
