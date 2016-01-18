@@ -10,7 +10,7 @@
   (let ((map (make-keymap)))
     (define-key map [backtab] (lambda ()
                                 (interactive)
-                                (backward-delete-char-untabify default-tab-width)))
+                                (backward-delete-char-untabify tab-width)))
     map))
 
 (add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
