@@ -197,7 +197,7 @@
   (interactive)
   (setq package-list
 	'(android-mode auto-complete popup clojure-mode cmake-mode
-		       coffee-mode color-theme epl epresent geiser
+		       coffee-mode epl epresent geiser
 		       gh logito pcache ghci-completion haskell-mode
 		       inf-ruby logito magit magit-popup dash async
 		       git-commit with-editor dash async dash with-editor
