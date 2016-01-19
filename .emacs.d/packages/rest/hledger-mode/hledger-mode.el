@@ -127,7 +127,7 @@
 (defvar hledger-date-regex "\\<[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\>"
   "Regular expression for dates.")
 
-(defvar hledger-date-and-desc-regex "\\<[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}[ \\t]*[^ \\t]+\\>"
+(defvar hledger-date-and-desc-regex "\\<[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\s-*[^[:space:]]+\\>"
   "Regular expression for matching a starting entry with some description.")
 
 (defvar hledger-account-regex "\\<\\(\\(assets\\|liabilities\\|equity\\|expenses\\|income\\|zadjustments\\)\\(:\[a-z--]+\\)*\\)\\>"
@@ -172,14 +172,13 @@ RE."
   "Indentation when on the first line of an entry."
   (let ((savep (point)))
     (cond
-     (((hleger-cur-line-matchesp hleger-empty-regex)
-       (progn
-        (beginning-of-line)
-        ((insert (format-time-string "%Y-%m-%d ")))))
-      ((hledger-cur-line-matchesp hledger-date-and-desc-regex)
-       (ignore))
-      (((hledger-cur-line-matchesp hledger-date-regex)
-         (delete-region (line-beginning-position) (line-end-position))))))))
+     ((hledger-cur-line-matchesp hledger-empty-regex)
+      (beginning-of-line)
+      (insert (format-time-string "%Y-%m-%d ")))
+     ((hledger-cur-line-matchesp hledger-date-and-desc-regex)
+      (ignore))
+     ((hledger-cur-line-matchesp hledger-date-regex)
+      (delete-region (line-beginning-position) (line-end-position))))))
 
   
 (defun hledger-indent-line-better ()
