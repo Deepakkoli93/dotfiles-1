@@ -117,6 +117,95 @@
 ;; Indentation
 (defvar hledger-comments-column 11
   "Column number where the comments start.")
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; CLEANER CODE start ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar hledger-empty-regex "^\\s-*$"
+  "Regular expression for an empty line.")
+
+(defvar hledger-date-regex "\\<[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\>"
+  "Regular expression for dates.")
+
+(defvar hledger-date-and-desc-regex "\\<[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}[ \\t]*[^ \\t]+\\>"
+  "Regular expression for matching a starting entry with some description.")
+
+(defvar hledger-account-regex "\\<\\(\\(assets\\|liabilities\\|equity\\|expenses\\|income\\|zadjustments\\)\\(:\[a-z--]+\\)*\\)\\>"
+  "Regular expression for a potential journal account.")
+
+(defvar hledger-comment-regex "^[ \t]*;[ \t]*[^;]+"
+  "Regular expression for a comment in journal file.")
+
+(defun hledger-line-matchesp (re offset)
+  "Returns a boolean value stating whether the line OFFSET 
+lines above the current line starts with the regular experssion
+RE."
+  (save-excursion
+    (forward-line offset)
+    (beginning-of-line)
+    (looking-at re)))
+
+(defun hledger-cur-line-matchesp (re)
+  "Returns true if current line starts with RE."
+  (hledger-line-matchesp re 0))
+
+(defun hledger-prev-line-matchesp (re)
+  "Returns true if previous line matches RE."
+  (hledger-line-matchesp re -1))
+
+(defun hledger-first-loep ()
+  "Returns true if the current line is the first line of a journal entry."
+  (or (bobp) 
+      (hledger-cur-line-matchesp hledger-date-regex)
+      (hledger-prev-line-matchesp hledger-empty-regex)))
+
+(defun hledger-second-loep ()
+  "Retuns true if the current line is in the comments section of the entry."
+  (or (hledger-prev-line-matchesp hledger-date-regex)
+      (hledger-prev-line-matchesp hledger-comment-regex)))
+
+(defun hledger-rest-loep ()
+  "Returns true if we are writing the accounts section of the entry."
+  (hledger-cur-line-matches-p hledger-account-regex))
+
+(defun hledger-indent-first-loe ()
+  "Indentation when on the first line of an entry."
+  (let ((savep (point)))
+    (cond
+     (((hleger-cur-line-matchesp hleger-empty-regex)
+       (progn
+        (beginning-of-line)
+        ((insert (format-time-string "%Y-%m-%d ")))))
+      ((hledger-cur-line-matchesp hledger-date-and-desc-regex)
+       (ignore))
+      (((hledger-cur-line-matchesp hledger-date-regex)
+         (delete-region (line-beginning-position) (line-end-position))))))))
+
+  
+(defun hledger-indent-line-better ()
+  "Indent the current line."
+  (cond
+   ((hleger-first-loep) (hledger-indent-first-loe))
+   ((hledger-second-loep) (hledger-indent-second-loe))
+   ((hledger-rest-loep) (hledger-indent-rest-loe))
+   (t (message "I wasn't expecting this! Fix me!"))))
+
+  
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; CLEANER CODE END ;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+
+
+
 (defun hledger-indent-line ()
   "Indent current line in hledger-mode buffer."
   (if (bobp)
@@ -158,6 +247,6 @@
   (interactive)
   (use-local-map hledger-mode-map)
   (setq-local font-lock-defaults hledger-font-lock-defaults)
-  (setq-local indent-line-function 'hledger-indent-line))
+  (setq-local indent-line-function 'hledger-indent-first-loe))
 
 (provide 'hledger-mode)
