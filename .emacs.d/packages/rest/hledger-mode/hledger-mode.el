@@ -241,13 +241,16 @@ RE."
 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
-    (define-key map [ret] (lambda ()
-                           (interactive)
-                           (newline-and-indent)))
-    (define-key map [backtab] (lambda ()
-                                (interactive)
-                                (backward-delete-char-untabify tab-width)))
+    (define-key map (kbd "RET")
+      (lambda ()
+        (interactive)
+        (newline-and-indent)))
+    (define-key map (kbd "<backtab>")
+      (lambda ()
+        (interactive)
+        (backward-delete-char-untabify tab-width)))
     map))
+
 (defconst hledger-font-lock-keywords-1
   (list
    `(,hledger-account-regex . font-lock-variable-name-face)
@@ -272,6 +275,7 @@ RE."
   (interactive)
   (use-local-map hledger-mode-map)
   (setq-local font-lock-defaults hledger-font-lock-defaults)
-  (setq-local indent-line-function 'hledger-indent-line))
+  (setq-local indent-line-function 'hledger-indent-line)
+  (electric-indent-local-mode -1))
 
 (provide 'hledger-mode)
