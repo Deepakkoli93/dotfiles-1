@@ -133,15 +133,27 @@ RE."
   "Insert a comment on the current line."
   (indent-line-to hledger-comments-column)
   (insert "; "))
-(defun hledger-insert-amount ()
+(defun hledger-insert-rupee ()
   "Insert the amount for a transaction in hledger"
   (beginning-of-line)
-  (re-search-forward hledger-whitespace-account-regex (line-end-position) t)
+  (re-search-forward hledger-whitespace-account-regex)
   (insert "    ₹ "))
-(defun hledger-acc-line-has-amountp ()
+(defun hledger-delete-rupee-sign ()
+  "Delete the rupee sign."
+  (beginning-of-line)
+  (re-search-forward hledger-whitespace-account-regex
+                     (line-end-position)
+                     t)
+  (delete-region (point) (line-end-position)))
+
+(defun hledger-acc-line-has-rupeep ()
   "Returns true if the account line has an amount."
   (hledger-cur-line-matchesp (concat hledger-whitespace-account-regex
-                                     "\\s-*₹")))
+                                     "\\s-*₹\\s-*$")))
+(defun hledger-expecting-rupeep ()
+  "Returns true if we should insert a rupee sign."
+  (hledger-cur-line-matchesp (concat hledger-whitespace-account-regex
+                                     "\\s-*$")))
 
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; FIX THIS. USE SOMETHING LIKE A MACRO ;;
@@ -199,13 +211,9 @@ RE."
 
 (defun hledger-indent-account-line ()
   "Called when the line to indent is an account listing line."
-  (if (hledger-acc-line-has-amountp)
-      (progn (end-of-line)
-             (delete-region (re-search-backward "\\s-*₹"
-                                                (line-beginning-position)
-                                                t)
-                            (line-end-position)))
-    (hledger-insert-amount)))
+  (cond
+   ((hledger-acc-line-has-rupeep) (hledger-delete-rupee-sign))
+   ((hledger-expecting-rupeep) (hledger-insert-rupee))))
 
 (defun hledger-indent-line ()
   "Indent the current line."
@@ -233,6 +241,9 @@ RE."
 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
+    (define-key map [ret] (lambda ()
+                           (interactive)
+                           (newline-and-indent)))
     (define-key map [backtab] (lambda ()
                                 (interactive)
                                 (backward-delete-char-untabify tab-width)))
