@@ -1,5 +1,6 @@
-;; A mode for writing hledger journal entries with some convenient functions
-;; Author: Narendra Joshi
+;;; hledger-mode.el -- A mode for writing journal entries for hledger
+;; Author: Narendra Joshi <narendraj9@gmail.com>
+;; #TODO
 
 (add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
 
@@ -21,6 +22,7 @@
   :group 'hledger
   :type 'integer)
 
+;;; Regexes
 (defvar hledger-empty-regex "^\\s-*$"
   "Regular expression for an empty line.")
 (defvar hledger-date-only-regex "^\\s-*[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\s-*$"
@@ -40,71 +42,7 @@
 (defvar hledger-amount-regex "\\<₹ [-]?[0-9]+\\(\\.[0-9]+\\)?\\>"
   "Regular expression to match an inserted amount in rupees.")
 
-;; Functions written for convenice
-(defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance"
-                                 "register" "incomestatement" "balancesheet"
-                                 "cashflow" "activity" "stats")
-  "Commands that can be passed to `hledger-jdo` function defined below.")
-
-(defvar hledger--empty-line "^\\s-*$"
-  "Regular expression for matching line that delimits journal entries.")
-(defun hledger--go-to-starting-line ()
-  "Function to go the first line that stars a new entry."
-  (goto-char (point-max))
-  (beginning-of-line)                     ; Go to the first non-empty
-  (while (looking-at hledger--empty-line) ; line And then
-    (forward-line -1))                    ; insert an empty line
-  (end-of-line)                           ; and then we may expand the snippet
-  (insert "\n\n"))
-(defun hledger--overlay-current-entry ()
-  (interactive)
-  (while (and (not (bobp))
-              (not (looking-at hledger--empty-line)))
-    (forward-line -1))
-  (forward-line 1)
-  (setq begin (point))
-  (forward-line 1)
-  (while (and (not (looking-at hledger--empty-line))
-              (not (eobp)))
-    (forward-line 1))
-  (setq end (point))
-  (setq current-entry (make-overlay begin end))
-  (overlay-put current-entry 'face '(:background "black")))
-
-(defun hledger--clear-undo-list ()
-  "Empty `buffer-undo-list`."
-  (buffer-disable-undo)     
-  (buffer-enable-undo))     
-
-(defun hledger-jentry ()
-  "Make a new entry in the financial journal. Avoids editing old entries."
-  (interactive)
-  (find-file hledger-jfile)
-  (hledger--go-to-starting-line)
-  (yas-insert-snippet "jentry")
-  (recenter))
-
-(defun hledger-jdo (command)
-  "Run a hledger command on the journal file."
-  (interactive (list (completing-read "jdo> " hledger-jcompletions)))
-  (let ((jbuffer (get-buffer-create "*Personal Finance*"))
-        (jcommand (concat "hledger -f " hledger-jfile " " command)))
-    (with-current-buffer jbuffer
-      (local-set-key (kbd "q")
-                     '(lambda ()
-                        (interactive)
-                        (quit-restore-window (selected-window) 'kill)))
-      (erase-buffer)
-      (call-process-shell-command jcommand nil t nil)
-      (pop-to-buffer jbuffer))))
-
-(defun hledger-jreg (pattern)
-  "Run hledger register command."
-  (interactive "pattern> ")
-  (let ((jcmd (concat "register " pattern)))
-    (hledger-jdo jcmd)))
-
-;; Indentation
+;;; Indentation
 (defun hledger-line-matchesp (re offset)
   "Returns a boolean value stating whether the line OFFSET 
 lines above the current line starts with the regular experssion
@@ -155,9 +93,6 @@ RE."
   (hledger-cur-line-matchesp (concat hledger-whitespace-account-regex
                                      "\\s-*$")))
 
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- ;; FIX THIS. USE SOMETHING LIKE A MACRO ;;
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun hledger-cur-line-emptyp ()
   "Returns true if current line is empty."
   (hledger-cur-line-matchesp hledger-empty-regex))
@@ -184,10 +119,6 @@ RE."
   "Returns true if the previous line has an account name."
   (hledger-prev-line-matchesp hledger-whitespace-account-regex))
   
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;; END OF FIX ME BLOCK ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun hledger-indent-empty-line ()
   "Called when the line to be indented is an empty one."
   (cond
@@ -224,7 +155,7 @@ RE."
    ((hledger-cur-has-accp) (hledger-indent-account-line))))
    
 
-;; Auto-complete
+;;; Auto-complete
 (defun hledger-source-init ()
   "Initialize the candidates list for account completion."
   (let*
@@ -239,6 +170,72 @@ RE."
     (candidates . hledger-source-cache))
   "A source for completing account names in a hledger buffer.")
 
+
+;;; Utility functions
+(defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance"
+                                 "register" "incomestatement" "balancesheet"
+                                 "cashflow" "activity" "stats")
+  "Commands that can be passed to `hledger-jdo` function defined below.")
+
+(defun hledger-go-to-starting-line ()
+  "Function to go the first line that stars a new entry."
+  (goto-char (point-max))
+  (beginning-of-line)                   
+  (while (looking-at hledger-empty-regex) 
+    (forward-line -1))                    
+  (end-of-line)                           
+  (insert "\n\n"))
+
+(defun hledger-overlay-current-entry ()
+  "Engulf an entry in an overlay."
+  (interactive)
+  (while (and (not (bobp))
+              (not (looking-at hledger-empty-regex)))
+    (forward-line -1))
+  (forward-line 1)
+  (setq begin (point))
+  (forward-line 1)
+  (while (and (not (looking-at hledger-empty-regex))
+              (not (eobp)))
+    (forward-line 1))
+  (setq end (point))
+  (setq current-entry (make-overlay begin end))
+  (overlay-put current-entry 'face '(:background "black")))
+
+(defun hledger-clear-undo-list ()
+  "Empty `buffer-undo-list`."
+  (buffer-disable-undo)     
+  (buffer-enable-undo))     
+
+(defun hledger-jentry ()
+  "Make a new entry in the financial journal. Avoids editing old entries."
+  (interactive)
+  (find-file hledger-jfile)
+  (hledger-go-to-starting-line)
+  (indent-according-to-mode)
+  (recenter))
+
+(defun hledger-jdo (command)
+  "Run a hledger command on the journal file."
+  (interactive (list (completing-read "jdo> " hledger-jcompletions)))
+  (let ((jbuffer (get-buffer-create "*Personal Finance*"))
+        (jcommand (concat "hledger -f " hledger-jfile " " command)))
+    (with-current-buffer jbuffer
+      (local-set-key (kbd "q")
+                     '(lambda ()
+                        (interactive)
+                        (quit-restore-window (selected-window) 'kill)))
+      (erase-buffer)
+      (call-process-shell-command jcommand nil t nil)
+      (pop-to-buffer jbuffer))))
+
+(defun hledger-jreg (pattern)
+  "Run hledger register command."
+  (interactive "pattern> ")
+  (let ((jcmd (concat "register " pattern)))
+    (hledger-jdo jcmd)))
+
+;;; Hledger-Mode Init 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
     (define-key map (kbd "RET")
