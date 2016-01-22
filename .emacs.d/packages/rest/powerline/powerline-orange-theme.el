@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t  -*-
 ;;; powerline-custom-theme.el | Modified Themes for Powerline
 
 ;; Copyright (C) 2012-2013 Donald Ephraim Curtis
@@ -44,11 +45,16 @@
   "Powerline face 2."
   :group 'custom-powerline)
 
-
 ;;; ###autoload
-(defun powerline-custom-theme ()
+(defun powerline-orange-theme ()
   "Setup the default mode-line."
   (interactive)
+  (set-face-attribute 'mode-line nil
+		      :weight 'bold
+		      :foreground "Black"
+		      :background "DarkOrange"
+		      :box '(:color "firebrick4" :style 'sunken))
+  (setq powerline-default-separator 'curve)
   (setq-default mode-line-format
                 '("%e"
                   (:eval
@@ -99,6 +105,6 @@
 			     (powerline-fill face2 (powerline-width rhs))
 			     (powerline-render rhs)))))))
 
-(provide 'powerline-custom-theme)
+(provide 'powerline-orange-theme)
 
 ;;; powerline-custom-theme.el ends here

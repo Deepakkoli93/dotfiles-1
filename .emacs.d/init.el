@@ -35,17 +35,9 @@
     (set-foreground-color "white")
 
     ;; Powerline
-    (require 'powerline)
-    (require 'powerline-custom-theme)
-    (setq powerline-default-separator 'curve)
-    (if (window-system) (powerline-custom-theme))
+    (require 'powerline-custom-themes)
 
-    ;; mode-line color
-    (set-face-attribute 'mode-line nil
-                        :weight 'bold
-                        :foreground "Black"
-                        :background "DarkOrange"
-                        :box '(:color "firebrick4" :style 'sunken))))
+    (if (window-system) (powerline-vermilion-theme))))
 (set-appearance)
 
                              ;;; VARIABLES

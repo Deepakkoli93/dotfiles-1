@@ -99,12 +99,15 @@ RE."
 (defun hledger-cur-has-datep ()
   "Returns true if current line has only date."
   (hledger-cur-line-matchesp hledger-date-only-regex))
-(defun hledger-cur-has-commentp ()
+(defun hledger-cur-has-empty-commentp ()
   "Returns true if current line has an empty comment. Empty comments."
   (hledger-cur-line-matchesp hledger-empty-comment-regex))
 (defun hledger-cur-has-accp ()
   "Returns true if the current line has an account name."
   (hledger-cur-line-matchesp hledger-whitespace-account-regex))
+(defun hledger-cur-starts-with-semicolp ()
+  "Returns true if the current line starts with a semicolon."
+  (hledger-cur-line-matchesp hledger-comment-regex))
 
 (defun hledger-prev-line-emptyp ()
   "Returns true if previous line is empty."
@@ -137,8 +140,10 @@ RE."
 
 (defun hledger-indent-comment-line ()
   "Called when current line has an empty comment already."
-  (hledger-delete-cur-line)
-  (indent-line-to tab-width))
+  (if (not (hledger-cur-has-empty-commentp))
+      (indent-line-to hledger-comments-column)
+    (hledger-delete-cur-line)
+    (indent-line-to tab-width)))
 
 (defun hledger-indent-account-line ()
   "Called when the line to indent is an account listing line."
@@ -151,7 +156,7 @@ RE."
   (cond
    ((hledger-cur-line-emptyp) (hledger-indent-empty-line))
    ((hledger-cur-has-datep) (hledger-indent-date-line))
-   ((hledger-cur-has-commentp) (hledger-indent-comment-line))
+   ((hledger-cur-starts-with-semicolp) (hledger-indent-comment-line))
    ((hledger-cur-has-accp) (hledger-indent-account-line))))
    
 
