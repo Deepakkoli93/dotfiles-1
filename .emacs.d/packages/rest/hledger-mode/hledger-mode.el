@@ -212,6 +212,14 @@ RE."
   (buffer-disable-undo)     
   (buffer-enable-undo))     
 
+(defun hledger-eval-region (beg end)
+  "Send selected region to hledger for evaluation."
+  (interactive "r")
+  (let ((command (completing-read "jdo> " hledger-jcompletions))
+        (hledger-jfile (make-temp-file "hledger")))
+    (write-region beg end hledger-jfile)
+    (hledger-jdo command)))
+
 (defun hledger-jentry ()
   "Make a new entry in the financial journal. Avoids editing old entries."
   (interactive)
