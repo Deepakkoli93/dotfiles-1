@@ -244,7 +244,7 @@ RE."
 
 (defun hledger-jreg (pattern)
   "Run hledger register command."
-  (interactive "pattern> ")
+  (interactive "spattern> ")
   (let ((jcmd (concat "register " pattern)))
     (hledger-jdo jcmd)))
 
