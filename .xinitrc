@@ -19,6 +19,9 @@ xset -b
 # start a composite manager
 xcompmgr -Cc -r 8 &
 
+# start syndaemon
+syndaemon -d -i 1.0
+
 case $wm in
 	awesome)
 		# start awesome

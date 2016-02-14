@@ -9,11 +9,9 @@ ID=`xinput list | grep -Eio 'touchpad\s*id\=[0-9]{1,2}' | grep -Eo '[0-9]{1,2}'`
 
 function touchpad-on () {
     xinput enable $ID
-	[[ -z `pgrep syndaemon` ]] && syndaemon -i 1.0 -d
 }
 
 function touchpad-off () {
-	pkill syndaemon
     xinput disable $ID
 }
 

@@ -161,7 +161,8 @@
   "Start a post in the blog-dir directory"
   (interactive (list (let ((default-directory blog-posts-dir))
                        (read-file-name "Filename: "))))
-  (find-file file))
+  (find-file file)
+  (yas-expand "post"))
 
 (defun insert-date-at-point ()
   "Insert current date at the current position of point."

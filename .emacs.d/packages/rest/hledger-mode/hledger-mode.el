@@ -242,6 +242,7 @@ RE."
       (call-process-shell-command jcommand nil t nil)
       (pop-to-buffer jbuffer))))
 
+
 (defun hledger-jreg (pattern)
   "Run hledger register command."
   (interactive "spattern> ")

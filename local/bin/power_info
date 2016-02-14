@@ -27,7 +27,7 @@ function power_info()
 	fi
 
 	# forever and forever
-	sleep 10s
+	sleep 30s
 	power_info
 }
 

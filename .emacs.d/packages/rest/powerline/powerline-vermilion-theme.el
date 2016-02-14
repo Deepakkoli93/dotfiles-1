@@ -91,9 +91,9 @@
                                      (funcall separator-right face2 face1)
 				     (unless window-system
 				       (powerline-raw (char-to-string #xe0a1) face1 'l))
-				     (powerline-raw "(%l" face1 'l)
+				     (powerline-raw "<%l" face1 'l)
 				     (powerline-raw ": " face1 'l)
-				     (powerline-raw "%c)" face1 'r)
+				     (powerline-raw "%c>" face1 'r)
 				     (funcall separator-right face1 mode-line)
 				     (powerline-raw " ")
 				     (powerline-raw "%5p" nil 'r)
