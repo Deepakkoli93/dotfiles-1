@@ -159,10 +159,11 @@ RE."
    ((hledger-cur-starts-with-semicolp) (hledger-indent-comment-line))
    ((hledger-cur-has-accp) (hledger-indent-account-line))))
    
-
 ;;; Auto-complete
 (defun hledger-source-init ()
   "Initialize the candidates list for account completion."
+  (if (eq major-mode 'hledger-mode)
+      (setq-local hledger-jfile (buffer-file-name)))
   (let*
       ((accounts-string (shell-command-to-string
                          (concat "hledger -f" hledger-jfile " accounts")))
@@ -174,7 +175,6 @@ RE."
   '((init . hledger-source-init)
     (candidates . hledger-source-cache))
   "A source for completing account names in a hledger buffer.")
-
 
 ;;; Utility functions
 (defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance"
@@ -231,6 +231,8 @@ RE."
 (defun hledger-jdo (command)
   "Run a hledger command on the journal file."
   (interactive (list (completing-read "jdo> " hledger-jcompletions)))
+  (if (eq major-mode 'hledger-mode)
+      (setq-local hledger-jfile (buffer-file-name)))
   (let ((jbuffer (get-buffer-create "*Personal Finance*"))
         (jcommand (concat "hledger -f " hledger-jfile " " command)))
     (with-current-buffer jbuffer
@@ -241,15 +243,13 @@ RE."
       (erase-buffer)
       (call-process-shell-command jcommand nil t nil)
       (pop-to-buffer jbuffer))))
-
-
+      
 (defun hledger-jreg (pattern)
   "Run hledger register command."
   (interactive "spattern> ")
   (let ((jcmd (concat "register " pattern)))
     (hledger-jdo jcmd)))
 
-;;; Hledger-Mode Init 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
     (define-key map (kbd "RET")
@@ -279,14 +279,20 @@ RE."
                                     st)
   "Syntax table for hledger mode.")
 
+(defun hledger-mode-init ()
+  "Function that does initial setup in the major-mode function."
+  (use-local-map hledger-mode-map)
+  (setq-local font-lock-defaults hledger-font-lock-defaults)
+  (setq-local indent-line-function 'hledger-indent-line)
+  (ac-clear-variable-after-save 'hledger-source-cache)
+  (setq-local ac-sources '(ac-source-hledger-source))
+  (electric-indent-local-mode -1))
+    
 ;;;###autoload
 (define-derived-mode hledger-mode prog-mode "HLedger" ()
   "Major mode for editing hleder mode files."
   :syntax-table hledger-mode-syntax-table
   (interactive)
-  (use-local-map hledger-mode-map)
-  (setq-local font-lock-defaults hledger-font-lock-defaults)
-  (setq-local indent-line-function 'hledger-indent-line)
-  (electric-indent-local-mode -1))
+  (hledger-mode-init))
 
 (provide 'hledger-mode)
