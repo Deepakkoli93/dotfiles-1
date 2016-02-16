@@ -27,7 +27,7 @@
     (scroll-bar-mode -1)
     (menu-bar-mode -1)
     (fringe-mode 0)
-    
+
     ;; Buffer background and foreground
     (setq blackboard-theme-color "#0C1021")
     (setq black-theme-color "gray9")
@@ -61,7 +61,7 @@
 (global-set-key (kbd "C-c l") 'linum-mode)
 (global-set-key (kbd "C-c m") 'myspace)
 (global-set-key (kbd "C-c /") 'comment-uncomment-region)
-		
+
 		   ;;; UTILITY FUNCTION DEFINITIONS
 (defun make-old-content-read-only ()
     "Only allow for appending new content in the buffer."
@@ -69,8 +69,8 @@
   (put-text-property 1 2 'front-sticky '(read-only))
   (save-excursion
     (let ((begin (point-min))
-          (end (progn                 
-                 (end-of-buffer)  
+          (end (progn
+                 (end-of-buffer)
                  (backward-word)  ; Upto the line containing a word
                  (end-of-line nil)
                  (point))))
@@ -80,7 +80,7 @@
   "Comment or uncomment selected region."
   (interactive)
   (comment-or-uncomment-region (region-beginning) (region-end)))
-		
+
 (defun kill-buffer-delete-window ()
   "Kill current buffer and delete its window."
   (interactive)
@@ -119,7 +119,7 @@
                            (or (buffer-file-name) (buffer-name))
                            )
                    (replace-regexp-in-string "\n" "\n│ " chunk)
-                   (format "\n╰──────── #%-d ─" 
+                   (format "\n╰──────── #%-d ─"
                            (line-number-at-pos end)))))
       (kill-new chunk)))
   (deactivate-mark))
@@ -210,7 +210,7 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
-;; load secrets.el 
+;; load secrets.el
 (if (file-exists-p secrets-file)
     (load secrets-file))
 
@@ -255,7 +255,7 @@
 ;; cmake-mode
 (require 'cmake-mode)
 
-;; whitespace-mode | For the 80-column rule 
+;; whitespace-mode | For the 80-column rule
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
 (global-whitespace-mode 1)
@@ -296,7 +296,7 @@
 (setq ac-use-menu-map t)
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
-  
+
 ;; Unique buffer names:
 (require 'uniquify)
 (setq
@@ -516,21 +516,12 @@
 
                            ;;; EMACS-SERVER
 ;; start emacs-server only if it's not running already
-(if (not (and (boundp 'server-process)
-              (memq (process-status server-process)
-                    '(connect listen open run))))
-    (server-start))
-(if (daemonp)
-    (add-hook 'after-make-frame-functions
-              (lambda (frame)
-                (with-selected-frame frame
-                  (set-appearance)))))
-                  
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 
                               ;;; For MS-WINDOWS
 (if (eq system-type 'windows-nt)
     (progn
       (setq default-directory (expand-file-name "~/"))
       (setq interprogram-paste-function 'x-selection-value)))
-
-
