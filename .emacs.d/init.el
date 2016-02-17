@@ -217,6 +217,8 @@
 ;; personal finance
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook 'easy-auto-complete-mode-hook)
+(add-hook 'hledger-mode-hook (lambda ()
+                               (flyspell-mode 1)))
 
 ;; ido
 ;; show completions vertically

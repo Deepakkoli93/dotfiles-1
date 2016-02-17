@@ -27,6 +27,7 @@ function get_color()
 if [[ -z $1 ]] ; then
 	song_artist=`mpc current -f "%artist%"`
 	song_title=`mpc current -f "%title%"`
+
 	if [[ ! $? -eq 0 ]] ; then
 		echo "mpc couldn't connect to mpd."
 		exit
