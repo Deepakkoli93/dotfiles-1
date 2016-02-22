@@ -48,7 +48,7 @@
 (setq blog-dir "~/code/blog/narendraj9.github.io")
 (setq blog-posts-dir (expand-file-name "web/posts/" blog-dir))
 
-                        ;; GLOBAL KEY BINDINGS
+;; GLOBAL KEY BINDINGS
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c r") 'recentf-open-files)
 (global-set-key (kbd "C-c o") 'org-todo-list)
@@ -64,7 +64,7 @@
 
 		   ;;; UTILITY FUNCTION DEFINITIONS
 (defun make-old-content-read-only ()
-    "Only allow for appending new content in the buffer."
+  "Only allow for appending new content in the buffer."
   (interactive)
   (put-text-property 1 2 'front-sticky '(read-only))
   (save-excursion
@@ -172,7 +172,7 @@
 (defun notify (msg)
   "Notify me with a msg. Requires that dzen is installed."
   (start-process-shell-command "dzen" nil
-   (concat "echo " msg " | dzen2 -p 2 -h 200 -l 200 -fn 'Comic Sans MS:size=50'")))
+                               (concat "echo " msg " | dzen2 -p 2 -h 200 -l 200 -fn 'Comic Sans MS:size=50'")))
 
 ;; Setup an emacs window into 70-30% horizontally.
 (fset 'split-thirty-seventy
@@ -189,15 +189,15 @@
   "Function for installing missing packages."
   (interactive)
   (setq package-list
-	'(android-mode auto-complete popup clojure-mode cmake-mode
-		       coffee-mode color-theme epl epresent geiser
-		       gh logito pcache ghci-completion haskell-mode
-		       inf-ruby logito magit magit-popup dash async
-		       git-commit with-editor dash async dash with-editor
-		       dash async dash async magit-popup dash async markdown-mode
-		       matlab-mode notmuch org-pomodoro alert log4e gntp pcache
-		       popup powerline python-mode rainbow-delimiters rainbow-mode
-		       sml-mode with-editor dash async yasnippet))
+        '(android-mode auto-complete popup clojure-mode cmake-mode
+                       coffee-mode color-theme epl epresent geiser
+                       gh logito pcache ghci-completion haskell-mode
+                       inf-ruby logito magit magit-popup dash async
+                       git-commit with-editor dash async dash with-editor
+                       dash async dash async magit-popup dash async markdown-mode
+                       matlab-mode notmuch org-pomodoro alert log4e gntp pcache
+                       popup powerline python-mode rainbow-delimiters rainbow-mode
+                       sml-mode with-editor dash async yasnippet))
   (package-refresh-contents)
   ;; Install missing packages
   (dolist (package package-list)
@@ -235,8 +235,8 @@
 (global-linum-mode 0)
 (setq linum-format "%2d| ")
 (set-face-attribute 'linum nil
-                   :background "black"
-                   :foreground "steel blue")
+                    :background "black"
+                    :foreground "steel blue")
 
 ;; tramp-mode
 (setq tramp-default-method "ssh")
@@ -261,7 +261,7 @@
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
 (global-whitespace-mode 1)
-; erc sets all faces to default when whitespace-mode enabled => no colors
+                                        ; erc sets all faces to default when whitespace-mode enabled => no colors
 (setq whitespace-global-modes '(not erc))
 
 ;; yasnippet
@@ -290,8 +290,8 @@
 (defun easy-auto-complete-mode-hook ()
   (setq-local ac-auto-start t)
   (setq-local ac-auto-show-menu 0.1)
-  (setq-local ac-disable-inline nil)
-  (local-set-key ac-mode-map (kbd "TAB") 'auto-complete))
+  (setq-local ac-disable-inline nil))
+
 
 
 ;; Key bindings for auto-complete-menu
@@ -336,15 +336,15 @@
 
 ;; save all backup files in a fixed directory
 (setq backup-directory-alist
-	'(("." . "~/.autosaves/"))
-	backup-by-copying t
-	version-control t
-	delete-old-versions t
-	kept-new-versions 20
-	kept-old-versions 5
-	)
+      '(("." . "~/.autosaves/"))
+      backup-by-copying t
+      version-control t
+      delete-old-versions t
+      kept-new-versions 20
+      kept-old-versions 5
+      )
 (setq auto-save-file-name-transforms
-  `((".*" ,"~/.autosaves/" t)))
+      `((".*" ,"~/.autosaves/" t)))
 
 ;; abbrev-mode
 (setq save-abbrevs nil)
@@ -416,7 +416,7 @@
                              ;;; ORG-MODE
 (add-hook 'org-mode-hook
           (lambda ()
-            ; key bindings
+                                        ; key bindings
             (local-set-key (kbd "M-{") 'outline-previous-visible-heading)
             (local-set-key (kbd "M-}") 'outline-next-visible-heading)
             (local-set-key (kbd "C-c p") 'org-pomodoro)
@@ -447,9 +447,9 @@
 (defun c-lineup-arglist-tabs-only (ignored)
   "Line up argument lists by tabs, not spaces"
   (let* ((anchor (c-langelem-pos c-syntactic-element))
-	 (column (c-langelem-2nd-pos c-syntactic-element))
-	 (offset (- (1+ column) anchor))
-	 (steps (floor offset c-basic-offset)))
+         (column (c-langelem-2nd-pos c-syntactic-element))
+         (offset (- (1+ column) anchor))
+         (steps (floor offset c-basic-offset)))
     (* (max steps 1)
        c-basic-offset)))
 
@@ -505,7 +505,10 @@
 (setq py-smart-indentation t)
 (require 'python-mode)
 
-                             ;;; RUBY MODE
+                            ;;; LISP MODE
+(setq inferior-lisp-program "/usr/bin/clisp")
+
+                            ;;; RUBY MODE
 (autoload 'inf-ruby "inf-ruby" "Run on inferior Ruby process" t)
 (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
 

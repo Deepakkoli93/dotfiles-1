@@ -225,7 +225,6 @@ RE."
   (interactive)
   (find-file hledger-jfile)
   (hledger-go-to-starting-line)
-  (indent-according-to-mode)
   (recenter))
 
 (defun hledger-jdo (command)
