@@ -46,7 +46,8 @@
 ;; Blog
 (setq blog-dir "~/code/blog/narendraj9.github.io")
 (setq blog-posts-dir (expand-file-name "web/posts/" blog-dir))
-
+;; hledger
+(setq hledger-jfile "~/miscellany/personal/finance/accounting.journal")
 
 ;;; GLOBAL KEY BINDINGS
 (global-set-key (kbd "M-[") 'backward-kill-word)
@@ -392,7 +393,7 @@
       '(("i" "todo-today" entry (file+headline
                                  (concat org-directory "/main.org")
                                  "Today")
-         "* TODO %?\n SCHEDULED: <%(org-read-date nil nil)>")
+         "* TODO %?\n SCHEDULED: %(org-time-stamp nil)")
         ("t" "todo" entry (file+headline
                            (concat org-directory "/main.org")
                            "Tasks")
