@@ -16,7 +16,7 @@
                                        "powerline")))
 (package-initialize)
 
-;;; APPEARANCE
+;;;APPEARANCE
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (defun set-appearance ()
   (interactive)
@@ -40,29 +40,33 @@
     (if (window-system) (powerline-vermilion-theme))))
 (set-appearance)
 
-                             ;;; VARIABLES
+;;; VARIABLES
 (setq secrets-file "~/secrets.el")
-
-;; hakyll blog
-(setq myspace-dir "/datastore/Documents/myspace")
+(setq org-directory "~/miscellany/personal/org")
+;; Blog
 (setq blog-dir "~/code/blog/narendraj9.github.io")
 (setq blog-posts-dir (expand-file-name "web/posts/" blog-dir))
 
-;; GLOBAL KEY BINDINGS
+
+;;; GLOBAL KEY BINDINGS
 (global-set-key (kbd "M-[") 'backward-kill-word)
+;; org-mode
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c r") 'recentf-open-files)
-(global-set-key (kbd "C-c o") 'org-todo-list)
-(global-set-key (kbd "C-c w") 'cleanup-whitespace)
 (global-set-key (kbd "C-c k") 'kill-buffer-delete-window)
-(global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
+;; personal accounting
 (global-set-key (kbd "C-c e") 'hledger-jentry)
 (global-set-key (kbd "C-c j") 'hledger-jdo)
+;; utilities
 (global-set-key (kbd "C-c d") 'insert-date-at-point)
+(global-set-key (kbd "C-c /") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c l") 'linum-mode)
-(global-set-key (kbd "C-c m") 'myspace)
-(global-set-key (kbd "C-c /") 'comment-uncomment-region)
+;; rarely used bindings
+(global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 
-		   ;;; UTILITY FUNCTION DEFINITIONS
+
+;;; UTILITY FUNCTION DEFINITIONS
 (defun make-old-content-read-only ()
   "Only allow for appending new content in the buffer."
   (interactive)
@@ -76,10 +80,11 @@
                  (point))))
       (put-text-property begin end 'read-only t))))
 
-(defun comment-uncomment-region ()
-  "Comment or uncomment selected region."
-  (interactive)
-  (comment-or-uncomment-region (region-beginning) (region-end)))
+;; Minor mode for enabling rainbow mode everywhere
+(define-globalized-minor-mode global-rainbow-mode rainbow-mode
+  (lambda ()
+    (when (not (memq major-mode '(eshell-mode org-agenda)))
+      (rainbow-mode))))
 
 (defun kill-buffer-delete-window ()
   "Kill current buffer and delete its window."
@@ -87,11 +92,6 @@
   "Kills the current buffer and deletes the window."
   (kill-buffer (current-buffer))
   (delete-window))
-
-(defun myspace ()
-  (interactive)
-  "Go to myspace directory. Defining so that I can use it in eshell."
-  (cd myspace-dir))
 
 (defun cleanup-whitespace ()
   "Remove whitespaces. "
@@ -204,8 +204,7 @@
     (unless (package-installed-p package)
       (package-install package))))
 
-                           ;;; MISCELLANY
-
+;;; MISCELLANY
 ;; Keep a separate custom.el
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
@@ -257,11 +256,10 @@
 ;; cmake-mode
 (require 'cmake-mode)
 
-;; whitespace-mode | For the 80-column rule
+;; ;; whitespace-mode | For the 80-column rule
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
 (global-whitespace-mode 1)
-                                        ; erc sets all faces to default when whitespace-mode enabled => no colors
 (setq whitespace-global-modes '(not erc))
 
 ;; yasnippet
@@ -279,10 +277,11 @@
 ;; Start these modes with auto-complete on
 (add-to-list 'ac-modes 'hledger-mode)
 
-;; Do not complete automatically
+;; Usually, do not complete automatically
 ;; Auto-complete trigger on Meta-Tab
 (setq ac-auto-start nil)
 (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
+
 ;; Inline completion suggestions are distracting!
 (setq ac-disable-inline t)
 
@@ -292,41 +291,17 @@
   (setq-local ac-auto-show-menu 0.1)
   (setq-local ac-disable-inline nil))
 
-
-
 ;; Key bindings for auto-complete-menu
 (setq ac-use-menu-map t)
 (define-key ac-menu-map "\C-n" 'ac-next)
 (define-key ac-menu-map "\C-p" 'ac-previous)
+(define-key ac-menu-map (kbd "TAB") 'ac-complete)
 
 ;; Unique buffer names:
 (require 'uniquify)
 (setq
  uniquify-buffer-name-style 'post-forward
  uniquify-separator " • ")
-
-;; Use rainbow-mode in every buffer
-(define-globalized-minor-mode global-rainbow-mode rainbow-mode
-  (lambda ()
-    (when (not (eq major-mode 'eshell-mode))
-      (rainbow-mode))))
-(global-rainbow-mode 1)
-
-;; Rainbow parentheses
-(require 'rainbow-delimiters)
-(defun rainbow-delimiters-colors ()
-  (set-face-foreground 'rainbow-delimiters-depth-1-face "dark red")
-  (set-face-foreground 'rainbow-delimiters-depth-2-face "dark green")
-  (set-face-foreground 'rainbow-delimiters-depth-3-face "deep pink")
-  (set-face-foreground 'rainbow-delimiters-depth-4-face "yellow")
-  (set-face-foreground 'rainbow-delimiters-depth-5-face "green")
-  (set-face-foreground 'rainbow-delimiters-depth-6-face "light blue")
-  (set-face-foreground 'rainbow-delimiters-depth-7-face "orange")
-  (set-face-foreground 'rainbow-delimiters-depth-8-face "slate blue")
-  (set-face-foreground 'rainbow-delimiters-depth-9-face "light gray")
-  (set-face-foreground 'rainbow-delimiters-unmatched-face "white"))
-(add-hook 'rainbow-delimiters-mode-hook 'rainbow-delimiters-colors)
-(rainbow-delimiters-mode)
 
 ;; recent files menu | remote files mess things up
 (add-hook 'recentf-dialog-mode-hook 'easy-move)
@@ -368,7 +343,7 @@
 (setq inhibit-splash-screen t)
 
 
-                              ;;; ESHELL
+;;; ESHELL
 (defmacro with-face (str &rest properties)
   `(propertize ,str 'face (list ,@properties)))
 ;; Ignore consecutive duplicates in eshell history
@@ -391,8 +366,7 @@
                                (add-to-list 'eshell-visual-commands "vim")
                                (add-to-list 'eshell-visual-subcommands
                                             '("git" "commit" "log" "diff"))))
-                           ;;; HASKELL-MODE
-
+;;; HASKELL-MODE
 ;; (load "haskell-mode-autoloads")
 (add-hook 'haskell-mode-hook 'haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
@@ -412,20 +386,36 @@
      (define-key haskell-mode-map (kbd "C-,") 'haskell-move-nested-left)
      (define-key haskell-mode-map (kbd "C-.") 'haskell-move-nested-right)))
 
-
-                             ;;; ORG-MODE
+;;; ORG-MODE
+(setq org-agenda-files `(,org-directory))
+(setq org-capture-templates
+      '(("i" "todo-today" entry (file+headline
+                                 (concat org-directory "/main.org")
+                                 "Today")
+         "* TODO %?\n SCHEDULED: <%(org-read-date nil nil)>")
+        ("t" "todo" entry (file+headline
+                           (concat org-directory "/main.org")
+                           "Tasks")
+         "* TODO %?\n  %i\n  %a")
+        ("j" "journal" entry (file+datetree
+                              (concat org-directory "/journal.org"))
+         "* %?\nEntered on %U\n  %i\n  %a")))
+;; org-mode inline image size
+(setq org-image-actual-width nil)
+;; org-capture
+(setq org-default-notes-file (concat org-directory "/main.org"))
 (add-hook 'org-mode-hook
           (lambda ()
-                                        ; key bindings
+            ;; bindings
             (local-set-key (kbd "M-{") 'outline-previous-visible-heading)
             (local-set-key (kbd "M-}") 'outline-next-visible-heading)
             (local-set-key (kbd "C-c p") 'org-pomodoro)
-            (local-set-key (kbd "C-c a") 'org-agenda)))
-(setq org-agenda-files '("~/org"))
-;; org-mode inline image size
-(setq org-image-actual-width nil)
+            (local-set-key (kbd "C-c a") 'org-agenda)
+            ;; org-modules
+            (add-to-list 'org-modules 'org-habit)))
 
-                             ;;; POMODORO
+
+;;; POMODORO
 ;; pomodoro hooks for awesome notifications
 (add-hook 'org-pomodoro-finished-hook
           (lambda ()
@@ -437,7 +427,7 @@
           (lambda ()
             (notify "Over!")))
 
-                              ;;; C-MODE
+;;; C-MODE
 ;; Use k&r coding style as default
 (setq c-default-style "k&r")
 ;; Use Linus's style while editing a file in linux-folder
@@ -484,7 +474,7 @@
             (whitespace-mode)))
 
 
-                             ;;; C++-MODE
+;;; C++-MODE
 (c-add-style "cpp-style"
              '("stroustrup"
                (indent-tabs-mode . nil)
@@ -495,7 +485,7 @@
             (c-set-style "cpp-style")))
 
 
-                            ;;; PYTHON-MODE
+;;; PYTHON-MODE
 (setq py-install-directory  (expand-file-name "elpa//python-mode-20150703.143"
                                               user-emacs-directory))
 (setq-default py-shell-name "ipython2")
@@ -505,27 +495,27 @@
 (setq py-smart-indentation t)
 (require 'python-mode)
 
-                            ;;; LISP MODE
+;;; LISP MODE
 (setq inferior-lisp-program "/usr/bin/clisp")
 
                             ;;; RUBY MODE
 (autoload 'inf-ruby "inf-ruby" "Run on inferior Ruby process" t)
 (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
 
-                             ;;; LUA MODE
+;;; LUA MODE
 (setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 
-                               ;;; MAGIT
+;;; MAGIT
 (setq magit-auto-revert-mode nil)
 
-                           ;;; EMACS-SERVER
+;;; EMACS-SERVER
 ;; start emacs-server only if it's not running already
 (require 'server)
 (unless (server-running-p)
   (server-start))
 
-                              ;;; For MS-WINDOWS
+;;; For MS-WINDOWS
 (if (eq system-type 'windows-nt)
     (progn
       (setq default-directory (expand-file-name "~/"))

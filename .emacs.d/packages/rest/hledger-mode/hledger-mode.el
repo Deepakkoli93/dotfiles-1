@@ -188,7 +188,8 @@ RE."
   (beginning-of-line)                   
   (while (looking-at hledger-empty-regex) 
     (forward-line -1))                    
-  (end-of-line)                           
+  (end-of-line)
+  (delete-region (point) (point-max))
   (insert "\n\n"))
 
 (defun hledger-overlay-current-entry ()
