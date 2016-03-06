@@ -68,6 +68,11 @@
 
 
 ;;; UTILITY FUNCTION DEFINITIONS
+(defun read-date (&optional format)
+  "Get date from the user and return it in the format FORMAT"
+  (format-time-string "%Y %m %d"
+                      (org-time-string-to-time (org-read-date))))
+
 (defun make-old-content-read-only ()
   "Only allow for appending new content in the buffer."
   (interactive)
@@ -257,7 +262,7 @@
 ;; cmake-mode
 (require 'cmake-mode)
 
-;; ;; whitespace-mode | For the 80-column rule
+;; whitespace-mode | For the 80-column rule
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
 (global-whitespace-mode 1)
@@ -329,7 +334,6 @@
 (if (file-exists-p abbrev-file-name)
     (quietly-read-abbrev-file))
 
-
 ;; general settings
 (show-paren-mode 1)
 (setq show-paren-style 'parenthesis)
@@ -342,7 +346,6 @@
 (setq-default indent-tabs-mode nil)
 (setq x-select-enable-clipboard t)
 (setq inhibit-splash-screen t)
-
 
 ;;; ESHELL
 (defmacro with-face (str &rest properties)
@@ -388,32 +391,46 @@
      (define-key haskell-mode-map (kbd "C-.") 'haskell-move-nested-right)))
 
 ;;; ORG-MODE
+(require 'org)
+(require 'org-habit)
+
 (setq org-agenda-files `(,org-directory))
+;; state logging for org-habit (! => with timestamp) (@ => timestamp + note)
+(setq org-todo-keywords
+      '((sequence "TODO" "DONE(!)")))
+
+(add-to-list 'org-modules 'org-habit)
+
+;; org-habit settings
+(setq org-habit-following-days 6
+      org-habit-preceding-days 21
+      org-habit-show-all-today t
+      org-habit-graph-column 50)
+      
+;; org-capture
 (setq org-capture-templates
-      '(("i" "Scheduled TODO" entry (file+headline
-                                 (concat org-directory "/main.org")
-                                 "Today")
-         "* TODO %?\n SCHEDULED: %^t")
-        ("t" "TODO" entry (file+headline
-                           (concat org-directory "/main.org")
-                           "Tasks")
-         "* TODO %?\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree
-                              (concat org-directory "/journal.org"))
-         "* %?\nEntered on %U\n  %i\n  %a")))
+        '(("i" "Scheduled TODO" entry (file+headline "main.org" "Today")
+           "* TODO %?\n SCHEDULED: %^t")
+          ("j" "Journal" entry (file+datetree "journal.org")
+           "* %? %^g\n\n> Entered on %U\n %i\n> Was in:%a")
+          ("b" "Birthday" plain (file+headline "remember.org" "Birthdays")
+           "\%\\%(org-anniversary %(read-date)) %?")
+          ("a" "Anniversary" plain (file+headline "remember.org" "Anniversary")
+           "\%\\%(org-anniversary %(read-date)) %?")))
+
+
 ;; org-mode inline image size
 (setq org-image-actual-width nil)
-;; org-capture
-(setq org-default-notes-file (concat org-directory "/main.org"))
+
+;; bindings | rarely used
 (add-hook 'org-mode-hook
           (lambda ()
             ;; bindings
             (local-set-key (kbd "M-{") 'outline-previous-visible-heading)
             (local-set-key (kbd "M-}") 'outline-next-visible-heading)
             (local-set-key (kbd "C-c p") 'org-pomodoro)
-            (local-set-key (kbd "C-c a") 'org-agenda)
-            ;; org-modules
-            (add-to-list 'org-modules 'org-habit)))
+            (local-set-key (kbd "C-c a") 'org-agenda)))
+
 
 ;;; POMODORO
 ;; pomodoro hooks for awesome notifications
