@@ -390,15 +390,15 @@
 ;;; ORG-MODE
 (setq org-agenda-files `(,org-directory))
 (setq org-capture-templates
-      '(("i" "todo-today" entry (file+headline
+      '(("i" "Scheduled TODO" entry (file+headline
                                  (concat org-directory "/main.org")
                                  "Today")
-         "* TODO %?\n SCHEDULED: %(org-time-stamp nil)")
-        ("t" "todo" entry (file+headline
+         "* TODO %?\n SCHEDULED: %^t")
+        ("t" "TODO" entry (file+headline
                            (concat org-directory "/main.org")
                            "Tasks")
          "* TODO %?\n  %i\n  %a")
-        ("j" "journal" entry (file+datetree
+        ("j" "Journal" entry (file+datetree
                               (concat org-directory "/journal.org"))
          "* %?\nEntered on %U\n  %i\n  %a")))
 ;; org-mode inline image size
@@ -414,7 +414,6 @@
             (local-set-key (kbd "C-c a") 'org-agenda)
             ;; org-modules
             (add-to-list 'org-modules 'org-habit)))
-
 
 ;;; POMODORO
 ;; pomodoro hooks for awesome notifications
