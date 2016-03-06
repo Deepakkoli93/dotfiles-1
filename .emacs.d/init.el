@@ -409,10 +409,16 @@
       
 ;; org-capture
 (setq org-capture-templates
-        '(("i" "Scheduled TODO" entry (file+headline "main.org" "Today")
+      `(("i" "Scheduled TODO" entry (file+headline "main.org" "Today")
            "* TODO %?\n SCHEDULED: %^t")
           ("j" "Journal" entry (file+datetree "journal.org")
-           "* %? %^g\n\n> Entered on %U\n %i\n> Was in: %F")
+           ,(concat "* %? %^g             \n"
+                    "╭──────────────      \n"
+                    " Entered on %U       \n"
+                    " Was in: [[%F][%f]]  \n"
+                    " ──────────────      \n"
+                    " %i                  \n"
+                    "╰──────────────        "))
           ("b" "Birthday" plain (file+headline "remember.org" "Birthdays")
            "\%\\%(org-anniversary %(read-date)) %?")
           ("a" "Anniversary" plain (file+headline "remember.org" "Anniversary")
