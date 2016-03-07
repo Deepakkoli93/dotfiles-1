@@ -7,10 +7,10 @@
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/"))
-(setq package-user-dir (expand-file-name "packages/elpa"
+(setq package-user-dir (expand-file-name "packages/elpa/"
                                          user-emacs-directory))
 ;; Add Customized packages to load-path
-(let ((default-directory (expand-file-name "packages/rest"
+(let ((default-directory (expand-file-name "packages/rest/"
                                            user-emacs-directory)))
   (normal-top-level-add-to-load-path '("hledger-mode"
                                        "powerline")))
@@ -23,12 +23,12 @@
       (expand-file-name "~/miscellany/personal/org/"))
 (setq emacs-themes-directory
       (expand-file-name "~/.emacs.d/themes/"))
-(setq abbrev-file
-      (expand-file-name (concat user-emacs-directory
-                                "abbrev_defs")))
 (setq backups-directory
-      (expand-file-name (concat user-emacs-directory
-                                "backups/")))
+      (expand-file-name "backups/"
+                        user-emacs-directory))
+(setq abbrev-file
+      (expand-file-name "abbrev_defs"
+                        user-emacs-directory))
 ;; Blog
 (setq blog-dir
       (expand-file-name "~/code/blog/narendraj9.github.io"))
@@ -338,7 +338,7 @@
         backup-by-copying t
         version-control t
         delete-old-versions t
-        kept-new-versions 20
+        kept-new-versions 5
         kept-old-versions 5))
 (setq auto-save-file-name-transforms
       `((".*" ,backups-directory t)))
