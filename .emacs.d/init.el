@@ -16,8 +16,32 @@
                                        "powerline")))
 (package-initialize)
 
+;;; VARIABLES
+(setq secrets-file
+      (expand-file-name "~/secrets.el"))
+(setq org-directory
+      (expand-file-name "~/miscellany/personal/org"))
+(setq emacs-themes-directory
+      (expand-file-name "~/.emacs.d/themes"))
+(setq abbrev-file
+      (expand-file-name (concat user-emacs-directory
+                                "abbrev_defs")))
+(setq backups-directory
+      (expand-file-name (concat user-emacs-directory
+                                "backups/")))
+;; Blog
+(setq blog-dir
+      (expand-file-name "~/code/blog/narendraj9.github.io"))
+(setq blog-posts-dir
+      (expand-file-name "web/posts/" blog-dir))
+;; Hledger
+(setq hledger-jfile
+      (expand-file-name "~/miscellany/personal/finance/accounting.journal"))
+
 ;;;APPEARANCE
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(add-to-list 'custom-theme-load-path
+             emacs-themes-directory)
+
 (defun set-appearance ()
   (interactive)
   "Set up the appearance of emacs."
@@ -39,15 +63,6 @@
 
     (if (window-system) (powerline-vermilion-theme))))
 (set-appearance)
-
-;;; VARIABLES
-(setq secrets-file "~/secrets.el")
-(setq org-directory "~/miscellany/personal/org")
-;; Blog
-(setq blog-dir "~/code/blog/narendraj9.github.io")
-(setq blog-posts-dir (expand-file-name "web/posts/" blog-dir))
-;; hledger
-(setq hledger-jfile "~/miscellany/personal/finance/accounting.journal")
 
 ;;; GLOBAL KEY BINDINGS
 (global-set-key (kbd "M-[") 'backward-kill-word)
@@ -316,21 +331,22 @@
 (recentf-mode 1)
 
 ;; save all backup files in a fixed directory
+(setq auto-save-list-file-prefix
+      (concat backups-directory "/autosaves-"))
 (setq backup-directory-alist
-      '(("." . "~/.autosaves/"))
-      backup-by-copying t
-      version-control t
-      delete-old-versions t
-      kept-new-versions 20
-      kept-old-versions 5
-      )
+      `(("." . ,backups-directory)
+        backup-by-copying t
+        version-control t
+        delete-old-versions t
+        kept-new-versions 20
+        kept-old-versions 5))
 (setq auto-save-file-name-transforms
-      `((".*" ,"~/.autosaves/" t)))
+      `((".*" ,backups-directory t)))
 
 ;; abbrev-mode
 (setq save-abbrevs nil)
 (setq-default abbrev-mode t)
-(setq abbrev-file-name (expand-file-name "abbrev_defs" user-emacs-directory))
+(setq abbrev-file-name abbrev-file)
 (if (file-exists-p abbrev-file-name)
     (quietly-read-abbrev-file))
 

@@ -9,6 +9,10 @@
 .emacs.d/packages/elpa/gnupg/
 .emacs.d/packages/elpa/archives/
 
+!.emacs.d/backups/
+.emacs.d/backups/*
+!.emacs.d/backups/.gitignore
+
 .mutt/cache
 
 .xmonad/*

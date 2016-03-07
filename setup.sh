@@ -122,10 +122,7 @@ function setup-dotfiles() {
 
     # email
     ln -sb ~/dotfiles/.offlineimaprc .
-    
-    # For saving emacs backup files. Or they will be everywhere. 
-    mkdir ~/.autosaves  
-    
+
     echo '--> Done '
 
 }
