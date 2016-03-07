@@ -437,7 +437,7 @@
                     "╰──────────────        "))
           ("b" "Birthday" plain (file+headline "remember.org" "Birthdays")
            "\%\\%(org-anniversary %(read-date)) %?")
-          ("a" "Anniversary" plain (file+headline "remember.org" "Anniversary")
+          ("a" "Anniversary" plain (file+headline "remember.org" "Anniversaries")
            "\%\\%(org-anniversary %(read-date)) %?")))
 
 ;; org-mode inline image size
