@@ -20,9 +20,9 @@
 (setq secrets-file
       (expand-file-name "~/secrets.el"))
 (setq org-directory
-      (expand-file-name "~/miscellany/personal/org"))
+      (expand-file-name "~/miscellany/personal/org/"))
 (setq emacs-themes-directory
-      (expand-file-name "~/.emacs.d/themes"))
+      (expand-file-name "~/.emacs.d/themes/"))
 (setq abbrev-file
       (expand-file-name (concat user-emacs-directory
                                 "abbrev_defs")))
@@ -334,7 +334,7 @@
 (setq auto-save-list-file-prefix
       (concat backups-directory "/autosaves-"))
 (setq backup-directory-alist
-      `(("." . ,backups-directory)
+      `((".*" . ,backups-directory)
         backup-by-copying t
         version-control t
         delete-old-versions t
