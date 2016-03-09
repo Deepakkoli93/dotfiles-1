@@ -424,7 +424,7 @@
       
 ;; org-capture
 (setq org-capture-templates
-      `(("i" "Scheduled TODO" entry (file+headline "main.org" "Today")
+      `(("i" "Scheduled TODO" entry (file+headline "main.org" "Tasks")
            "* TODO %?\n  SCHEDULED: %^t")
           ("j" "Journal" entry (file+datetree "journal.org")
            ,(concat "* %? %^g             \n"
@@ -434,9 +434,9 @@
                     " ──────────────      \n"
                     " %i                  \n"
                     "╰──────────────        "))
-          ("h" "Habit" entry (file+headline "habit.org"  "")
+          ("h" "Habit" entry (file+headline "habits.org"  "Habits")
            ,(concat "* TODO %?\n" 
-                    "  SCHEDULED: <%(read-date \"%Y-%m-%d %a\") .+%^{Repeat every: }> \n"
+                    "  SCHEDULED: <%(read-date \"%Y-%m-%d %a\") .+%^{Repeat every}> \n"
                     "  :PROPERTIES:       \n"
                     "  :STYLE:    habit   \n"
                     "  :END:              \n"))
