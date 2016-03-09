@@ -85,7 +85,7 @@
 ;;; UTILITY FUNCTION DEFINITIONS
 (defun read-date (&optional format)
   "Get date from the user and return it in the format FORMAT"
-  (format-time-string "%Y %m %d"
+  (format-time-string (if format format "%Y %m %d")
                       (org-time-string-to-time (org-read-date))))
 
 (defun make-old-content-read-only ()
@@ -420,13 +420,12 @@
 ;; org-habit settings
 (setq org-habit-following-days 6
       org-habit-preceding-days 21
-      org-habit-show-all-today t
       org-habit-graph-column 50)
       
 ;; org-capture
 (setq org-capture-templates
       `(("i" "Scheduled TODO" entry (file+headline "main.org" "Today")
-           "* TODO %?\n SCHEDULED: %^t")
+           "* TODO %?\n  SCHEDULED: %^t")
           ("j" "Journal" entry (file+datetree "journal.org")
            ,(concat "* %? %^g             \n"
                     "╭──────────────      \n"
@@ -435,6 +434,12 @@
                     " ──────────────      \n"
                     " %i                  \n"
                     "╰──────────────        "))
+          ("h" "Habit" entry (file+headline "habit.org"  "")
+           ,(concat "* TODO %?\n" 
+                    "  SCHEDULED: <%(read-date \"%Y-%m-%d %a\") .+%^{Repeat every: }> \n"
+                    "  :PROPERTIES:       \n"
+                    "  :STYLE:    habit   \n"
+                    "  :END:              \n"))
           ("b" "Birthday" plain (file+headline "remember.org" "Birthdays")
            "\%\\%(org-anniversary %(read-date)) %?")
           ("a" "Anniversary" plain (file+headline "remember.org" "Anniversaries")

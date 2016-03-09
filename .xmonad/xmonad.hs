@@ -10,7 +10,7 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.UrgencyHook
 import XMonad.Hooks.SetWMName
-import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.EwmhDesktops hiding (fullscreenEventHook)
 
 import XMonad.Util.Run
 import XMonad.Actions.CycleWS
@@ -18,6 +18,7 @@ import XMonad.Actions.CycleRecentWS
 
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Minimize
+import XMonad.Layout.Fullscreen
 
 import Data.Bits ((.|.))
 import System.Exit
@@ -89,7 +90,7 @@ myManageHook = composeAll
                [ className =? "Guake" --> doFloat 
                , resource =? "MyEmacs" --> doShift beta
                , resource =? "MyWeechat" --> doShift gamma
-               ]
+               ] <+> manageDocks
   where beta = myWorkspaces !! 1
         gamma = myWorkspaces !! 2
         
@@ -123,10 +124,13 @@ main = do
              -- logHook
              , logHook = myLogHook d
              -- manageHook
-             , manageHook = myManageHook <+> manageHook defaultConfig
+             , manageHook =  myManageHook <+> manageHook defaultConfig
+                                          <+> manageDocks
+                                          <+> fullscreenManageHook
              -- hoping to get chromium get the focus change rigt
              , handleEventHook =
-               handleEventHook defaultConfig <+> fullscreenEventHook
+                 handleEventHook defaultConfig <+> fullscreenEventHook
+                                               <+> docksEventHook
              }
              
 
