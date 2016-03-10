@@ -66,6 +66,7 @@
 
 ;;; GLOBAL KEY BINDINGS
 (global-set-key (kbd "M-[") 'backward-kill-word)
+(global-set-key (kbd "C-c m") 'switch-to-minibuffer)
 ;; org-mode
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
@@ -83,6 +84,21 @@
 
 
 ;;; UTILITY FUNCTION DEFINITIONS
+(defun org-late-todo (n)
+  "Switch todo assuming an old date [n days ago]"
+  (interactive "nDays: ")
+  (let* ((delta-time (days-to-time n))
+         (now (time-subtract (current-time)
+                             delta-time)))
+    (flet ((current-time () now))
+      (org-agenda-todo))))
+    
+(defun switch-to-minibuffer ()
+  "Switch to minibuffer."
+  (interactive)
+  (when (active-minibuffer-window)
+    (select-window (active-minibuffer-window))))
+    
 (defun read-date (&optional format)
   "Get date from the user and return it in the format FORMAT. 
 If format isn't specified it defaults to `%Y %m %d`"
