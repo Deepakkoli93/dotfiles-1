@@ -2,5 +2,12 @@
 
 cd ~/miscellany
 git commit -am "Scheduled daily journal commit"
-sleep 7m && git push origin master && \
-focus "Pushed to miscellany on github." 2 20 &
+
+(
+git push origin master
+while [[ $? -ne 0 ]]; do 
+    sleep 2m 
+    git push origin master
+done 
+focus "Pushed ~/miscellany.git to github." 2 20
+) &

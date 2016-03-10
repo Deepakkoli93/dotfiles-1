@@ -84,7 +84,8 @@
 
 ;;; UTILITY FUNCTION DEFINITIONS
 (defun read-date (&optional format)
-  "Get date from the user and return it in the format FORMAT"
+  "Get date from the user and return it in the format FORMAT. 
+If format isn't specified it defaults to `%Y %m %d`"
   (format-time-string (if format format "%Y %m %d")
                       (org-time-string-to-time (org-read-date))))
 
@@ -110,7 +111,6 @@
 (defun kill-buffer-delete-window ()
   "Kill current buffer and delete its window."
   (interactive)
-  "Kills the current buffer and deletes the window."
   (kill-buffer (current-buffer))
   (delete-window))
 
@@ -122,7 +122,8 @@
   (message "Cleaned up whitespaces!"))
 
 (defun inhibit-read-only ()
-  "Because eshell is silly. Goes into read-only mode on writing over prompt."
+  "Avoid read-only mode. 
+Because eshell is silly and into read-only mode on typing over prompt."
   (interactive)
   (setq inhibit-read-only t))
 
@@ -146,7 +147,8 @@
   (deactivate-mark))
 
 (defun he-toggle ()
-  "Toggle highlight expression inside selected parens. Useful when showing code."
+  "Toggle highlight expression inside selected parens. 
+Useful when showing code."
   (interactive)
   (if (equal show-paren-style 'parenthesis)
       (setq show-paren-style 'expression)
