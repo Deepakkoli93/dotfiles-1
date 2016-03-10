@@ -90,7 +90,7 @@
   (let* ((delta-time (days-to-time n))
          (now (time-subtract (current-time)
                              delta-time)))
-    (flet ((current-time () now))
+    (letf (((symbol-function 'current-time) (lambda () now)))
       (org-agenda-todo))))
     
 (defun switch-to-minibuffer ()
@@ -454,7 +454,7 @@ Useful when showing code."
                     "╰──────────────        "))
           ("h" "Habit" entry (file+headline "habits.org"  "Habits")
            ,(concat "* TODO %?\n" 
-                    "  SCHEDULED: <%(read-date \"%Y-%m-%d %a\") .+%^{Repeat every}> \n"
+                    "  SCHEDULED: <%(read-date \"%Y-%m-%d %a\") .+%^{Repeat every|1d|1w|1m|}> \n"
                     "  :PROPERTIES:       \n"
                     "  :STYLE:    habit   \n"
                     "  :END:              \n"))
