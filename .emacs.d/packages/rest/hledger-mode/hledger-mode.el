@@ -182,6 +182,15 @@ RE."
                                  "cashflow" "activity" "stats")
   "Commands that can be passed to `hledger-jdo` function defined below.")
 
+(defun hledger-ask-and-save-buffer ()
+  "Ask for saving modified buffer before any reporting commands."
+  (if (and (eq major-mode 'hledger-mode)
+           (buffer-modified-p)
+           (yes-or-no-p (format "Save buffer %s? "
+                                (buffer-name))))
+      (save-buffer)
+    (ignore)))
+
 (defun hledger-go-to-starting-line ()
   "Function to go the first line that stars a new entry."
   (goto-char (point-max))
@@ -231,6 +240,7 @@ RE."
 (defun hledger-jdo (command)
   "Run a hledger command on the journal file."
   (interactive (list (completing-read "jdo> " hledger-jcompletions)))
+  (hledger-ask-and-save-buffer)
   (if (eq major-mode 'hledger-mode)
       (setq-local hledger-jfile (buffer-file-name)))
   (let ((jbuffer (get-buffer-create "*Personal Finance*"))
@@ -284,7 +294,6 @@ RE."
   (use-local-map hledger-mode-map)
   (setq-local font-lock-defaults hledger-font-lock-defaults)
   (setq-local indent-line-function 'hledger-indent-line)
-  (ac-clear-variable-after-save 'hledger-source-cache)
   (setq-local ac-sources '(ac-source-hledger-source))
   (electric-indent-local-mode -1))
     

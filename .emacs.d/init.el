@@ -79,11 +79,19 @@
 (global-set-key (kbd "C-c d") 'insert-date-at-point)
 (global-set-key (kbd "C-c /") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c l") 'linum-mode)
+(global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
 ;; rarely used bindings
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 
-
 ;;; UTILITY FUNCTION DEFINITIONS
+(defun vicarie/eval-print-last-sexp ()
+    "Evaluate and print the last sexp on the same line. 
+#TOFIX: Read about elisp commands and figure out what (interactive) actually does."
+  (interactive)
+  (let* ((standard-output (current-buffer))
+         (value (eval-last-sexp nil)))
+    (insert-string (format " [= %s ] " value))))
+      
 (defun org-late-todo (n)
   "Switch todo assuming an old date [n days ago]"
   (interactive "nDays: ")
