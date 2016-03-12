@@ -16,6 +16,10 @@
                                        "powerline")))
 (package-initialize)
 
+;;; secrets.el
+(if (file-exists-p secrets-file)
+    (load secrets-file))
+
 ;;; VARIABLES
 (setq secrets-file
       (expand-file-name "~/secrets.el"))
@@ -37,6 +41,8 @@
 ;; Hledger
 (setq hledger-jfile
       (expand-file-name "~/miscellany/personal/finance/accounting.journal"))
+(setq hledger-service-fetch-url
+      my-hledger-service-fetch-url)
 
 ;;;APPEARANCE
 (add-to-list 'custom-theme-load-path
@@ -255,10 +261,6 @@ Useful when showing code."
 ;; Keep a separate custom.el
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
-
-;; load secrets.el
-(if (file-exists-p secrets-file)
-    (load secrets-file))
 
 ;; personal finance
 (require 'hledger-mode)

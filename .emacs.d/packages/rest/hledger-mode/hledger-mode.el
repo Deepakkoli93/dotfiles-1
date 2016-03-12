@@ -2,6 +2,8 @@
 ;; Author: Narendra Joshi <narendraj9@gmail.com>
 ;; #TODO
 
+(require 'json)
+
 (add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
 
 (defgroup hledger nil
@@ -22,6 +24,13 @@
   :group 'hledger
   :type 'integer)
 
+(defvar hledger-currency-string "₹"
+  "String to be used for currency. Assumes it is prefixed.")
+
+(defvar hledger-service-fetch-url
+  "Service url for fetching journal entries."
+  nil)
+
 ;;; Regexes
 (defvar hledger-empty-regex "^\\s-*$"
   "Regular expression for an empty line.")
@@ -39,7 +48,8 @@
   "Regular expression for a comment in journal file.")
 (defvar hledger-empty-comment-regex "^\\s-*;\\s-*$"
   "Regular expression to match a comment with no text.")
-(defvar hledger-amount-regex "\\<₹ [-]?[0-9]+\\(\\.[0-9]+\\)?\\>"
+(defvar hledger-amount-regex (format "\\<%s [-]?[0-9]+\\(\\.[0-9]+\\)?\\>"
+                                     hledger-currency-string)
   "Regular expression to match an inserted amount in rupees.")
 
 ;;; Indentation
@@ -87,7 +97,8 @@ RE."
 (defun hledger-acc-line-has-rupeep ()
   "Returns true if the account line has an amount."
   (hledger-cur-line-matchesp (concat hledger-whitespace-account-regex
-                                     "\\s-*₹\\s-*$")))
+                                     (format "\\s-*%s\\s-*$" 
+                                             hledger-currency-string))))
 (defun hledger-expecting-rupeep ()
   "Returns true if we should insert a rupee sign."
   (hledger-cur-line-matchesp (concat hledger-whitespace-account-regex
@@ -177,6 +188,67 @@ RE."
   "A source for completing account names in a hledger buffer.")
 
 ;;; Utility functions
+
+(defun hledger-get-perfin-buffer (&optional editable-p)
+  "Get/create the *Personal Finance* buffer.
+If the buffer is not intended for editing, then `q` closes it.
+`C-c y` copies the whole buffer to clipboard. "
+  (let ((jbuffer (get-buffer-create "*Personal Finance*")))
+    (with-current-buffer jbuffer
+      (hledger-mode)
+      (or editable-p 
+          (local-set-key (kbd "q")
+                         (lambda ()
+                           (interactive)
+                           (quit-restore-window (selected-window) 'kill))))
+      (local-set-key (kbd "C-c y")
+                     (lambda ()
+                       (interactive)
+                       (clipboard-kill-ring-save (point-min) (point-max))
+                       (message "Buffer copied to clipboard")))
+      (erase-buffer))
+    jbuffer))
+
+(defun hledger-fetch-entries-callback (status)
+  (search-forward "\n\n")
+  (let ((entries (append (json-read) nil))
+        (result ""))
+    (dolist (entry entries)
+      (let ((description (cdr (assoc 'description entry)))
+            (comment (cdr (assoc 'comment entry)))
+            (postings (cdr (assoc 'postings entry)))
+            (date (format-time-string "%Y-%m-%d")))
+        (setf result 
+              (concat result 
+                      (format "%s %s\n" 
+                              date 
+                              description)))
+        (dolist (posting (append postings nil))
+          (let ((account (cdr (assoc 'account posting)))
+                (amount (cdr (assoc 'amount posting))))
+            (setf result
+                  (concat result
+                          (format "    %s    %s %s\n" 
+                                  account
+                                  hledger-currency-string
+                                  amount)))))))
+          
+    (let ((jbuffer (hledger-get-perfin-buffer t)))
+      (with-current-buffer jbuffer
+        (insert result))
+      (pop-to-buffer jbuffer))))
+
+(defun hledger-fetch-entries ()
+  "Fetch journal entries from `hledger-service-url`.
+Show the results in the *Personal Finance* buffer"
+  (interactive)
+  (with-current-buffer 
+      (let ((url-request-method "GET")
+            (url-debug "all"))
+        (url-retrieve (url-generic-parse-url hledger-service-fetch-url)
+                      'hledger-fetch-entries-callback))))
+
+
 (defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance"
                                  "register" "incomestatement" "balancesheet"
                                  "cashflow" "activity" "stats")
@@ -243,14 +315,9 @@ RE."
   (hledger-ask-and-save-buffer)
   (if (eq major-mode 'hledger-mode)
       (setq-local hledger-jfile (buffer-file-name)))
-  (let ((jbuffer (get-buffer-create "*Personal Finance*"))
+  (let ((jbuffer (hledger-get-perfin-buffer))
         (jcommand (concat "hledger -f " hledger-jfile " " command)))
     (with-current-buffer jbuffer
-      (local-set-key (kbd "q")
-                     '(lambda ()
-                        (interactive)
-                        (quit-restore-window (selected-window) 'kill)))
-      (erase-buffer)
       (call-process-shell-command jcommand nil t nil)
       (pop-to-buffer jbuffer))))
       
