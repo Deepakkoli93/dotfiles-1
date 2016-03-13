@@ -23,6 +23,8 @@
 
 .weechat/logs/
 .weechat/weechat.log
+.weechat/sec.conf
 .weechat/urlserver_list.txt
 
 .ncmpcpp/*.log
+
