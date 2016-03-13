@@ -16,13 +16,13 @@
                                        "powerline")))
 (package-initialize)
 
-;;; secrets.el
-(if (file-exists-p secrets-file)
-    (load secrets-file))
-
 ;;; VARIABLES
 (setq secrets-file
       (expand-file-name "~/secrets.el"))
+;;; secrets.el [Sets up a few variables]
+(if (file-exists-p secrets-file)
+    (load secrets-file))
+
 (setq org-directory
       (expand-file-name "~/miscellany/personal/org/"))
 (setq emacs-themes-directory
