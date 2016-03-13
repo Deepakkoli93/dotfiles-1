@@ -231,7 +231,8 @@ If the buffer is not intended for editing, then `q` closes it.
                           (format "    %s    %s %s\n" 
                                   account
                                   hledger-currency-string
-                                  amount)))))))
+                                  amount))))))
+      (setf result (concat result "\n")))
           
     (let ((jbuffer (hledger-get-perfin-buffer t)))
       (with-current-buffer jbuffer
