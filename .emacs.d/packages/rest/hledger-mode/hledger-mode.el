@@ -48,7 +48,7 @@
   "Regular expression for a comment in journal file.")
 (defvar hledger-empty-comment-regex "^\\s-*;\\s-*$"
   "Regular expression to match a comment with no text.")
-(defvar hledger-amount-regex (format "\\<%s [-]?[0-9]+\\(\\.[0-9]+\\)?\\>"
+(defvar hledger-amount-regex (format "\\<%s\\s-*[-]?[0-9]+\\(\\.[0-9]+\\)?\\>"
                                      hledger-currency-string)
   "Regular expression to match an inserted amount in rupees.")
 
@@ -209,20 +209,39 @@ If the buffer is not intended for editing, then `q` closes it.
       (erase-buffer))
     jbuffer))
 
+(defun hledger-format-comment-string (comment)
+  "Format the input COMMENT string for insertion into a journal file."
+  (with-temp-buffer (progn
+                      (if (not
+                           (string-match-p "^[:space:]" comment))
+                          ""
+                        (setq-local comment-start "; ")
+                        (setq-local comment-end "")
+                        (setq-local fill-column (- 80 hledger-comments-column))
+                        (insert comment)
+                        (insert "\n")
+                        (comment-region (point-min) (point-max))
+                        (indent-region (point-min) (point-max) hledger-comments-column)
+                        (fill-paragraph)
+                        (buffer-string)))))
+
 (defun hledger-fetch-entries-callback (status)
+  "Callback after fetching all the entries form the hledger web service."
   (search-forward "\n\n")
   (let ((entries (append (json-read) nil))
         (result ""))
     (dolist (entry entries)
       (let ((description (cdr (assoc 'description entry)))
-            (comment (cdr (assoc 'comment entry)))
+            (comment (hledger-format-comment-string
+                      (cdr (assoc 'comment entry))))
             (postings (cdr (assoc 'postings entry)))
-            (date (format-time-string "%Y-%m-%d")))
+            (date (cdr (assoc 'date entry))))
         (setf result 
               (concat result 
-                      (format "%s %s\n" 
+                      (format "%s %s\n%s" 
                               date 
-                              description)))
+                              description
+                              comment)))
         (dolist (posting (append postings nil))
           (let ((account (cdr (assoc 'account posting)))
                 (amount (cdr (assoc 'amount posting))))
