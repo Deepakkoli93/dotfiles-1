@@ -382,6 +382,8 @@ Show the results in the *Personal Finance* buffer"
   (setq-local font-lock-defaults hledger-font-lock-defaults)
   (setq-local indent-line-function 'hledger-indent-line)
   (setq-local ac-sources '(ac-source-hledger-source))
+  (setq-local comment-start "; ")
+  (setq-local comment-end "")
   (electric-indent-local-mode -1))
     
 ;;;###autoload
