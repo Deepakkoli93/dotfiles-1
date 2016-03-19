@@ -213,16 +213,18 @@ If the buffer is not intended for editing, then `q` closes it.
   "Format the input COMMENT string for insertion into a journal file."
   (with-temp-buffer (progn
                       (if (not
-                           (string-match-p "^[:space:]" comment))
-                          ""
-                        (setq-local comment-start "; ")
-                        (setq-local comment-end "")
-                        (setq-local fill-column (- 80 hledger-comments-column))
+                           (string-match-p "[^\\ ]" comment))
+                          "\n"
+                        (electric-indent-mode -1)
+                        (setq-local fill-column (- 70 hledger-comments-column))
                         (insert comment)
                         (insert "\n")
+                        (goto-char (point-min))
+                        (fill-paragraph)
+                        (setq-local comment-start "; ")
+                        (setq-local comment-end "")
                         (comment-region (point-min) (point-max))
                         (indent-region (point-min) (point-max) hledger-comments-column)
-                        (fill-paragraph)
                         (buffer-string)))))
 
 (defun hledger-fetch-entries-callback (status)
@@ -249,7 +251,9 @@ If the buffer is not intended for editing, then `q` closes it.
                   (concat result
                           (format "    %s    %s %s\n" 
                                   account
-                                  hledger-currency-string
+                                  (if (string-match "[0-9]+" amount)
+                                      hledger-currency-string
+                                    "" )
                                   amount))))))
       (setf result (concat result "\n")))
           
