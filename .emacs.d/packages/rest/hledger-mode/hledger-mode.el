@@ -189,20 +189,29 @@ RE."
 
 ;;; Utility functions
 
-(defun hledger-get-perfin-buffer (&optional editable-p)
+(defun hledger-get-perfin-buffer (&optional fetched-entriesp)
   "Get/create the *Personal Finance* buffer.
 If the buffer is not intended for editing, then `q` closes it.
 `C-c y` copies the whole buffer to clipboard. "
   (let ((jbuffer (get-buffer-create "*Personal Finance*")))
     (with-current-buffer jbuffer
       (hledger-mode)
-      (or editable-p 
-          (local-set-key (kbd "q")
+      (if fetched-entriesp
+          (local-set-key (kbd "C-c i")
                          (lambda ()
+                           "Insert buffer contents into `hledger-jfile`"
                            (interactive)
-                           (quit-restore-window (selected-window) 'kill))))
-      (local-set-key (kbd "C-c y")
+                           (let ((entries (buffer-string)))
+                             (call-interactively 'hledger-jentry)
+                             (insert entries)
+                             (format "Fetched entries append to journal buffer"))))
+        (local-set-key (kbd "q")
+                       (lambda ()
+                         (interactive)
+                         (quit-restore-window (selected-window) 'kill))))
+      (local-set-key (kbd "C-c w")
                      (lambda ()
+                       "Copy buffer contents to clipboard"
                        (interactive)
                        (clipboard-kill-ring-save (point-min) (point-max))
                        (message "Buffer copied to clipboard")))
