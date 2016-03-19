@@ -265,6 +265,7 @@ If the buffer is not intended for editing, then `q` closes it.
                                     "" )
                                   amount))))))
       (setf result (concat result "\n")))
+    (kill-buffer (current-buffer))
           
     (let ((jbuffer (hledger-get-perfin-buffer t)))
       (with-current-buffer jbuffer
