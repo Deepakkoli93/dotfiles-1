@@ -1,6 +1,18 @@
 ;;; hledger-mode.el -- A mode for writing journal entries for hledger
 ;; Author: Narendra Joshi <narendraj9@gmail.com>
-;; #TODO
+;; 
+;;    A simple mode for hledger journal files with the ability to fetch entries
+;; from a json web service and a few convenient functions for showing financial
+;; reports.
+;; JSON representation of journal entries = [ { date :: String
+;;                                            , description :: String
+;;                                            , comment :: String
+;;                                            , postings :: [ { amount :: String
+;;                                                            , account :: String
+;;                                                            }
+;;                                            }
+;;                                          ]
+;;
 
 (require 'json)
 
@@ -298,7 +310,7 @@ Show the results in the *Personal Finance* buffer"
     (ignore)))
 
 (defun hledger-go-to-starting-line ()
-  "Function to go the first line that stars a new entry."
+  "Function to go the first line that stars a new entry. Cleans up whitespace."
   (goto-char (point-max))
   (beginning-of-line)                   
   (while (looking-at hledger-empty-regex) 
