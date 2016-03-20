@@ -453,7 +453,8 @@ Useful when showing code."
 ;; org-capture
 (setq org-capture-templates
       `(("i" "Scheduled TODO" entry (file+headline "main.org" "Tasks")
-           "* TODO %?\n  SCHEDULED: %^t")
+         "* TODO %?\n  SCHEDULED: %^t"
+         :kill-buffer t)
           ("j" "Journal" entry (file+datetree "journal.org")
            ,(concat "* %? %^g             \n"
                     "╭──────────────      \n"
@@ -461,17 +462,21 @@ Useful when showing code."
                     " Was in: [[%F][%f]]  \n"
                     " ──────────────      \n"
                     " %i                  \n"
-                    "╰──────────────        "))
+                    "╰──────────────        ")
+           :kill-buffer t)
           ("h" "Habit" entry (file+headline "habits.org"  "Habits")
            ,(concat "* TODO %?\n" 
                     "  SCHEDULED: <%(read-date \"%Y-%m-%d %a\") .+%^{Repeat every|1d|1w|1m|}> \n"
                     "  :PROPERTIES:       \n"
                     "  :STYLE:    habit   \n"
-                    "  :END:              \n"))
+                    "  :END:              \n")
+           :kill-buffer t)
           ("b" "Birthday" plain (file+headline "remember.org" "Birthdays")
-           "\%\\%(org-anniversary %(read-date)) %?")
+           "\%\\%(org-anniversary %(read-date)) %?"
+           :kill-buffer t)
           ("a" "Anniversary" plain (file+headline "remember.org" "Anniversaries")
-           "\%\\%(org-anniversary %(read-date)) %?")))
+           "\%\\%(org-anniversary %(read-date)) %?"
+           :kill-buffer t)))
 
 ;; org-mode inline image size
 (setq org-image-actual-width nil)
