@@ -209,24 +209,30 @@ If the buffer is not intended for editing, then `q` closes it.
     (with-current-buffer jbuffer
       (hledger-mode)
       (if fetched-entriesp
-          (local-set-key (kbd "C-c i")
-                         (lambda ()
-                           "Insert buffer contents into `hledger-jfile`"
-                           (interactive)
-                           (let ((entries (buffer-string)))
-                             (call-interactively 'hledger-jentry)
-                             (insert entries)
-                             (format "Fetched entries append to journal buffer"))))
+          (progn
+            (local-set-key (kbd "C-c i")
+                           (lambda ()
+                             "Insert buffer contents into `hledger-jfile`"
+                             (interactive)
+                             (let ((entries (buffer-string)))
+                               (call-interactively 'hledger-jentry)
+                               (insert entries)
+                               (format "Fetched entries append to journal buffer"))))
+            (setq header-line-format " C-c i : Insert into journal "))
         (local-set-key (kbd "q")
                        (lambda ()
                          (interactive)
-                         (quit-restore-window (selected-window) 'kill))))
+                         (quit-restore-window (selected-window) 'kill)))
+        (setq header-line-format " q : Quit "))
       (local-set-key (kbd "C-c w")
                      (lambda ()
                        "Copy buffer contents to clipboard"
                        (interactive)
                        (clipboard-kill-ring-save (point-min) (point-max))
                        (message "Buffer copied to clipboard")))
+      (setq header-line-format (concat
+                                header-line-format
+                                " C-c w : Copy to clipboard "))
       (erase-buffer))
     jbuffer))
 
@@ -282,7 +288,8 @@ If the buffer is not intended for editing, then `q` closes it.
     (let ((jbuffer (hledger-get-perfin-buffer t)))
       (with-current-buffer jbuffer
         (insert result))
-      (pop-to-buffer jbuffer))))
+      (pop-to-buffer jbuffer)
+      (beginning-of-buffer))))
 
 (defun hledger-fetch-entries ()
   "Fetch journal entries from `hledger-service-url`.
@@ -365,7 +372,8 @@ Show the results in the *Personal Finance* buffer"
         (jcommand (concat "hledger -f " hledger-jfile " " command)))
     (with-current-buffer jbuffer
       (call-process-shell-command jcommand nil t nil)
-      (pop-to-buffer jbuffer))))
+      (pop-to-buffer jbuffer)
+      (beginning-of-buffer))))
       
 (defun hledger-jreg (pattern)
   "Run hledger register command."
