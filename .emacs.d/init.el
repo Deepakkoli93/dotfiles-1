@@ -83,7 +83,6 @@
 (global-set-key (kbd "C-c j") 'hledger-jdo)
 ;; utilities
 (global-set-key (kbd "C-c d") 'insert-date-at-point)
-(global-set-key (kbd "C-c /") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c l") 'linum-mode)
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
 ;; rarely used bindings
@@ -260,7 +259,8 @@ Useful when showing code."
 ;;; MISCELLANY
 ;; Keep a separate custom.el
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file)
+(if (file-exists-p custom-file)
+    (load custom-file))
 
 ;; personal finance
 (require 'hledger-mode)
@@ -449,7 +449,9 @@ Useful when showing code."
 (setq org-habit-following-days 6
       org-habit-preceding-days 21
       org-habit-graph-column 50)
-      
+;; browser-url
+(setq browse-url-browser-function 'browse-url-chromium)
+
 ;; org-capture
 (setq org-capture-templates
       `(("i" "Scheduled TODO" entry (file+headline "main.org" "Tasks")
@@ -463,6 +465,9 @@ Useful when showing code."
                     " ──────────────      \n"
                     " %i                  \n"
                     "╰──────────────        ")
+           :kill-buffer t)
+          ("n" "Note" entry (file+headline "notes.org" "Notes")
+           "* %?\n "
            :kill-buffer t)
           ("h" "Habit" entry (file+headline "habits.org"  "Habits")
            ,(concat "* TODO %?\n" 
@@ -594,5 +599,8 @@ Useful when showing code."
 ;;; For MS-WINDOWS
 (if (eq system-type 'windows-nt)
     (progn
+      ;; Default directory on windows isn't ~/
       (setq default-directory (expand-file-name "~/"))
-      (setq interprogram-paste-function 'x-selection-value)))
+      (setq interprogram-paste-function 'x-selection-value)
+      ;; for some reason, selection highlight isn't turned on by default
+      (transient-mark-mode t)))
