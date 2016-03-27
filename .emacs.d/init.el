@@ -18,7 +18,7 @@
 
 ;;; VARIABLES
 (setq secrets-file
-      (expand-file-name "~/secrets.el"))
+      (expand-file-name "~/miscellany/assets/secrets.el"))
 ;;; secrets.el [Sets up a few variables]
 (if (file-exists-p secrets-file)
     (load secrets-file))
@@ -33,6 +33,9 @@
 (setq abbrev-file
       (expand-file-name "abbrev_defs"
                         user-emacs-directory))
+(setq personal-dictionary-file 
+      (expand-file-name "~/miscellany/assets/personal-dict.en.pws"))
+
 ;; Blog
 (setq blog-dir
       (expand-file-name "~/code/blog/narendraj9.github.io"))
@@ -293,6 +296,8 @@ Useful when showing code."
 (dolist (hook '(markdown-mode-hook latex-mode-hook org-mode-hook))
   (add-hook hook (lambda ()
                    (flyspell-mode 1))))
+(setq ispell-personal-dictionary personal-dictionary-file)
+                                 
 
 ;; easy-move bindings in man-mode as well
 (add-hook 'Man-mode-hook 'easy-move)

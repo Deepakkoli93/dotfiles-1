@@ -289,7 +289,7 @@ If the buffer is not intended for editing, then `q` closes it.
       (with-current-buffer jbuffer
         (insert result))
       (pop-to-buffer jbuffer)
-      (beginning-of-buffer))))
+      (goto-char (point-min)))))
 
 (defun hledger-fetch-entries ()
   "Fetch journal entries from `hledger-service-url`.

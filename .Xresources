@@ -12,22 +12,27 @@ Xft.hinting: true
 Xft.antialias: true 
 
 !! urxvt configuration
-URxvt*font: xft:Monaco:size=10,xft:Monospace:size=11
-Urxvt*boldfont: xft:Monaco:bold:size=10, xft: Monospace
+URxvt.font: xft:Monaco:size=10,xft:Monospace:size=11
+Urxvt.boldfont: xft:Monaco:bold:size=10, xft: Monospace
 URxvt.letterSpace: -1
 
-URxvt*scrollBar: false
-URxvt*urgentOnBell: true
-URxvt*visualBell: false
-URxvt*mouseWheelScrollPage: true
+! https://unix.stackexchange.com/questions/44756/urxvt-scroll-just-one-line
+! How did this guy find out those commands?
+URxvt.modifier:alt
+URxvt.scrollBar:false
+URxvt.scrollBar_right: false
+URxvt.keysym.Shift-Up: command:\033]720;1\007
+URxvt.keysym.Shift-Down: command:\033]721;1\007
 
-URxvt*background: Black
-URxvt*foreground: White
-URxvt*cursorColor: White
+URxvt.urgentOnBell: true
+URxvt.visualBell: false
+URxvt.background: Black
+URxvt.foreground: White
+URxvt.cursorColor: White
 
-URxvt*termName: screen-256color
-URxvt*buffered: true
-URxvt*loginShell: true
+URxvt.termName: screen-256color
+URxvt.buffered: true
+URxvt.loginShell: true
 
 ! perl extensions
 URxvt.perl-ext-common: default,keyboard-select,url-select,clipboard,font-size
