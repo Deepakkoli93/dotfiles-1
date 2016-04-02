@@ -323,8 +323,9 @@ Show the results in the *Personal Finance* buffer"
   (while (looking-at hledger-empty-regex) 
     (forward-line -1))                    
   (end-of-line)
-  (delete-region (point) (point-max))
-  (insert "\n\n"))
+  (let ((times-yet-to-move (forward-line 2)))
+    (dotimes (i times-yet-to-move)
+      (insert "\n"))))
 
 (defun hledger-overlay-current-entry ()
   "Engulf an entry in an overlay."

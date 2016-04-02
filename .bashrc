@@ -22,6 +22,9 @@ sym_now=${sym_list[$((${RANDOM} % sym_len))]}
 host_list=(127.0.0.1)
 proxy_port=3128
 
+# VARS
+JOURNALFILE="~/miscellany/personal/finance/accounting.journal"
+
 # If on a remote machine, make changes to differentiate it from local machine
 if [[ ! ${HOSTNAME} = 'vicarie' ]]; then
     export PS1='(\[\e[1;31m\]\W\[\e[m\])\[\e[1;32m\] ${sym_now} \[\e[m\]> '
@@ -36,6 +39,7 @@ alias em='emacsclient -c -a ""'
 alias cp='cp -v'
 alias rm='rm -i'
 alias mv='mv -i'
+alias hledger="hledger -f ${JOURNALFILE}"
 alias sudo='sudo -E'
 alias kman='man -s 9'
 alias R_repl="rlwrap R"
