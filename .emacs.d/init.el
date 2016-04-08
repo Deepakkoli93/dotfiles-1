@@ -342,7 +342,7 @@ Useful when showing code."
 ;; Make auto-complete easier for a mode
 (defun easy-auto-complete-mode-hook ()
   (setq-local ac-auto-start t)
-  (setq-local ac-auto-show-menu 0.1)
+  (setq-local ac-auto-show-menu 0.0)
   (setq-local ac-disable-inline nil))
 
 ;; Key bindings for auto-complete-menu
@@ -584,7 +584,11 @@ Useful when showing code."
 ;;; LISP MODE
 (setq inferior-lisp-program "/usr/bin/clisp")
 
-                            ;;; RUBY MODE
+
+;;; JAVA MODE
+(add-hook 'java-mode-hook 'easy-auto-complete-mode-hook)
+
+;;; RUBY MODE
 (autoload 'inf-ruby "inf-ruby" "Run on inferior Ruby process" t)
 (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
 
