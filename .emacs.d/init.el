@@ -13,7 +13,8 @@
 (let ((default-directory (expand-file-name "packages/rest/"
                                            user-emacs-directory)))
   (normal-top-level-add-to-load-path '("hledger-mode"
-                                       "powerline")))
+                                       "powerline"
+                                       "mylife-mode")))
 (package-initialize)
 
 ;;; VARIABLES
@@ -79,6 +80,7 @@
 ;; org-mode
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c r") 'recentf-open-files)
 (global-set-key (kbd "C-c k") 'kill-buffer-delete-window)
 ;; personal accounting
@@ -86,20 +88,36 @@
 (global-set-key (kbd "C-c j") 'hledger-jdo)
 ;; utilities
 (global-set-key (kbd "C-c d") 'insert-date-at-point)
-(global-set-key (kbd "C-c l") 'linum-mode)
+(global-set-key (kbd "C-c L") 'linum-mode)
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
 ;; rarely used bindings
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 
 ;;; UTILITY FUNCTION DEFINITIONS
 (defun vicarie/eval-print-last-sexp ()
-    "Evaluate and print the last sexp on the same line. 
-#TOFIX: Read about elisp commands and figure out what (interactive) actually does."
+    "Evaluate and print the last sexp on the same line."
   (interactive)
   (let* ((standard-output (current-buffer))
          (value (eval-last-sexp nil)))
     (insert-string (format " [= %s ] " value))))
-      
+
+(defun upload-buffer ()
+  "Upload the contents of the current buffer using transfer.sh
+Link to the uploaded file is copied to clipboard."
+  (interactive)
+  (let* ((file-name (file-name-nondirectory (buffer-file-name)))
+        (upload-url (format "https://transfer.sh/%s"
+                            file-name))
+        (upload-process (start-process "transfer.sh" nil  "curl"
+                                       "--upload-file"
+                                       file-name
+                                       upload-url)))
+    (set-process-filter upload-process
+                        (lambda (process output)
+                          (kill-new output)
+                          (message (format "Copied to clipboard: %s"
+                                           output))))))
+  
 (defun org-late-todo (n)
   "Switch todo assuming an old date [n days ago]"
   (interactive "nDays: ")
@@ -270,6 +288,9 @@ Useful when showing code."
 (add-hook 'hledger-mode-hook 'easy-auto-complete-mode-hook)
 (add-hook 'hledger-mode-hook (lambda ()
                                (flyspell-mode 1)))
+
+;; mylife-mode
+(require 'mylife-mode)
 
 ;; ido
 ;; show completions vertically
