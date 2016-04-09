@@ -103,14 +103,23 @@
 
 (defun upload-buffer ()
   "Upload the contents of the current buffer using transfer.sh
-Link to the uploaded file is copied to clipboard."
+Link to the uploaded file is copied to clipboard. Creates a temp file
+if the buffer isn't associted with a file."
   (interactive)
-  (let* ((file-name (file-name-nondirectory (buffer-file-name)))
-        (upload-url (format "https://transfer.sh/%s"
+  (let* ((buf-file-path (buffer-file-name))
+         (file-path (or buf-file-path
+                        (let ((temp-file (make-temp-file (replace-regexp-in-string
+                                                          "\*" "" (buffer-name))
+                                                         nil
+                                                         ".txt")))
+                          (write-region (point-min) (point-max) temp-file)
+                          temp-file)))
+         (file-name (file-name-nondirectory file-path))
+         (upload-url (format "https://transfer.sh/%s"
                             file-name))
-        (upload-process (start-process "transfer.sh" nil  "curl"
+         (upload-process (start-process "transfer.sh" nil  "curl"
                                        "--upload-file"
-                                       file-name
+                                       file-path
                                        upload-url)))
     (set-process-filter upload-process
                         (lambda (process output)
