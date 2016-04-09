@@ -101,6 +101,18 @@
          (value (eval-last-sexp nil)))
     (insert-string (format " [= %s ] " value))))
 
+(defun create-file-for-buffer ()
+  "Create a temporary file for the current buffer. To be used for buffers
+that don't have an associated file."
+  (let* ((temp-file (make-temp-file
+                     (replace-regexp-in-string "\*"
+                                               ""
+                                               (buffer-name))
+                     nil
+                     ".txt")))
+    (write-region (point-min) (point-max) temp-file)
+    temp-file))  
+
 (defun upload-buffer ()
   "Upload the contents of the current buffer using transfer.sh
 Link to the uploaded file is copied to clipboard. Creates a temp file
@@ -108,25 +120,25 @@ if the buffer isn't associted with a file."
   (interactive)
   (let* ((buf-file-path (buffer-file-name))
          (file-path (or buf-file-path
-                        (let ((temp-file (make-temp-file (replace-regexp-in-string
-                                                          "\*" "" (buffer-name))
-                                                         nil
-                                                         ".txt")))
-                          (write-region (point-min) (point-max) temp-file)
-                          temp-file)))
+                        (create-file-for-buffer)))
          (file-name (file-name-nondirectory file-path))
          (upload-url (format "https://transfer.sh/%s"
                             file-name))
-         (upload-process (start-process "transfer.sh" nil  "curl"
-                                       "--upload-file"
-                                       file-path
-                                       upload-url)))
-    (set-process-filter upload-process
-                        (lambda (process output)
-                          (kill-new output)
-                          (message (format "Copied to clipboard: %s"
-                                           output))))))
-  
+         (url-request-method "PUT")
+         (url-request-data (with-temp-buffer
+                             (insert-file-contents file-path)
+                             (buffer-substring-no-properties (point-min)
+                                                             (point-max))))
+         (url-callback (lambda (status)
+                         (search-forward "\n\n")
+                         (let ((url-link (buffer-substring (point)
+                                                           (point-max))))
+                           (kill-new url-link)
+                           (message (format "Copied to clipboard: %s"
+                                            url-link)))
+                         (kill-buffer (current-buffer)))))
+    (url-retrieve upload-url url-callback)))
+    
 (defun org-late-todo (n)
   "Switch todo assuming an old date [n days ago]"
   (interactive "nDays: ")
