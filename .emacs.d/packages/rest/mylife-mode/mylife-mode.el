@@ -85,6 +85,14 @@
     (delete-other-windows)
     (goto-char (point-min))))
 
+(defun mylife-log-now (desc)
+  "Log something about the current time. Inserts desc into the
+current buffer with a timestamp. Use diary/calender/org-mode instead."
+  (interactive "sDescription: ")
+  (insert (format "\n%s  ::  %s"
+           (format-time-string "%F %R")
+           desc)))
+
 (defun mylife-mode-init ()
   "Function that does initial setup in the major-mode function."
   (ignore))
@@ -92,7 +100,6 @@
 ;;;###autoload
 (define-derived-mode mylife-mode prog-mode "Mylife" ()
   "Major mode for almost anything random."
-  :syntax-table hledger-mode-syntax-table
   (interactive)
   (mylife-mode-init))
 

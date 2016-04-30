@@ -153,7 +153,10 @@ if the buffer isn't associted with a file."
   (interactive)
   (when (active-minibuffer-window)
     (select-window (active-minibuffer-window))))
-    
+
+(defconst iso-time-format "%FT%T%z"
+  "Full ISO 8601 time format")
+
 (defun read-date (&optional format)
   "Get date from the user and return it in the format FORMAT. 
 If format isn't specified it defaults to `%Y %m %d`"
@@ -333,6 +336,9 @@ Useful when showing code."
 
 ;; tramp-mode
 (setq tramp-default-method "ssh")
+;; make backups for tramp files in their original locations
+(add-to-list 'backup-directory-alist
+             (cons tramp-file-name-regexp nil))
 
 ;; spell-checking
 (dolist (hook '(markdown-mode-hook latex-mode-hook org-mode-hook))

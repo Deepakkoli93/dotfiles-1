@@ -122,6 +122,9 @@ RE."
 (defun hledger-cur-has-datep ()
   "Returns true if current line has only date."
   (hledger-cur-line-matchesp hledger-date-only-regex))
+(defun hledger-cur-has-date-and-descp
+    "Returns tru if current line had date and description."
+  (hledger-cur-line-matchesp hledger-date-and-desc-regex))
 (defun hledger-cur-has-empty-commentp ()
   "Returns true if current line has an empty comment. Empty comments."
   (hledger-cur-line-matchesp hledger-empty-comment-regex))
@@ -172,7 +175,8 @@ RE."
   "Called when the line to indent is an account listing line."
   (cond
    ((hledger-acc-line-has-rupeep) (hledger-delete-rupee-sign))
-   ((hledger-expecting-rupeep) (hledger-insert-rupee))))
+   ((hledger-expecting-rupeep) (hledger-insert-rupee))
+   (t (indent-line-to tab-width))))
 
 (defun hledger-indent-line ()
   "Indent the current line."
@@ -370,7 +374,10 @@ Show the results in the *Personal Finance* buffer"
   (if (eq major-mode 'hledger-mode)
       (setq-local hledger-jfile (buffer-file-name)))
   (let ((jbuffer (hledger-get-perfin-buffer))
-        (jcommand (concat "hledger -f " hledger-jfile " " command)))
+        (jcommand (concat "hledger -f " 
+                          (shell-quote-argument hledger-jfile)
+                           " " 
+                           command)))
     (with-current-buffer jbuffer
       (call-process-shell-command jcommand nil t nil)
       (pop-to-buffer jbuffer)
