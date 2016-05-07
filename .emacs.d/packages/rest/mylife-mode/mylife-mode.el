@@ -1,5 +1,7 @@
 (add-to-list 'auto-mode-alist '("\\.life\\'" . life-mode))
 
+(require 'mylife-relationships)
+
 (defgroup mylife nil
   "Customization group for mylife-mode.")
 

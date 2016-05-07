@@ -109,10 +109,10 @@ with choices and their corresponding scores."
       (mylife-widget-form form-object)
       (widget-setup)))
 
-(defun  mylife-form-display ()
-    "Displays the form widget."
-    (let ((form-object (mylife-form-reader mylife-form-file-path)))
-      (mylife-form-create-widget form-object)))
-                    
+(defun  mylife-relationship-form-display ()
+  "Displays the form widget."
+  (interactive)
+  (let ((form-object (mylife-form-reader mylife-form-file-path)))
+    (mylife-form-create-widget form-object)))
 
-(mylife-form-display)
+(provide 'mylife-relationships)
