@@ -263,7 +263,7 @@ If the buffer is not intended for editing, then `q` closes it.
   (search-forward "\n\n")
   (let ((entries (append (json-read) nil))
         (result ""))
-    (dolist (entry entries)
+    (dolist (entry (reverse entries))
       (let ((description (cdr (assoc 'description entry)))
             (comment (hledger-format-comment-string
                       (cdr (assoc 'comment entry))))
