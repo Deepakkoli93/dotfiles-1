@@ -244,7 +244,7 @@ with choices and their corresponding scores."
       (widget-setup)
       (delete-other-windows)))
 
-(defun  mylife-relationship-form-display ()
+(defun  mylife-rrf ()
   "Displays the form widget."
   (interactive)
   (let ((form-object (mylife-form-reader mylife-form-file-path)))
