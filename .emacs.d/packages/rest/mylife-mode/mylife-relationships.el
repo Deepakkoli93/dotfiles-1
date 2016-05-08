@@ -1,9 +1,9 @@
+;; -*- lexical-binding: t -*-
 ;;; Evaluate and improve your relationships.
 
 (require 'widget)
-(require 'custom)
+(require 'wid-browse)
 (require 'wid-edit)
-(require 'cl)
 
 (defcustom mylife-form-file-path (expand-file-name "~/miscellany/assets/rrf.org")
   "File path of the relationship form"
@@ -64,7 +64,7 @@ the form. This function expectes `form-file-path` to be an org file."
   (with-temp-buffer 
     (insert-file-contents mylife-form-file-path)
     (org-mode)
-    (goto-char 0)
+    (goto-char (point-min))
     (let ((form-tree (org-element-parse-buffer)))
       form-tree)))
 
@@ -116,7 +116,8 @@ is nil."
                   top-level-objects)))
     (widget-put total-score-wid :child-score-wids children)
     (setq header-line-format heading)
-    (goto-char 0)))
+    (goto-char (point-min))
+    (widget-forward 1)))
 
 (defun mylife-widget-top-level (object &optional parent)
   "Create a widget for a top level category."
@@ -207,6 +208,14 @@ with choices and their corresponding scores."
                             :value ,(cdr option)))
                    options))))
 
+(defun mylife-widget-browse-at (pos)
+  "(*Modified*) browse the widget under point."
+  (let* ((field (get-char-property pos 'field))
+         (button (get-char-property pos 'button))
+         (doc (get-char-property pos 'widget-doc))
+         (widget (or field button doc)))
+    widget))
+
 ;;; Keymap for rrf
 (defvar mylife-relationship-form-keymap
   (let ((map (make-sparse-keymap)))
@@ -214,14 +223,11 @@ with choices and their corresponding scores."
     (define-key map "n" 'widget-forward)
     (define-key map "p" 'widget-backward)
     (mapcar (lambda (digit)
-              (lexical-let ((d digit)
-                            (radio-button (text-properties-at (point))))
-                (define-key map (format "%s" d)
-                  (lambda ()
-                    (interactive)
-                    (message "%s" radio-button)
-                    (widget-forward (1- d))))))
-	      (number-sequence 2 9))
+              (define-key map (format "%s" digit)
+                (lambda ()
+                  (interactive)
+                  (widget-forward (1- digit)))))
+            (number-sequence 2 9))
     map))
 
 ;;; Create widgets using the above functions

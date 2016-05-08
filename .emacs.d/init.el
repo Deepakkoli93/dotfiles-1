@@ -90,10 +90,19 @@
 (global-set-key (kbd "C-c d") 'insert-date-at-point)
 (global-set-key (kbd "C-c L") 'linum-mode)
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
+
 ;; rarely used bindings
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 
 ;;; UTILITY FUNCTION DEFINITIONS
+(defun erc-connect ()
+  "Connect to erc."
+  (interactive)
+  (erc :server "irc.freenode.net"
+       :port 6667
+       :nick "narendraj9"
+       :password my-freenode-nickserv-password))
+
 (defun vicarie/eval-print-last-sexp ()
     "Evaluate and print the last sexp on the same line."
   (interactive)
@@ -179,7 +188,7 @@ If format isn't specified it defaults to `%Y %m %d`"
 ;; Minor mode for enabling rainbow mode everywhere
 (define-globalized-minor-mode global-rainbow-mode rainbow-mode
   (lambda ()
-    (when (not (memq major-mode '(eshell-mode org-agenda)))
+    (when (not (memq major-mode '(eshell-mode org-agenda erc-mode)))
       (rainbow-mode))))
 
 (defun kill-buffer-delete-window ()
@@ -361,8 +370,8 @@ Useful when showing code."
 ;; whitespace-mode | For the 80-column rule
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
+(setq whitespace-global-modes '(not erc-mode eshell-mode))
 (global-whitespace-mode 1)
-(setq whitespace-global-modes '(not erc))
 
 ;; yasnippet
 (require 'yasnippet)
@@ -650,11 +659,12 @@ Useful when showing code."
 ;;; ERC
 (require 'erc-services)
 (erc-services-mode 1)
+(setq erc-hide-list '("JOIN" "PART" "QUIT"))
 (setq erc-prompt-for-password nil)
-(if (boundp my-freenode-nickserv-password)
+(if (boundp 'my-freenode-nickserv-password)
     (setq erc-nickserv-password
           `((freenode (("narendraj9" . ,my-freenode-nickserv-password))))))
-
+(setq erc-autojoin-channels-alist '(("freenode.net" "#emacs" "#haskell" "#glugnith")))
 
 ;;; EMACS-SERVER
 ;; start emacs-server only if it's not running already
