@@ -14,8 +14,46 @@
   :type 'string
   :group 'mylife)
 
-(defvar mylife-form-widget-tree nil
-  "A tree of wiget objects.")
+(defcustom mylife-header-face 'info-title-1
+  "Face for the header line."
+  :type 'face
+  :group 'mylife)
+
+(defcustom mylife-score-text-face 'warning
+  "Face for the score text."
+  :type 'face
+  :group 'mylife)
+
+(defcustom mylife-score-value-face 'default
+  "Face for the score value. #TODO"
+  :type 'face
+  :group 'mylife)
+
+
+(defcustom mylife-bullet-face 'match
+  "Face for bullets"
+  :type 'face
+  :group 'mylife)
+
+(defcustom mylife-option-face 'custom-active1
+  "Face for the options for a question."
+  :type 'face
+  :group 'mylife)
+
+(defcustom mylife-question-face 'font-lock-function-name-face
+  "Face for a question."
+  :type 'face
+  :group 'mylife)
+
+(defcustom mylife-top-category-face 'region
+  "Face for a global scale."
+  :type 'face
+  :group 'mylife)
+
+(defcustom mylife-sub-category-face 'secondary-selection
+  "Face for a sub category text."
+  :type 'face
+  :group 'mylife)
 
 ;;; Reader 
 (defun mylife-form-reader (form-file-path)
@@ -29,24 +67,32 @@ the form. This function expectes `form-file-path` to be an org file."
     (let ((form-tree (org-element-parse-buffer)))
       form-tree)))
 
-(defvar mylife-options
-  '(("Not at all" . 1)
-    ("Very little" . 2)
-    ("Slightly (Or rarely)" . 3)
-    ("Somewhat (not often)" . 4)
-    ("A fair amount" . 5)
-    ("Very much" . 6)
-    ("A great deal" . 7)
-    ("Strongly (almost always)" . 8)
-    ("Completely or extremely" . 9)))
+(setq mylife-options
+  (let ((options '(("Not at all" . 1)
+                   ("Very little" . 2)
+                   ("Slightly (Or rarely)" . 3)
+                   ("Somewhat (not often)" . 4)
+                   ("A fair amount" . 5)
+                   ("Very much" . 6)
+                   ("A great deal" . 7)
+                   ("Strongly (almost always)" . 8)
+                   ("Completely or extremely" . 9))))
+    (mapcar (lambda (option)
+              (cons (propertize (car option)
+                                'font-lock-face
+                                mylife-option-face)
+                    (cdr option)))
+	    options)))
+
 
 ;;; View
 (defun mylife-widget-score (&optional parent)
   "Create a widget for keeping score. The :parent-score-wid for the root
 is nil."
   (let ((wid (widget-create 'number
-                            :tag "Score"
+                            :tag (propertize "Score" 'font-lock-face mylife-score-text-face)
                             :size 1
+                            :tab-order -1
                             :value 5)))
     (widget-put wid :parent-score-wid parent)
     wid))
@@ -54,7 +100,9 @@ is nil."
 
 (defun mylife-widget-form (object)
   "Create a widget for the whole form."
-  (let* ((heading "Relationship Rating Form")
+  (let* ((heading (propertize "Relationship Rating Form"
+                              'font-lock-face
+                              mylife-header-face))
          (top-level-objects (org-element-map object 'headline
                               'identity
                               nil nil
@@ -71,7 +119,10 @@ is nil."
 
 (defun mylife-widget-top-level (object &optional parent)
   "Create a widget for a top level category."
-  (let* ((heading (org-element-property :raw-value object))
+  (let* ((heading (propertize
+                   (org-element-property :raw-value object)
+                   'font-lock-face
+                   mylife-top-category-face))
         (contents (org-element-contents object))
         (sub-categories (org-element-map  contents
                             'headline
@@ -88,7 +139,10 @@ is nil."
 
 (defun mylife-widget-sub-category (object &optional parent)
   "Create a widget for a sub category under the top level category."
-  (let* ((heading (org-element-property :raw-value object))
+  (let* ((heading (propertize
+                   (org-element-property :raw-value object)
+                   'font-lock-face
+                   mylife-sub-category-face))
         (items (org-element-map object 'item 'identity))
         (nil-id (widget-insert (format "\n%s " heading)))
         (wid (mylife-widget-score parent))
@@ -100,9 +154,15 @@ is nil."
 
 (defun mylife-widget-item (object &optional parent)
   "Create a widget for a question item under the sub-category."
-  (let* ((bullet (org-element-property :bullet object))
+  (let* ((bullet (propertize
+                  (org-element-property :bullet object)
+                  'font-lock-face
+                  mylife-bullet-face))
          (paragraph (car (org-element-contents object)))
-         (question (car (org-element-contents paragraph))))
+         (question
+          (propertize (car (org-element-contents paragraph))
+                      'font-lock-face
+                      mylife-question-face)))
     (widget-insert (format "\n%s" bullet))
     (mylife-widget-question question mylife-options parent)))
 
@@ -122,25 +182,25 @@ with choices and their corresponding scores."
            :value 5
            :parent-score-wid parent
            :notify (lambda (wid &rest ignore)
-                     (message (format "You selected %d" (widget-value wid)))
-                     (while (and wid (widget-get wid :parent-score-wid))
-                       (let* ((parent-wid (widget-get wid :parent-score-wid))
-                              (children (widget-get parent-wid :child-score-wids))
-                              (child-scores (mapcar
-                                             (lambda (child)
-                                               (if (widget-get child :negativep)
-                                                   (- 10 (widget-value child))
-                                                 (widget-value child)))
-                                             children))
-                              (child-count (+ (length children) 0.0))
-                              (average-score
-                               (read
-                                (format "%.2f"
-                                        (/ (apply '+ child-scores) child-count)))))
-                         (message "child-scores :%s average-score: %d" child-scores average-score)
-                         (widget-value-set parent-wid average-score)
-                         (setq wid parent-wid)))
-                     (widget-setup))
+                     (save-excursion 
+                       (message (format "You selected %d" (widget-value wid)))
+                       (while (and wid (widget-get wid :parent-score-wid))
+                         (let* ((parent-wid (widget-get wid :parent-score-wid))
+                                (children (widget-get parent-wid :child-score-wids))
+                                (child-scores (mapcar
+                                               (lambda (child)
+                                                 (if (widget-get child :negativep)
+                                                     (- 10 (widget-value child))
+                                                   (widget-value child)))
+                                               children))
+                                (child-count (+ (length children) 0.0))
+                                (average-score
+                                 (read
+                                  (format "%.2f"
+                                          (/ (apply '+ child-scores) child-count)))))
+                           (widget-value-set parent-wid average-score)
+                           (setq wid parent-wid)))
+                       (widget-setup)))
            (mapcar (lambda (option)
                      `(item :tag ,(car option)
                             :value ,(cdr option)))
