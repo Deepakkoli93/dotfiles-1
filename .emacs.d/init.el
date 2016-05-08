@@ -122,6 +122,17 @@ that don't have an associated file."
     (write-region (point-min) (point-max) temp-file)
     temp-file))  
 
+(defun upload-file (file-path)
+  "Upload a file to transfer.sh using curl. I am thinking that using curl
+is more efficient for binary files than using a buffer and calling upload-buffer."
+  (kill-new (shell-command-to-string
+             (format "%s %s %s%s"
+                     "curl -s --upload-file"
+                     (shell-quote-argument file-path)
+                     "https://transfer.sh/"
+                     (shell-quote-argument
+                      (file-name-nondirectory file-path))))))
+  
 (defun upload-buffer ()
   "Upload the contents of the current buffer using transfer.sh
 Link to the uploaded file is copied to clipboard. Creates a temp file

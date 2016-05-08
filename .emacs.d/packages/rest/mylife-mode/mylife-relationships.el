@@ -10,6 +10,11 @@
   :type 'string
   :group 'mylife)
 
+(defcustom mylife-form-state-file (expand-file-name "~/miscellany/assets/.rrf-state.el")
+  "We store state as a elisp data structure."
+  :type 'string
+  :group 'mylife)
+
 (defcustom mylife-form-buffer-name "*Relationship Rating Form*"
   "Name of the buffer displaying the form."
   :type 'string
@@ -29,7 +34,6 @@
   "Face for the score value. #TODO"
   :type 'face
   :group 'mylife)
-
 
 (defcustom mylife-bullet-face 'match
   "Face for bullets"
@@ -55,6 +59,9 @@
   "Face for a sub category text."
   :type 'face
   :group 'mylife)
+
+
+(setq mylife-form-root-wid nil)
 
 ;;; Reader 
 (defun mylife-form-reader (form-file-path)
@@ -100,7 +107,8 @@ is nil."
 
 
 (defun mylife-widget-form (object)
-  "Create a widget for the whole form."
+  "Create a widget for the whole form. Every function returns the score widget
+that it creates."
   (let* ((heading (propertize "Relationship Rating Form"
                               'font-lock-face
                               mylife-header-face))
@@ -117,7 +125,8 @@ is nil."
     (widget-put total-score-wid :child-score-wids children)
     (setq header-line-format heading)
     (goto-char (point-min))
-    (widget-forward 1)))
+    (widget-forward 1)
+    total-score-wid))
 
 (defun mylife-widget-top-level (object &optional parent)
   "Create a widget for a top level category."
@@ -209,14 +218,14 @@ with choices and their corresponding scores."
                    options))))
 
 (defun mylife-widget-browse-at (pos)
-  "(*Modified*) browse the widget under point."
+  "(*Modified*) browse the widget under point. Not using it right now
+Update the docstrings when you update the code! #WAKA#"
   (let* ((field (get-char-property pos 'field))
          (button (get-char-property pos 'button))
          (doc (get-char-property pos 'widget-doc))
          (widget (or field button doc)))
     widget))
 
-;;; Keymap for rrf
 (defvar mylife-relationship-form-keymap
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map widget-keymap)
@@ -240,9 +249,45 @@ with choices and their corresponding scores."
         (erase-buffer))
       (remove-overlays)
       (use-local-map mylife-relationship-form-keymap)
-      (mylife-widget-form form-object)
+      (setq mylife-form-root-wid (mylife-widget-form form-object))
       (widget-setup)
       (delete-other-windows)))
+
+(defun mylife-save-restore-helper (root)
+  "Returns question widget ids traversing down from the root."
+  (let* ((top-categories (widget-get root :child-score-wids))
+         (sub-categories (apply 'append
+                                (mapcar (lambda (w)
+                                          (widget-get w :child-score-wids))
+                                        top-categories)))
+         (questions (apply 'append
+                           (mapcar (lambda (w)
+                                     (widget-get w :child-score-wids))
+                                   sub-categories))))
+    questions))
+  
+
+(defun mylife-save-form ()
+  "Save the current state of the form to mylife-form-state-file."
+  (interactive)
+  (let* ((questions (mylife-save-restore-helper mylife-form-root-wid))
+         (values (mapcar 'widget-value questions)))
+    (write-region (format "%s" values)
+                  nil
+                  mylife-form-state-file)))
+
+(defun mylife-restore-form ()
+  "Restore the form stored in mylife-form-state-file."
+  (interactive)
+  (let* ((questions (mylife-save-restore-helper mylife-form-root-wid))
+         (values (with-temp-buffer
+                   (insert-file-contents mylife-form-state-file)
+                   (read (buffer-substring-no-properties (point-min)
+                                                   (point-max))))))
+    (mapcar* (lambda (question value)
+               (widget-value-set question value))
+             questions
+             values)))
 
 (defun  mylife-rrf ()
   "Displays the form widget."
