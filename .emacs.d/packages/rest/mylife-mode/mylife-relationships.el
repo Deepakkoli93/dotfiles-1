@@ -285,7 +285,8 @@ Update the docstrings when you update the code! #WAKA#"
                    (read (buffer-substring-no-properties (point-min)
                                                    (point-max))))))
     (mapcar* (lambda (question value)
-               (widget-value-set question value))
+               (widget-value-set question value)
+               (widget-apply question :notify nil))
              questions
              values)))
 
