@@ -3,6 +3,7 @@
 (require 'widget)
 (require 'custom)
 (require 'wid-edit)
+(require 'cl)
 
 (defcustom mylife-form-file-path (expand-file-name "~/miscellany/assets/rrf.org")
   "File path of the relationship form"
@@ -67,7 +68,7 @@ the form. This function expectes `form-file-path` to be an org file."
     (let ((form-tree (org-element-parse-buffer)))
       form-tree)))
 
-(setq mylife-options
+(defvar mylife-options
   (let ((options '(("Not at all" . 1)
                    ("Very little" . 2)
                    ("Slightly (Or rarely)" . 3)
@@ -206,7 +207,23 @@ with choices and their corresponding scores."
                             :value ,(cdr option)))
                    options))))
 
-              
+;;; Keymap for rrf
+(defvar mylife-relationship-form-keymap
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map widget-keymap)
+    (define-key map "n" 'widget-forward)
+    (define-key map "p" 'widget-backward)
+    (mapcar (lambda (digit)
+              (lexical-let ((d digit)
+                            (radio-button (text-properties-at (point))))
+                (define-key map (format "%s" d)
+                  (lambda ()
+                    (interactive)
+                    (message "%s" radio-button)
+                    (widget-forward (1- d))))))
+	      (number-sequence 2 9))
+    map))
+
 ;;; Create widgets using the above functions
 (defun mylife-form-create-widget (form-object)
     "Creates the widgets given a the form object"
@@ -216,9 +233,7 @@ with choices and their corresponding scores."
       (let ((inhibit-read-only t))
         (erase-buffer))
       (remove-overlays)
-      (let ((local-widget-keymap (make-sparse-keymap)))
-        (set-keymap-parent local-widget-keymap widget-keymap)
-        (use-local-map local-widget-keymap))
+      (use-local-map mylife-relationship-form-keymap)
       (mylife-widget-form form-object)
       (widget-setup)))
 

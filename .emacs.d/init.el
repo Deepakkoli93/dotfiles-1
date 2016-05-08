@@ -647,6 +647,15 @@ Useful when showing code."
 ;;; MAGIT
 (setq magit-auto-revert-mode nil)
 
+;;; ERC
+(require 'erc-services)
+(erc-services-mode 1)
+(setq erc-prompt-for-password nil)
+(if (boundp my-freenode-nickserv-password)
+    (setq erc-nickserv-password
+          `((freenode (("narendraj9" . ,my-freenode-nickserv-password))))))
+
+
 ;;; EMACS-SERVER
 ;; start emacs-server only if it's not running already
 (require 'server)
