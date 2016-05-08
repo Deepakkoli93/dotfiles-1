@@ -60,6 +60,7 @@ is nil."
                               nil nil
                               'headline))
          (total-score-wid (mylife-widget-score nil))
+         (nil-id (widget-insert "\n"))
          (children
           (mapcar (lambda (top-level-object)
                     (mylife-widget-top-level top-level-object total-score-wid))
@@ -77,6 +78,7 @@ is nil."
                           'identity))
         (nil-id (widget-insert (format "\n%s " heading)))
         (wid (mylife-widget-score parent))
+        (nil-idd (widget-insert (format "\n")))
         (children (mapcar (lambda (sub-category)
                             (mylife-widget-sub-category sub-category wid))
                           sub-categories)))
@@ -116,6 +118,7 @@ with choices and their corresponding scores."
                             val))))
     (apply 'widget-create 
            'radio-button-choice
+           :negativep negativep
            :value 5
            :parent-score-wid parent
            :notify (lambda (wid &rest ignore)
@@ -123,9 +126,18 @@ with choices and their corresponding scores."
                      (while (and wid (widget-get wid :parent-score-wid))
                        (let* ((parent-wid (widget-get wid :parent-score-wid))
                               (children (widget-get parent-wid :child-score-wids))
-                              (child-scores (mapcar 'widget-value children))
+                              (child-scores (mapcar
+                                             (lambda (child)
+                                               (if (widget-get child :negativep)
+                                                   (- 10 (widget-value child))
+                                                 (widget-value child)))
+                                             children))
                               (child-count (+ (length children) 0.0))
-                              (average-score (/ (apply '+ child-scores) child-count)))
+                              (average-score
+                               (read
+                                (format "%.2f"
+                                        (/ (apply '+ child-scores) child-count)))))
+                         (message "child-scores :%s average-score: %d" child-scores average-score)
                          (widget-value-set parent-wid average-score)
                          (setq wid parent-wid)))
                      (widget-setup))
