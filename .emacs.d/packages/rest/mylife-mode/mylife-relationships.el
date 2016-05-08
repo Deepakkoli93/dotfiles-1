@@ -241,7 +241,8 @@ with choices and their corresponding scores."
       (remove-overlays)
       (use-local-map mylife-relationship-form-keymap)
       (mylife-widget-form form-object)
-      (widget-setup)))
+      (widget-setup)
+      (delete-other-windows)))
 
 (defun  mylife-relationship-form-display ()
   "Displays the form widget."
