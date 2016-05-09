@@ -45,8 +45,18 @@
   :group 'custom-powerline)
 
 
-;;; ###autoload
+;;;###autoload
 (defun powerline-vermilion-theme ()
+  "The theme."
+  (powerline-vermilion-mode-line-theme))
+
+(defun my-erc-theme ()
+  "Simple erc faces."
+  (set-face-attribute 'erc-input-face nil
+                      :foreground "burlywood"))
+
+;;; ###autoload
+(defun powerline-vermilion-mode-line-theme ()
   "Setup the default mode-line."
   (interactive)
   (set-face-attribute 'mode-line nil

@@ -345,6 +345,8 @@ Useful when showing code."
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (setq ido-auto-merge-work-directories-length -1)
+;; Ignore listing irc buffers initially. Searching with # lists them. 
+(setq ido-ignore-buffers '("\\` "  "^#.*"))
 (ido-mode t)
 
 ;; line numbers for rows
@@ -382,6 +384,10 @@ Useful when showing code."
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
 (setq whitespace-global-modes '(not erc-mode eshell-mode))
+(add-hook 'erc-mode-hook (lambda ()
+			   (interactive)
+			   (set-face-attribute 'erc-input-face nil
+					       :foreground "burlywood")))
 (global-whitespace-mode 1)
 
 ;; yasnippet
@@ -671,11 +677,12 @@ Useful when showing code."
 (require 'erc-services)
 (erc-services-mode 1)
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
-(setq erc-prompt-for-password nil)
+(setq erc-autojoin-channels-alist '(("freenode.net" "#emacs" "#haskell" "#glugnith")))
+(setq erc-prompt-for-nickserv-password nil)
 (if (boundp 'my-freenode-nickserv-password)
     (setq erc-nickserv-password
           `((freenode (("narendraj9" . ,my-freenode-nickserv-password))))))
-(setq erc-autojoin-channels-alist '(("freenode.net" "#emacs" "#haskell" "#glugnith")))
+
 
 ;;; EMACS-SERVER
 ;; start emacs-server only if it's not running already

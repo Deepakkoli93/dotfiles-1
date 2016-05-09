@@ -10,7 +10,7 @@
   :type 'string
   :group 'mylife)
 
-(defcustom mylife-form-state-file (expand-file-name "~/miscellany/assets/.rrf-state.el")
+(defcustom mylife-form-state-file (expand-file-name "~/miscellany/assets/rrf-state.el")
   "We store state as a elisp data structure."
   :type 'string
   :group 'mylife)
@@ -94,13 +94,14 @@ the form. This function expectes `form-file-path` to be an org file."
 
 
 ;;; View
-(defun mylife-widget-score (&optional parent)
+(defun mylife-widget-score (label &optional parent)
   "Create a widget for keeping score. The :parent-score-wid for the root
 is nil."
   (let ((wid (widget-create 'number
                             :tag (propertize "Score" 'font-lock-face mylife-score-text-face)
                             :size 1
                             :tab-order -1
+                            :label label
                             :value 5)))
     (widget-put wid :parent-score-wid parent)
     wid))
@@ -116,7 +117,10 @@ that it creates."
                               'identity
                               nil nil
                               'headline))
-         (total-score-wid (mylife-widget-score nil))
+         (total-score-wid (mylife-widget-score (propertize "Overall"
+                                                           'font-lock-face
+                                                           mylife-score-text-face)
+                                               nil))
          (nil-id (widget-insert "\n"))
          (children
           (mapcar (lambda (top-level-object)
@@ -139,7 +143,7 @@ that it creates."
                             'headline
                           'identity))
         (nil-id (widget-insert (format "\n%s " heading)))
-        (wid (mylife-widget-score parent))
+        (wid (mylife-widget-score heading parent))
         (nil-idd (widget-insert (format "\n")))
         (children (mapcar (lambda (sub-category)
                             (mylife-widget-sub-category sub-category wid))
@@ -156,7 +160,7 @@ that it creates."
                    mylife-sub-category-face))
         (items (org-element-map object 'item 'identity))
         (nil-id (widget-insert (format "\n%s " heading)))
-        (wid (mylife-widget-score parent))
+        (wid (mylife-widget-score heading parent))
         (children (mapcar (lambda (item)
                             (mylife-widget-item item wid))
                           items)))
@@ -191,6 +195,7 @@ with choices and their corresponding scores."
            'radio-button-choice
            :negativep negativep
            :value 5
+           :label "#question#"
            :parent-score-wid parent
            :notify (lambda (wid &rest ignore)
                      (save-excursion 
@@ -271,24 +276,70 @@ Update the docstrings when you update the code! #WAKA#"
   "Save the current state of the form to mylife-form-state-file."
   (interactive)
   (let* ((questions (mylife-save-restore-helper mylife-form-root-wid))
-         (values (mapcar 'widget-value questions)))
-    (write-region (format "%s" values)
-                  nil
-                  mylife-form-state-file)))
+         (scores (mapcar 'widget-value questions))
+         (object-to-save (cons (current-time-string) scores))
+         (buffer (find-file-noselect mylife-form-state-file)))
+    (set-buffer buffer)
+    (goto-char (point-min))
+    (print object-to-save buffer)
+    (save-buffer)
+    (kill-buffer)))
+
 
 (defun mylife-restore-form ()
   "Restore the form stored in mylife-form-state-file."
   (interactive)
   (let* ((questions (mylife-save-restore-helper mylife-form-root-wid))
-         (values (with-temp-buffer
-                   (insert-file-contents mylife-form-state-file)
-                   (read (buffer-substring-no-properties (point-min)
-                                                   (point-max))))))
+         (last-saved-object
+          (with-temp-buffer
+            (insert-file-contents mylife-form-state-file)
+            (goto-char (point-min))
+            (forward-sexp)
+            (read (buffer-substring-no-properties (point-min)
+                                                  (point)))))
+         (values (cdr last-saved-object))
+         (saved-timestamp (car last-saved-object)))
     (mapcar* (lambda (question value)
-               (widget-value-set question value)
-               (widget-apply question :notify nil))
-             questions
-             values)))
+               (when (not (= (widget-value question) value))
+                 (widget-value-set question value)
+                 (widget-apply question :notify nil)))
+               questions
+               values)
+    (message "Restored form state saved at %s" saved-timestamp)))
+
+
+(defun mylife-chomp (str)
+  "Keep only the words in categories and subcategories. Too specific to this form."
+  (and str
+       (replace-regexp-in-string "(.*$"
+                                 ""
+                                 str)))
+
+(defun mylife-summarize-node (node &optional indent)
+  "Create a summary for category nodes."
+  (let ((indent (or indent 0)))
+    (if (equal (widget-get node :label) "#question#")
+        ""
+      (concat
+       (format "%s> %s %s\n"
+               (make-string indent ? )
+               (mylife-chomp (widget-get node :label))
+               (widget-value node))
+       (mapconcat (lambda (node)
+                    (mylife-summarize-node node (+ 4 indent)))
+                  (widget-get node :child-score-wids)
+                  "")))))
+            
+(defun mylife-summarize-form ()
+  "Summarize the current state of the form."
+  (interactive)
+  (with-current-buffer (get-buffer-create "*Relationship Summary*")
+    (let* ((root mylife-form-root-wid)
+           (summary (mylife-summarize-node root 0)))
+      (insert summary)
+      (font-lock-mode 1)
+      (pop-to-buffer (current-buffer)))))
+         
 
 (defun  mylife-rrf ()
   "Displays the form widget."
