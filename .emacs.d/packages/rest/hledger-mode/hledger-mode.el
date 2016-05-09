@@ -211,7 +211,7 @@ If the buffer is not intended for editing, then `q` closes it.
 `C-c y` copies the whole buffer to clipboard. "
   (let ((jbuffer (get-buffer-create "*Personal Finance*")))
     (with-current-buffer jbuffer
-      (hledger-mode)
+      (hledger-view-mode)
       (if fetched-entriesp
           (progn
             (local-set-key (kbd "C-c i")
@@ -434,5 +434,17 @@ Show the results in the *Personal Finance* buffer"
   :syntax-table hledger-mode-syntax-table
   (interactive)
   (hledger-mode-init))
+
+;;;###autoload
+(define-derived-mode hledger-view-mode prog-mode "HLedger View" ()
+  "Major mode for viewing hledger reports. I have a separate major mode
+so that the key bindings are not shared between buffers that are used for
+viewing reports and the journal file. I require the same kind of syntax
+highlighting in both kinds of buffers."
+  :syntax-table hledger-mode-syntax-table
+  (interactive)
+  (hledger-mode-init)
+  ;; A freshly preprared keymap
+  (use-local-map (make-keymap)))
 
 (provide 'hledger-mode)
