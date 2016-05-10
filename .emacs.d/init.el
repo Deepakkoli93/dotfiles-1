@@ -347,7 +347,7 @@ Useful when showing code."
 (setq ido-everywhere t)
 (setq ido-auto-merge-work-directories-length -1)
 ;; Ignore listing irc buffers initially. Searching with # lists them. 
-(setq ido-ignore-buffers '("\\` "  "^#.*"))
+(setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*"))
 (ido-mode t)
 
 ;; line numbers for rows
@@ -386,9 +386,11 @@ Useful when showing code."
 (setq whitespace-style '(face lines-tail))
 (setq whitespace-global-modes '(not erc-mode eshell-mode))
 (add-hook 'erc-mode-hook (lambda ()
-			   (interactive)
-			   (set-face-attribute 'erc-input-face nil
-					       :foreground "burlywood")))
+                           (interactive)
+                           (set-face-attribute 'erc-default-face nil
+                                               :foreground "papaya whip")
+                           (set-face-attribute 'erc-input-face nil
+                                               :foreground "burlywood")))
 (global-whitespace-mode 1)
 
 ;; yasnippet

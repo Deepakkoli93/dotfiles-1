@@ -185,7 +185,20 @@ RE."
    ((hledger-cur-has-datep) (hledger-indent-date-line))
    ((hledger-cur-starts-with-semicolp) (hledger-indent-comment-line))
    ((hledger-cur-has-accp) (hledger-indent-account-line))))
-   
+
+(defun hledger-indent-region-function (start end)
+  "Function to indent a region. We need a separate function because we
+do different stuff while interactively editing an entry."
+  (save-excursion
+    (goto-char start)
+    (while (< (point) end)
+      (beginning-of-line)
+      (cond
+       ((hledger-cur-has-datep) (indent-line-to 0))
+       ((hledger-cur-starts-with-semicolp) (indent-line-to hledger-comments-column))
+       ((hledger-cur-has-accp) (indent-line-to tab-width)))
+      (forward-line 1))))
+    
 ;;; Auto-complete
 (defun hledger-source-init ()
   "Initialize the candidates list for account completion."
@@ -423,6 +436,7 @@ Show the results in the *Personal Finance* buffer"
   (use-local-map hledger-mode-map)
   (setq-local font-lock-defaults hledger-font-lock-defaults)
   (setq-local indent-line-function 'hledger-indent-line)
+  (setq-local indent-region-function 'hledger-indent-region-function)
   (setq-local ac-sources '(ac-source-hledger-source))
   (setq-local comment-start "; ")
   (setq-local comment-end "")
