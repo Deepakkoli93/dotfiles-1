@@ -45,8 +45,9 @@
 ;; Hledger
 (setq hledger-jfile
       (expand-file-name "~/miscellany/personal/finance/accounting.journal"))
-(setq hledger-service-fetch-url
-      my-hledger-service-fetch-url)
+(when (boundp 'my-hledger-service-fetch-url)
+  (setq hledger-service-fetch-url
+	my-hledger-service-fetch-url))
 
 ;;;APPEARANCE
 (add-to-list 'custom-theme-load-path
