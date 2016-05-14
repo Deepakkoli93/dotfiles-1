@@ -51,8 +51,6 @@ alias myspace='cd /datastore/Documents/myspace'
 alias node_repl="node -e \"require('repl').start({ignoreUndefined: true})\""
 alias nokia_log='tail -f /tmp/dial-nokia.log'
 
-# TEMP ALIASES
-alias astud='PATH=$PATH:~/Downloads/android-studio/bin studio.sh'
                              ## FUNCTIONS
 
 # turn off backlight

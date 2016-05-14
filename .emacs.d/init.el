@@ -200,7 +200,7 @@ If format isn't specified it defaults to `%Y %m %d`"
 ;; Minor mode for enabling rainbow mode everywhere
 (define-globalized-minor-mode global-rainbow-mode rainbow-mode
   (lambda ()
-    (when (not (memq major-mode '(eshell-mode org-agenda erc-mode)))
+    (when (not (memq major-mode '(eshell-mode org-agenda-mode erc-mode)))
       (rainbow-mode))))
 
 (defun kill-buffer-delete-window ()
@@ -250,9 +250,14 @@ Useful when showing code."
     (setq show-paren-style 'parenthesis)))
 
 (defun kill-other-buffers ()
-  "Kill all buffers except the current one."
+  "Kill all buffers except the current one and the erc buffers."
   (interactive)
-  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+  (let ((ignore-buffers (cons (current-buffer)
+                              (erc-buffer-list))))
+    (mapc (lambda (buffer)
+            (when (not (memq buffer ignore-buffers))
+              (kill-buffer buffer)))
+          (buffer-list))))
 
 (defun yank-to-x-clipboard (&optional region-beg region-end)
   "Yank selected text to X clipboard. Use when on console."
@@ -384,13 +389,7 @@ Useful when showing code."
 ;; whitespace-mode | For the 80-column rule
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
-(setq whitespace-global-modes '(not erc-mode eshell-mode))
-(add-hook 'erc-mode-hook (lambda ()
-                           (interactive)
-                           (set-face-attribute 'erc-default-face nil
-                                               :foreground "papaya whip")
-                           (set-face-attribute 'erc-input-face nil
-                                               :foreground "burlywood")))
+(setq whitespace-global-modes '(not erc-mode eshell-mode org-agenda-mode))
 (global-whitespace-mode 1)
 
 ;; yasnippet
@@ -680,11 +679,22 @@ Useful when showing code."
 (require 'erc-services)
 (erc-services-mode 1)
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
-(setq erc-autojoin-channels-alist '(("freenode.net" "#emacs" "#haskell" "#glugnith")))
+(setq erc-autojoin-channels-alist '(("freenode.net"
+                                     "#emacs" "#haskell" "#glugnith"
+                                     "#archlinux" "#xmonad" "#c" "#bash"
+                                     "#git" "#fp@nith")))
 (setq erc-prompt-for-nickserv-password nil)
 (if (boundp 'my-freenode-nickserv-password)
     (setq erc-nickserv-password
           `((freenode (("narendraj9" . ,my-freenode-nickserv-password))))))
+;; Do not switch buffers on connecting
+(setq erc-join-buffer 'bury)
+(add-hook 'erc-mode-hook (lambda ()
+                           (interactive)
+                           (set-face-attribute 'erc-default-face nil
+                                               :foreground "papaya whip")
+                           (set-face-attribute 'erc-input-face nil
+                                               :foreground "burlywood")))
 
 
 ;;; EMACS-SERVER

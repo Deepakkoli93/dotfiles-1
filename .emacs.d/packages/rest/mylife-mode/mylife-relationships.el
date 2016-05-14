@@ -5,7 +5,9 @@
 (require 'wid-browse)
 (require 'wid-edit)
 
-(defcustom mylife-form-file-path (expand-file-name "~/miscellany/assets/rrf.org")
+(defcustom mylife-form-file-path
+  (expand-file-name (concat user-emacs-directory
+                            "packages/rest/mylife-mode/_assets/rrf.org"))
   "File path of the relationship form"
   :type 'string
   :group 'mylife)
