@@ -91,6 +91,7 @@
 (global-set-key (kbd "C-c d") 'insert-date-at-point)
 (global-set-key (kbd "C-c L") 'linum-mode)
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
+(global-set-key (kbd "C-c i") 'go-back-to-intellij)
 
 ;; rarely used bindings
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
@@ -126,6 +127,7 @@ that don't have an associated file."
 (defun upload-file (file-path)
   "Upload a file to transfer.sh using curl. I am thinking that using curl
 is more efficient for binary files than using a buffer and calling upload-buffer."
+  (interactive "fFile: ")
   (kill-new (shell-command-to-string
              (format "%s %s %s%s"
                      "curl -s --upload-file"
@@ -326,6 +328,23 @@ Useful when showing code."
   (dolist (package package-list)
     (unless (package-installed-p package)
       (package-install package))))
+
+;;; Functional Playground
+(defun snap-it-to-file ()
+  "Take a screenshot of emacs and return the file path."
+  (make-directory "/tmp/screenshots/" t)
+  (shell-command-to-string
+   "scrot -u -e 'mv -f $f /tmp/screenshots/ && echo -n /tmp/screenshots/$f'"))
+
+(defun snap-it ()
+  "Take a screenshot and upload it to transfer.sh"
+  (interactive)
+  (upload-file (snap-it-to-file)))
+
+(defun go-back-to-intellij ()
+  "Change focus to window running android studio."
+  (interactive)
+  (shell-command "wmctrl -a 'Android Studio'"))
 
 ;;; MISCELLANY
 ;; Keep a separate custom.el
@@ -660,7 +679,6 @@ Useful when showing code."
 ;;; LISP MODE
 (setq inferior-lisp-program "/usr/bin/clisp")
 
-
 ;;; JAVA MODE
 (add-hook 'java-mode-hook 'easy-auto-complete-mode-hook)
 
@@ -676,13 +694,15 @@ Useful when showing code."
 (setq magit-auto-revert-mode nil)
 
 ;;; ERC
+(add-to-list 'erc-modules 'notifications)
 (require 'erc-services)
 (erc-services-mode 1)
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 (setq erc-autojoin-channels-alist '(("freenode.net"
-                                     "#emacs" "#haskell" "#glugnith"
+                                     "#emacs" "#haskell" "#glugnith" "#c++"
                                      "#archlinux" "#xmonad" "#c" "#bash"
-                                     "#git" "#fp@nith")))
+                                     "#git" "#fp@nith" "#lisp" "#clojure"
+                                     "#scheme" "#elm")))
 (setq erc-prompt-for-nickserv-password nil)
 (if (boundp 'my-freenode-nickserv-password)
     (setq erc-nickserv-password

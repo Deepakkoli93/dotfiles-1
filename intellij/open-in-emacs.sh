@@ -13,5 +13,11 @@ column=$2
 file=$3
 
 emacsclient +${line}:${column} -n ${file}
+
+# Change focus to emacs. 
 wmctrl -a MyEmacs
+# if the last command failed try for emacs
+if [[ ! $? -eq 0 ]]; then
+    wmctrl -a emacs
+fi
 
