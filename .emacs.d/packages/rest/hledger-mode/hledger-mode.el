@@ -399,8 +399,9 @@ Show the results in the *Personal Finance* buffer"
 (defun hledger-jreg (pattern)
   "Run hledger register command."
   (interactive "spattern> ")
-  (let ((jcmd (concat "register " pattern)))
-    (hledger-jdo jcmd)))
+  (let ((jcmd (concat "register -w 150 " pattern)))
+    (hledger-jdo jcmd)
+    (delete-other-windows)))
 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))

@@ -590,8 +590,7 @@ Useful when showing code."
 (add-hook 'org-mode-hook
           (lambda ()
             ;; bindings
-            (local-set-key (kbd "M-{") 'outline-previous-visible-heading)
-            (local-set-key (kbd "M-}") 'outline-next-visible-heading)
+            (local-set-key (kbd "M-<return>") 'org-insert-subheading)
             (local-set-key (kbd "C-c p") 'org-pomodoro)
             (local-set-key (kbd "C-c a") 'org-agenda)))
 
@@ -694,7 +693,6 @@ Useful when showing code."
 (setq magit-auto-revert-mode nil)
 
 ;;; ERC
-(add-to-list 'erc-modules 'notifications)
 (require 'erc-services)
 (erc-services-mode 1)
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
@@ -715,8 +713,6 @@ Useful when showing code."
                                                :foreground "papaya whip")
                            (set-face-attribute 'erc-input-face nil
                                                :foreground "burlywood")))
-
-
 ;;; EMACS-SERVER
 ;; start emacs-server only if it's not running already
 (require 'server)
