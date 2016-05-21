@@ -125,8 +125,9 @@ that don't have an associated file."
     temp-file))  
 
 (defun upload-file (file-path)
-  "Upload a file to transfer.sh using curl. I am thinking that using curl
-is more efficient for binary files than using a buffer and calling upload-buffer."
+  "Upload a file to transfer.sh using curl. I am thinking that
+using curl is more efficient for binary files than using a buffer
+and calling `upload-buffer'."
   (interactive "fFile: ")
   (kill-new (shell-command-to-string
              (format "%s %s %s%s"
@@ -134,13 +135,22 @@ is more efficient for binary files than using a buffer and calling upload-buffer
                      (shell-quote-argument file-path)
                      "https://transfer.sh/"
                      (shell-quote-argument
-                      (file-name-nondirectory file-path))))))
-  
+                      (file-name-nondirectory file-path)))))
+  (message (format "Link copied to clipboard: %s"
+                   (current-kill 0))))
+
 (defun upload-buffer ()
-  "Upload the contents of the current buffer using transfer.sh
-Link to the uploaded file is copied to clipboard. Creates a temp file
-if the buffer isn't associted with a file."
+  "Upload current buffer to transfer.sh
+This function uses the function `upload-region'."
   (interactive)
+  (upload-region (point-min) (point-max)))
+
+(defun upload-region (beg end)
+  "Upload the contents of the selected region in current buffer
+using transfer.sh Link to the uploaded file is copied to
+clipboard. Creates a temp file if the buffer isn't associted with
+a file."
+  (interactive "r")
   (let* ((buf-file-path (buffer-file-name))
          (file-path (or buf-file-path
                         (create-file-for-buffer)))
@@ -148,18 +158,18 @@ if the buffer isn't associted with a file."
          (upload-url (format "https://transfer.sh/%s"
                             file-name))
          (url-request-method "PUT")
-         (url-request-data (with-temp-buffer
-                             (insert-file-contents file-path)
-                             (buffer-substring-no-properties (point-min)
-                                                             (point-max))))
+         (url-request-data (buffer-substring-no-properties beg end))
          (url-callback (lambda (status)
                          (search-forward "\n\n")
                          (let ((url-link (buffer-substring (point)
                                                            (point-max))))
                            (kill-new url-link)
                            (message (format "Copied to clipboard: %s"
-                                            url-link)))
-                         (kill-buffer (current-buffer)))))
+                                            (replace-regexp-in-string 
+                                             "[[:space:]\n]*$"
+                                             ""
+                                             url-link)))
+                         (kill-buffer (current-buffer))))))
     (url-retrieve upload-url url-callback)))
     
 (defun org-late-todo (n)
@@ -294,10 +304,13 @@ Useful when showing code."
   (interactive)
   (insert (format-time-string "%Y-%m-%d")))
 
-(defun notify (msg)
+(defun notify (msg &optional font-size duration)
   "Notify me with a msg. Requires that dzen is installed."
   (start-process-shell-command "dzen" nil
-                               (concat "echo " msg " | dzen2 -p 2 -h 200 -l 200 -fn 'Comic Sans MS:size=50'")))
+                               (format "echo %s | dzen2 -l 200 -fn 'Comic Sans MS:size=%s' -p %s"
+                                       (shell-quote-argument msg)
+                                       (or font-size 50)
+                                       (or duration 10))))
 
 ;; Setup an emacs window into 70-30% horizontally.
 (fset 'split-thirty-seventy
@@ -333,8 +346,9 @@ Useful when showing code."
 (defun snap-it-to-file ()
   "Take a screenshot of emacs and return the file path."
   (make-directory "/tmp/screenshots/" t)
-  (shell-command-to-string
-   "scrot -u -e 'mv -f $f /tmp/screenshots/ && echo -n /tmp/screenshots/$f'"))
+  (let ((default-directory "/tmp/screenshots/"))
+    (shell-command-to-string
+     "scrot -u -e 'echo -n /tmp/screenshots/$f'")))
 
 (defun snap-it ()
   "Take a screenshot and upload it to transfer.sh"
@@ -408,7 +422,7 @@ Useful when showing code."
 ;; whitespace-mode | For the 80-column rule
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
-(setq whitespace-global-modes '(not erc-mode eshell-mode org-agenda-mode))
+(setq whitespace-global-modes '(not erc-mode eshell-mode org-agenda-mode info-mode))
 (global-whitespace-mode 1)
 
 ;; yasnippet
@@ -698,6 +712,7 @@ Useful when showing code."
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 (setq erc-autojoin-channels-alist '(("freenode.net"
                                      "#emacs" "#haskell" "#glugnith" "#c++"
+                                     "#clojure" "#scala" "#javascript"
                                      "#archlinux" "#xmonad" "#c" "#bash"
                                      "#git" "#fp@nith" "#lisp" "#clojure"
                                      "#scheme" "#elm")))
@@ -709,6 +724,14 @@ Useful when showing code."
 (setq erc-join-buffer 'bury)
 (add-hook 'erc-mode-hook (lambda ()
                            (interactive)
+                           ;; Override the functions that sends notifications #TOFIX
+                           (eval-after-load "erc-desktop-notifications"
+                             '(defun erc-notifications-notify (nick msg)
+                                (notify (format "%s said: %s"
+                                                nick msg)
+                                        10
+                                        20)))
+                           (erc-notifications-mode)
                            (set-face-attribute 'erc-default-face nil
                                                :foreground "papaya whip")
                            (set-face-attribute 'erc-input-face nil
