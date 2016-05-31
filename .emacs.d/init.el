@@ -92,11 +92,26 @@
 (global-set-key (kbd "C-c L") 'linum-mode)
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
 (global-set-key (kbd "C-c i") 'go-back-to-intellij)
+(global-set-key (kbd "C-c q") 'fill-paragraph-and-move-forward)
 
 ;; rarely used bindings
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 
 ;;; UTILITY FUNCTION DEFINITIONS
+(defun trim (s)
+  "Removes trailing whitespace."
+  (replace-regexp-in-string 
+   "[ \t\n]+$"
+   ""
+   s))
+
+(defun fill-paragraph-and-move-forward ()
+    "A simple function that combines `fill-paragraph'
+and `forward-paragraph' because I tend to use then together always."
+  (interactive)
+  (fill-paragraph)
+  (forward-paragraph))
+
 (defun erc-connect ()
   "Connect to erc."
   (interactive)
@@ -137,7 +152,7 @@ and calling `upload-buffer'."
                      (shell-quote-argument
                       (file-name-nondirectory file-path)))))
   (message (format "Link copied to clipboard: %s"
-                   (current-kill 0))))
+                   (trim (current-kill 0)))))
 
 (defun upload-buffer ()
   "Upload current buffer to transfer.sh
@@ -164,11 +179,8 @@ a file."
                          (let ((url-link (buffer-substring (point)
                                                            (point-max))))
                            (kill-new url-link)
-                           (message (format "Copied to clipboard: %s"
-                                            (replace-regexp-in-string 
-                                             "[[:space:]\n]*$"
-                                             ""
-                                             url-link)))
+                           (message (format "Link copied to clipboard: %s"
+                                            (trim url-link)))
                          (kill-buffer (current-buffer))))))
     (url-retrieve upload-url url-callback)))
     
@@ -212,7 +224,7 @@ If format isn't specified it defaults to `%Y %m %d`"
 ;; Minor mode for enabling rainbow mode everywhere
 (define-globalized-minor-mode global-rainbow-mode rainbow-mode
   (lambda ()
-    (when (not (memq major-mode '(eshell-mode org-agenda-mode erc-mode)))
+    (when (not (memq major-mode '(eshell-mode org-agenda-mode erc-mode Info-mode)))
       (rainbow-mode))))
 
 (defun kill-buffer-delete-window ()
@@ -422,7 +434,7 @@ Useful when showing code."
 ;; whitespace-mode | For the 80-column rule
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
-(setq whitespace-global-modes '(not erc-mode eshell-mode org-agenda-mode info-mode))
+(setq whitespace-global-modes '(not erc-mode eshell-mode org-agenda-mode Info-mode))
 (global-whitespace-mode 1)
 
 ;; yasnippet

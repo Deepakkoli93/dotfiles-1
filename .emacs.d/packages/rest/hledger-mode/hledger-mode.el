@@ -273,6 +273,11 @@ If the buffer is not intended for editing, then `q` closes it.
 
 (defun hledger-fetch-entries-callback (status)
   "Callback after fetching all the entries form the hledger web service."
+  (hledger-fetch-entries-parse-buffer))
+   
+(defun hledger-fetch-entries-parse-buffer ()
+  "Parse a buffer containg the results of an API call."
+  (interactive)
   (search-forward "\n\n")
   (let ((entries (append (json-read) nil))
         (result ""))

@@ -7,7 +7,7 @@ function install-packages() {
     # Package list
     # to be organized properly #TODO
     PACKAGES="git time ngrep
-		  vim tmux emacs
+		  vim tmux emacs markdown
 		  xorg-server xorg-xinit xorg-server-utils  xorg-xinput
 		  xmonad dzen2 i3status xcompmgr dmenu xdotool xmonad-contrib wmctrl
 		  weechat rxvt-unicode urxvt-perls
