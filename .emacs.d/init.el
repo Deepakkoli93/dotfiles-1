@@ -540,6 +540,9 @@ Useful when showing code."
                                (add-to-list 'eshell-visual-commands "vim")
                                (add-to-list 'eshell-visual-subcommands
                                             '("git" "commit" "log" "diff"))))
+;;; WRITING
+(setq fill-column 79)
+
 ;;; HASKELL-MODE
 ;; (load "haskell-mode-autoloads")
 (add-hook 'haskell-mode-hook 'haskell-doc-mode)

@@ -1,18 +1,21 @@
 ;;; hledger-mode.el -- A mode for writing journal entries for hledger
+
+;;; Copyright (C) 2015-2016 Narendra Joshi [This is funny.]
+
 ;; Author: Narendra Joshi <narendraj9@gmail.com>
-;; 
-;;    A simple mode for hledger journal files with the ability to fetch entries
-;; from a json web service and a few convenient functions for showing financial
-;; reports.
-;; JSON representation of journal entries = [ { date :: String
-;;                                            , description :: String
-;;                                            , comment :: String
-;;                                            , postings :: [ { amount :: String
-;;                                                            , account :: String
-;;                                                            }
-;;                                            }
-;;                                          ]
+;; URL: 
+;; Version: 0.1
+;; Keywords: hledger
+;; Package-Requires: ((json "1.4"))
+
+;;; Commentary:
 ;;
+;; This is a major mode writing hledger journal files. You must have
+;; hledger installed to be able to create the reports: balancesheet,
+;; income statement, etc.
+;;
+
+;;; Code;
 
 (require 'json)
 

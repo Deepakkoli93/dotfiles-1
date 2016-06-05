@@ -1,3 +1,23 @@
+;;; mylife-mode.el --- A mode for miscellaneous tools
+
+;;; Copyright (C) 2015-2016 Narendra Joshi [This is funny.]
+
+;; Author: Narendra Joshi <narendraj9@gmail.com>
+;; URL: 
+;; Version: 0.1
+;; Keywords: life
+;; Package-Requires: ((cl-lib "0.2"))
+
+;;; Commentary:
+;;
+;; This mode is for all the stuff that doesn't fit anywhere else and mostly
+;; that stuff is related to my life and hence the name.
+;; Currently, I have a relationship rating form and a few functions that I
+;; like to call once in a while.
+
+
+;;; Code: 
+
 (add-to-list 'auto-mode-alist '("\\.life\\'" . life-mode))
 
 (require 'mylife-relationships)

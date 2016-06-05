@@ -1,5 +1,23 @@
 ;; -*- lexical-binding: t -*-
-;;; Evaluate and improve your relationships.
+;;; mylife-relationships.el --- Evaluate and improve your relationships.
+
+;;; Copyright (C) 2015-2016 Narendra Joshi [This is funny.]
+
+;; Author: Narendra Joshi <narendraj9@gmail.com>
+;; URL: 
+;; Version: 0.1
+;; Keywords: life
+
+;;; Commentary:
+;;
+;; This mode let's you have a kind of feedback form with an interface similar
+;; to the customize interface in emacs. 
+;; The form that is displayed is kept in _assets directory currently.
+;; and is a relationship rating form. It should be an org-mode file.
+;; You can call the function mylife-rrf to view the form. `org-element-api`
+;; is somewhat slow and hence it may take a few seconds. 
+
+;;; Code: 
 
 (require 'widget)
 (require 'wid-browse)
