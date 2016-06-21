@@ -463,7 +463,7 @@ Useful when showing code."
 ;; Make auto-complete easier for a mode
 (defun easy-auto-complete-mode-hook ()
   (setq-local ac-auto-start t)
-  (setq-local ac-auto-show-menu 0.0)
+  (setq-local ac-auto-show-menu 0.4)
   (setq-local ac-disable-inline nil))
 
 ;; Key bindings for auto-complete-menu
@@ -587,7 +587,7 @@ Useful when showing code."
          "* TODO %?\n  SCHEDULED: %^t"
          :kill-buffer t)
           ("j" "Journal" entry (file+datetree "journal.org")
-           ,(concat "* %? %^g             \n"
+           ,(concat "* %? %^g           \n\n"
                     "╭──────────────      \n"
                     " Entered on %U       \n"
                     " Was in: [[%F][%f]]  \n"
@@ -695,9 +695,6 @@ Useful when showing code."
 
 
 ;;; PYTHON-MODE
-(setq py-install-directory  (expand-file-name "elpa//python-mode-20150703.143"
-                                              user-emacs-directory))
-(setq-default py-shell-name "ipython2")
 (setq py-shell-switch-buffers-on-execute-p t)
 (setq py-switch-buffers-on-execute-p t)
 (setq py-split-windows-on-execute-p nil)

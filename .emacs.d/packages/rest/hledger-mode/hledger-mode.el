@@ -259,9 +259,8 @@ If the buffer is not intended for editing, then `q` closes it.
 (defun hledger-format-comment-string (comment)
   "Format the input COMMENT string for insertion into a journal file."
   (with-temp-buffer (progn
-                      (if (not
-                           (string-match-p "[^\\ ]" comment))
-                          "\n"
+                      (if (string-match-p hledger-empty-regex comment)
+                          ""
                         (electric-indent-mode -1)
                         (setq-local fill-column (- 70 hledger-comments-column))
                         (insert comment)
