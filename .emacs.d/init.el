@@ -76,6 +76,7 @@
 (set-appearance)
 
 ;;; GLOBAL KEY BINDINGS
+(global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c m") 'switch-to-minibuffer)
 ;; org-mode
@@ -93,11 +94,17 @@
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
 (global-set-key (kbd "C-c i") 'go-back-to-intellij)
 (global-set-key (kbd "C-c q") 'fill-paragraph-and-move-forward)
+(global-set-key (kbd "C-c u") 'enlarge-current-window)
 
 ;; rarely used bindings
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 
 ;;; UTILITY FUNCTION DEFINITIONS
+(defun enlarge-current-window ()
+  "Enlarge the current window by 5 lines."
+  (interactive)
+  (enlarge-window 5))
+
 (defun trim (s)
   "Removes trailing whitespace."
   (replace-regexp-in-string 
@@ -115,6 +122,8 @@ and `forward-paragraph' because I tend to use then together always."
 (defun erc-connect ()
   "Connect to erc."
   (interactive)
+  (require 'erc-services)
+  (erc-services-mode 1)
   (erc :server "irc.freenode.net"
        :port 6667
        :nick "narendraj9"
@@ -435,7 +444,7 @@ Useful when showing code."
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
 (setq whitespace-global-modes '(not erc-mode eshell-mode org-agenda-mode Info-mode))
-(global-whitespace-mode 1)
+;(global-whitespace-mode 1)
 
 ;; yasnippet
 (require 'yasnippet)
@@ -516,6 +525,9 @@ Useful when showing code."
 (setq-default indent-tabs-mode nil)
 (setq x-select-enable-clipboard t)
 (setq inhibit-splash-screen t)
+
+;; completion and selection narrowing
+(require 'helm-config)
 
 ;;; ESHELL
 (defmacro with-face (str &rest properties)
@@ -719,8 +731,6 @@ Useful when showing code."
 (setq magit-auto-revert-mode nil)
 
 ;;; ERC
-(require 'erc-services)
-(erc-services-mode 1)
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 (setq erc-autojoin-channels-alist '(("freenode.net"
                                      "#emacs" "#haskell" "#glugnith" "#c++"
