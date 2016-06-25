@@ -68,7 +68,11 @@
     (setq black-theme-color "gray9")
     (set-background-color black-theme-color)
     (set-foreground-color "white")
-    
+
+    ;; Pretty window divier
+    (set-face-background 'vertical-border "peru")
+    (set-face-foreground 'vertical-border (face-background 'vertical-border))
+
     ;; Powerline
     (require 'powerline)
     (require 'powerline-vermilion-theme)
@@ -726,6 +730,8 @@ Useful when showing code."
 
 ;;; LISP MODE
 (setq inferior-lisp-program "/usr/bin/clisp")
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'lisp-mode-hook 'enable-paredit-mode)          
 
 ;;; JAVA MODE
 (add-hook 'java-mode-hook 'easy-auto-complete-mode-hook)
