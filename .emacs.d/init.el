@@ -287,7 +287,9 @@ Useful when showing code."
   "Kill all buffers except the current one and the erc buffers."
   (interactive)
   (let ((ignore-buffers (cons (current-buffer)
-                              (erc-buffer-list))))
+                              (if (fboundp 'erc-buffer-list)
+                                  (erc-buffer-list)
+                                nil))))
     (mapc (lambda (buffer)
             (when (not (memq buffer ignore-buffers))
               (kill-buffer buffer)))
