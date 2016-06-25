@@ -397,6 +397,11 @@ Useful when showing code."
 ;; mylife-mode
 (require 'mylife-mode)
 
+;; get quick emacs key binding suggestions
+(require 'guide-key)
+(setq guide-key/guide-key-sequence '("C-x r" "C-x 4"))
+(guide-key-mode 1) 
+
 ;; ido
 ;; show completions vertically
 (setq ido-decorations (quote
@@ -414,6 +419,7 @@ Useful when showing code."
 (require 'helm-config)
 ;; To ignore warnings about redefinitions
 (setq ad-redefinition-action 'accept)
+(helm-mode 1)
 
 ;; line numbers for rows
 (global-linum-mode 0)
