@@ -68,15 +68,15 @@
     (setq black-theme-color "gray9")
     (set-background-color black-theme-color)
     (set-foreground-color "white")
-
+    
     ;; Powerline
-    (require 'powerline-custom-themes)
-
+    (require 'powerline)
+    (require 'powerline-vermilion-theme)
     (if (window-system) (powerline-vermilion-theme))))
+    
 (set-appearance)
 
 ;;; GLOBAL KEY BINDINGS
-(global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c m") 'switch-to-minibuffer)
 ;; org-mode
@@ -98,6 +98,7 @@
 
 ;; rarely used bindings
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
+(global-set-key (kbd "M-x") 'helm-M-x)
 
 ;;; UTILITY FUNCTION DEFINITIONS
 (defun enlarge-current-window ()
@@ -409,6 +410,11 @@ Useful when showing code."
 (setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*"))
 (ido-mode t)
 
+;; An alternative to ido. Maybe addictive but is it good?
+(require 'helm-config)
+;; To ignore warnings about redefinitions
+(setq ad-redefinition-action 'accept)
+
 ;; line numbers for rows
 (global-linum-mode 0)
 (setq linum-format "%2d| ")
@@ -444,7 +450,7 @@ Useful when showing code."
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
 (setq whitespace-global-modes '(not erc-mode eshell-mode org-agenda-mode Info-mode))
-;(global-whitespace-mode 1)
+(global-whitespace-mode 1)
 
 ;; yasnippet
 (require 'yasnippet)
@@ -525,9 +531,6 @@ Useful when showing code."
 (setq-default indent-tabs-mode nil)
 (setq x-select-enable-clipboard t)
 (setq inhibit-splash-screen t)
-
-;; completion and selection narrowing
-(require 'helm-config)
 
 ;;; ESHELL
 (defmacro with-face (str &rest properties)
