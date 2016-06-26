@@ -61,7 +61,6 @@
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
     (menu-bar-mode -1)
-    (fringe-mode 0)
 
     ;; Buffer background and foreground
     (setq blackboard-theme-color "#0C1021")
@@ -73,6 +72,10 @@
     (set-face-background 'vertical-border "peru")
     (set-face-foreground 'vertical-border (face-background 'vertical-border))
 
+    ;; Window margins | 2 pixels on each side
+    (fringe-mode '(2 . 2))
+    (set-face-attribute 'fringe nil :background "#2E2920" :foreground "#2E2920")
+    
     ;; Powerline
     (require 'powerline)
     (require 'powerline-vermilion-theme)
