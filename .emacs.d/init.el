@@ -73,7 +73,7 @@
     (set-face-foreground 'vertical-border (face-background 'vertical-border))
 
     ;; Window margins | 2 pixels on each side
-    (fringe-mode '(2 . 2))
+    (fringe-mode 2)
     (set-face-attribute 'fringe nil :background "#2E2920" :foreground "#2E2920")
     
     ;; Powerline
@@ -390,6 +390,28 @@ Useful when showing code."
   "Change focus to window running android studio."
   (interactive)
   (shell-command "wmctrl -a 'Android Studio'"))
+ 
+(defun post-to-slack (webhook-url text)
+  "Post text to the slack webhook-url"
+  (let ((url-request-method "POST")
+        (url-request-data (json-encode `(:text ,text)))
+        (url-request-extra-header '(("Content-Type" . "application/json")))
+        (url-callback  (lambda (status)
+                         (search-forward "\n\n")
+                         (let ((info-text (buffer-substring (point)
+                                                            (point-max))))
+                           (message (format "slack: %s"
+                                            (trim info-text)))
+                           (kill-buffer (current-buffer))))))
+    (url-retrieve webhook-url url-callback)))
+
+(defun post-region-to-slack-cooking (beg end)
+  "Post region to one of my slack channels."
+  (interactive "r")
+  (if (boundp 'my-slack-vicarie-cooking-webhook)
+      (post-to-slack my-slack-vicarie-cooking-webhook
+                     (buffer-substring beg end))
+    (message "`my-slack-vicarie-cooking-webhook` not bound to the webhook url")))
 
 ;;; MISCELLANY
 ;; Keep a separate custom.el
