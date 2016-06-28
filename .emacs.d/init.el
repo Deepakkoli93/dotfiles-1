@@ -131,11 +131,27 @@ and `forward-paragraph' because I tend to use then together always."
   "Connect to erc."
   (interactive)
   (require 'erc-services)
+  (require 'tls)
   (erc-services-mode 1)
-  (erc :server "irc.freenode.net"
-       :port 6667
-       :nick "narendraj9"
-       :password my-freenode-nickserv-password))
+  (if (boundp 'my-freenode-nickserv-password) 
+      (erc-tls :server "irc.freenode.net"
+               :port 6697
+               :nick "narendraj9"
+               :password my-freenode-nickserv-password)
+    (message "Error: my-freenode-nickserv-password not bound")))
+
+(defun slack-connect ()
+  "Connect to slack."
+  (interactive)
+  (require 'erc-services)
+  (require 'tls)
+  (erc-services-mode 1)
+  (if (boundp 'my-slack-vicarie-password)
+      (erc-tls :server "vicarie.irc.slack.com"
+               :port 6697
+               :nick "narendraj9"
+               :password my-slack-vicarie-password)
+    (message "Error: my-slack-vicarie-password not bound")))
 
 (defun vicarie/eval-print-last-sexp ()
     "Evaluate and print the last sexp on the same line."
@@ -442,8 +458,8 @@ Useful when showing code."
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (setq ido-auto-merge-work-directories-length -1)
-;; Ignore listing irc buffers initially. Searching with # lists them. 
-(setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*"))
+;; Ignore listing irc buffers and helm session buffers.
+(setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*" "\\*helm.*"))
 (ido-mode t)
 
 ;; An alternative to ido. Maybe addictive but is it good?
@@ -568,6 +584,11 @@ Useful when showing code."
 (setq-default indent-tabs-mode nil)
 (setq x-select-enable-clipboard t)
 (setq inhibit-splash-screen t)
+
+;;; FONTS
+;; Fallback font for characters not available in Monaco
+(set-fontset-font "fontset-default" nil
+                  (font-spec :size 20 :name "Symbola"))
 
 ;;; ESHELL
 (defmacro with-face (str &rest properties)
