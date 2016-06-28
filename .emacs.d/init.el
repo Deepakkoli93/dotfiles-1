@@ -65,12 +65,6 @@
     (scroll-bar-mode -1)
     (menu-bar-mode -1)
 
-    ;; Buffer background and foreground
-    (setq blackboard-theme-color "#0C1021")
-    (setq black-theme-color "gray9")
-    (set-background-color black-theme-color)
-    (set-foreground-color "white")
-
     ;; Pretty window divier
     (set-face-background 'vertical-border "peru")
     (set-face-foreground 'vertical-border (face-background 'vertical-border))
@@ -78,6 +72,11 @@
     ;; Window margins | 2 pixels on each side
     (fringe-mode 2)
     (set-face-attribute 'fringe nil :background "#2E2920" :foreground "#2E2920")
+
+    ;; Load my custom theme { Some of the lines above may be redundant }
+    (add-hook 'after-init-hook (lambda ()
+                                 (interactive)
+                                 (load-theme 'vicarie t)))
     
     ;; Powerline
     (require 'powerline)
@@ -163,7 +162,7 @@ and `forward-paragraph' because I tend to use then together always."
   (interactive)
   (let* ((standard-output (current-buffer))
          (value (eval-last-sexp nil)))
-    (insert-string (format " [= %s ] " value))))
+    (insert (format " [= %s ] " value))))
 
 (defun create-file-for-buffer ()
   "Create a temporary file for the current buffer. To be used for buffers
@@ -253,7 +252,7 @@ If format isn't specified it defaults to `%Y %m %d`"
   (save-excursion
     (let ((begin (point-min))
           (end (progn
-                 (end-of-buffer)
+                 (goto-char (point-max))
                  (backward-word)  ; Upto the line containing a word
                  (end-of-line nil)
                  (point))))
@@ -394,7 +393,7 @@ Useful when showing code."
     (unless (package-installed-p package)
       (package-install package))))
 
-;;; Functional Playground
+;;; Defunctional Playground 
 ;;  ─────────────────────────────────────────────────────────────────
 (defun snap-it-to-file ()
   "Take a screenshot of emacs and return the file path."
