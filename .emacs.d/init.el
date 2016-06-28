@@ -102,6 +102,7 @@
 (global-set-key (kbd "C-c d") 'insert-date-at-point)
 (global-set-key (kbd "C-c L") 'linum-mode)
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
+(global-set-key (kbd "C-c +") 'vicarie/eval-replace-last-sexp)
 (global-set-key (kbd "C-c i") 'go-back-to-intellij)
 (global-set-key (kbd "C-c q") 'fill-paragraph-and-move-forward)
 (global-set-key (kbd "C-c u") 'enlarge-current-window)
@@ -157,12 +158,24 @@ and `forward-paragraph' because I tend to use then together always."
                :password my-slack-vicarie-password)
     (message "Error: my-slack-vicarie-password not bound")))
 
+(defun vicarie/eval-last-sexp-and-do (f)
+  "Eval the last sexp and call f on its value"
+  (let ((standard-output (current-buffer))
+        (value (eval-last-sexp nil)))
+    (funcall f value)))
+
 (defun vicarie/eval-print-last-sexp ()
     "Evaluate and print the last sexp on the same line."
   (interactive)
-  (let* ((standard-output (current-buffer))
-         (value (eval-last-sexp nil)))
-    (insert (format " [= %s ] " value))))
+  (vicarie/eval-last-sexp-and-do (lambda (value)
+                                   (insert (format " [= %s ] " value)))))
+
+(defun vicarie/eval-replace-last-sexp ()
+  "Evaluate and replace last sexp with its value. "
+  (interactive)
+  (vicarie/eval-last-sexp-and-do (lambda (value)
+                                   (backward-kill-sexp)
+                                   (insert (format "%s" value)))))
 
 (defun create-file-for-buffer ()
   "Create a temporary file for the current buffer. To be used for buffers

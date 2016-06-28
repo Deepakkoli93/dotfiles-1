@@ -16,6 +16,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("fc3448ddb99db542eabaceae57c55aff859cf537079e3cdff06aad5dafa4efbb" "f641bdb1b534a06baa5e05ffdb5039fb265fde2764fbfd9a90b0d23b75f3936b" default)))
  '(safe-local-variable-values
    (quote
     ((org-todo-keyword-faces
