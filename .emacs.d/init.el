@@ -2,6 +2,7 @@
                                             ;; My init.el   ;;
                                             ;;;;;;;;;;;;;;;;;;
 ;;; PACKAGE ARCHIVES
+;;  ─────────────────────────────────────────────────────────────────
 (require 'package)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
@@ -18,6 +19,7 @@
 (package-initialize)
 
 ;;; VARIABLES
+;;  ─────────────────────────────────────────────────────────────────
 (setq secrets-file
       (expand-file-name "~/miscellany/assets/secrets.el"))
 ;;; secrets.el [Sets up a few variables]
@@ -50,6 +52,7 @@
 	my-hledger-service-fetch-url))
 
 ;;;APPEARANCE
+;;  ─────────────────────────────────────────────────────────────────
 (add-to-list 'custom-theme-load-path
              emacs-themes-directory)
 
@@ -84,6 +87,7 @@
 (set-appearance)
 
 ;;; GLOBAL KEY BINDINGS
+;;  ─────────────────────────────────────────────────────────────────
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c m") 'switch-to-minibuffer)
 ;; org-mode
@@ -108,6 +112,7 @@
 (global-set-key (kbd "M-x") 'helm-M-x)
 
 ;;; UTILITY FUNCTION DEFINITIONS
+;;  ─────────────────────────────────────────────────────────────────
 (defun enlarge-current-window ()
   "Enlarge the current window by 5 lines."
   (interactive)
@@ -390,6 +395,7 @@ Useful when showing code."
       (package-install package))))
 
 ;;; Functional Playground
+;;  ─────────────────────────────────────────────────────────────────
 (defun snap-it-to-file ()
   "Take a screenshot of emacs and return the file path."
   (make-directory "/tmp/screenshots/" t)
@@ -430,6 +436,7 @@ Useful when showing code."
     (message "`my-slack-vicarie-cooking-webhook` not bound to the webhook url")))
 
 ;;; MISCELLANY
+;;  ─────────────────────────────────────────────────────────────────
 ;; Keep a separate custom.el
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (if (file-exists-p custom-file)
@@ -585,12 +592,8 @@ Useful when showing code."
 (setq x-select-enable-clipboard t)
 (setq inhibit-splash-screen t)
 
-;;; FONTS
-;; Fallback font for characters not available in Monaco
-(set-fontset-font "fontset-default" nil
-                  (font-spec :size 20 :name "Symbola"))
-
 ;;; ESHELL
+;;  ─────────────────────────────────────────────────────────────────
 (defmacro with-face (str &rest properties)
   `(propertize ,str 'face (list ,@properties)))
 ;; Ignore consecutive duplicates in eshell history
@@ -614,9 +617,11 @@ Useful when showing code."
                                (add-to-list 'eshell-visual-subcommands
                                             '("git" "commit" "log" "diff"))))
 ;;; WRITING
+;;  ─────────────────────────────────────────────────────────────────
 (setq fill-column 79)
 
 ;;; HASKELL-MODE
+;;  ─────────────────────────────────────────────────────────────────
 ;; (load "haskell-mode-autoloads")
 (add-hook 'haskell-mode-hook 'haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
@@ -637,6 +642,7 @@ Useful when showing code."
      (define-key haskell-mode-map (kbd "C-.") 'haskell-move-nested-right)))
 
 ;;; ORG-MODE
+;;  ─────────────────────────────────────────────────────────────────
 (require 'org)
 (require 'org-habit)
 
@@ -698,6 +704,7 @@ Useful when showing code."
 
 
 ;;; POMODORO
+;;  ─────────────────────────────────────────────────────────────────
 ;; pomodoro hooks for awesome notifications
 (add-hook 'org-pomodoro-finished-hook
           (lambda ()
@@ -710,6 +717,7 @@ Useful when showing code."
             (notify "Over!")))
 
 ;;; C-MODE
+;;  ─────────────────────────────────────────────────────────────────
 ;; Use k&r coding style as default
 (setq c-default-style "k&r")
 ;; Use Linus's style while editing a file in linux-folder
@@ -757,6 +765,7 @@ Useful when showing code."
 
 
 ;;; C++-MODE
+;;  ─────────────────────────────────────────────────────────────────
 (c-add-style "cpp-style"
              '("stroustrup"
                (indent-tabs-mode . nil)
@@ -768,6 +777,7 @@ Useful when showing code."
 
 
 ;;; PYTHON-MODE
+;;  ─────────────────────────────────────────────────────────────────
 (setq py-shell-switch-buffers-on-execute-p t)
 (setq py-switch-buffers-on-execute-p t)
 (setq py-split-windows-on-execute-p nil)
@@ -775,25 +785,31 @@ Useful when showing code."
 (require 'python-mode)
 
 ;;; LISP MODE
+;;  ─────────────────────────────────────────────────────────────────
 (setq inferior-lisp-program "/usr/bin/clisp")
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'lisp-mode-hook 'enable-paredit-mode)          
 
 ;;; JAVA MODE
+;;  ─────────────────────────────────────────────────────────────────
 (add-hook 'java-mode-hook 'easy-auto-complete-mode-hook)
 
 ;;; RUBY MODE
+;;  ─────────────────────────────────────────────────────────────────
 (autoload 'inf-ruby "inf-ruby" "Run on inferior Ruby process" t)
 (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
 
 ;;; LUA MODE
+;;  ─────────────────────────────────────────────────────────────────
 (setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 
 ;;; MAGIT
+;;  ─────────────────────────────────────────────────────────────────
 (setq magit-auto-revert-mode nil)
 
 ;;; ERC
+;;  ─────────────────────────────────────────────────────────────────
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 (setq erc-autojoin-channels-alist '(("freenode.net"
                                      "#emacs" "#haskell" "#glugnith" "#c++"
@@ -822,12 +838,14 @@ Useful when showing code."
                            (set-face-attribute 'erc-input-face nil
                                                :foreground "burlywood")))
 ;;; EMACS-SERVER
+;;  ─────────────────────────────────────────────────────────────────
 ;; start emacs-server only if it's not running already
 (require 'server)
 (unless (server-running-p)
   (server-start))
 
 ;;; For MS-WINDOWS
+;;  ─────────────────────────────────────────────────────────────────
 (if (eq system-type 'windows-nt)
     (progn
       ;; Default directory on windows isn't ~/
