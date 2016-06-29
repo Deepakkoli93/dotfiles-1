@@ -6,17 +6,6 @@
   :group 'mylife-mode
   :type 'face)
 
-
-(defconst mylife-script-directory (file-name-directory load-file-name)
-  "Remember the directory to be used in the variable defintions to come.")
-
-(defcustom mylife-fortune-file
-  (expand-file-name  "./_assets/fortune/" mylife-script-directory)
-  "Directory path containing fortune files."
-  :group 'mylife-mode
-  :type 'string
-  )
-
 (defcustom mylife-quotes
   (mapcar
    (lambda (quote)
