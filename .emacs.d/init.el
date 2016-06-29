@@ -1,6 +1,9 @@
                                             ;;;;;;;;;;;;;;;;;;
                                             ;; My init.el   ;;
                                             ;;;;;;;;;;;;;;;;;;
+;;; The Epoch
+(defconst emacs-start-time (current-time))
+
 ;;; PACKAGE ARCHIVES
 ;;  ─────────────────────────────────────────────────────────────────
 (require 'package)
@@ -865,3 +868,24 @@ Useful when showing code."
       (setq interprogram-paste-function 'x-selection-value)
       ;; for some reason, selection highlight isn't turned on by default
       (transient-mark-mode t)))
+
+;;; The Abiogenesis
+;; ─────────────────────────────────────────────────────────────────
+;; A random quote from mylife-mode in the *scratch* buffer.
+(setq initial-major-mode 'fundamental-mode)
+(setq initial-scratch-message (nth  (random mylife-quotes-count) mylife-quotes))
+
+;; Show emacs startup time after init
+(add-hook 'after-init-hook
+          `(lambda ()
+            "Show the emacs load time on startup in the echo area."
+            (message (format "Finished loading %s in %.2f seconds."
+                             ,load-file-name
+                             (time-to-seconds (time-subtract (current-time)
+                                                             emacs-start-time))))))
+;; Keep the startup time in the echo area. 
+(defun display-startup-echo-area-message ()
+  "Does nothing. Says nothing. Displays nothing. That's so it."
+  (ignore))
+
+

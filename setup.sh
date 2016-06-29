@@ -23,7 +23,7 @@ function install-packages() {
 		  g++ gcc ghc
 		  cabal-install 
 		  python-pygments python2-pygments
-          espeak
+          espeak fortune-mod
           glyr"
 
 

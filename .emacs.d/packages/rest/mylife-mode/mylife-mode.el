@@ -21,6 +21,7 @@
 (add-to-list 'auto-mode-alist '("\\.life\\'" . life-mode))
 
 (require 'mylife-relationships)
+(require 'mylife-quotes)
 
 (defgroup mylife nil
   "Customization group for mylife-mode.")
