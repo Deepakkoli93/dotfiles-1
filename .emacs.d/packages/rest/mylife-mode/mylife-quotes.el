@@ -6,6 +6,17 @@
   :group 'mylife-mode
   :type 'face)
 
+
+(defconst mylife-script-directory (file-name-directory load-file-name)
+  "Remember the directory to be used in the variable defintions to come.")
+
+(defcustom mylife-fortune-file
+  (expand-file-name  "./_assets/fortune/" mylife-script-directory)
+  "Directory path containing fortune files."
+  :group 'mylife-mode
+  :type 'string
+  )
+
 (defcustom mylife-quotes
   (mapcar
    (lambda (quote)
@@ -184,9 +195,15 @@ him.
   :group 'mylife-mode
   :type '(repeat string))
 
-(defconst mylife-quotes-count
-  (length mylife-quotes)
-  "Number of quotes in mylife-quotes. ")
+(defun mylife-random-quote-string ()
+  "Returns a random quote."
+  (nth (random (length mylife-quotes)) mylife-quotes))
+
+(defun mylife-add-new-quote (quote &optional author)
+  "Adds a new quote to the list of quotes. 
+Turn mylife-quotes into a variable maintained with `customize-save-variable`."
+  (interactive)
+  (message "Yet to be defined."))
 
 (defun mylife-qod-callback (status)
   "Callback for mylife-fetch-qod command. This currently replaces the contents
@@ -205,17 +222,17 @@ of the *scratch* buffer with the quote string."
       (kill-buffer)
       (with-current-buffer (get-buffer-create "*scratch*")
         (erase-buffer)
-        (insert (propertize (format "%s \n = %s" quote-string quote-author)
+        (insert (propertize (format "%s \n\n %s" quote-string quote-author)
                             'font-lock-face mylife-quote-face
                             'rear-nonsticky t))
-        (justify-current-line 'right)
         (goto-char (point-min))
         (fill-paragraph)
         (goto-char (point-max))
-        (insert "\n\n"))))
-  (message "Error fetching quote: %s"
-           (assoc-default 'message
-                          (assoc-default 'error (json-read)))))
+        (justify-current-line 'right nil t)
+        (insert "\n\n")))
+    (message "Error fetching quote: %s"
+             (assoc-default 'message
+                            (assoc-default 'error (json-read))))))
 
 (defun mylife-fetch-qod ()
   "Fetches quote of the day from theysaidso.com"

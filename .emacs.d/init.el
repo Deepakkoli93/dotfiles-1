@@ -873,7 +873,7 @@ Useful when showing code."
 ;; ─────────────────────────────────────────────────────────────────
 ;; A random quote from mylife-mode in the *scratch* buffer.
 (setq initial-major-mode 'fundamental-mode)
-(setq initial-scratch-message (nth  (random mylife-quotes-count) mylife-quotes))
+(setq initial-scratch-message (mylife-random-quote-string))
 
 ;; Show emacs startup time after init
 (add-hook 'after-init-hook
