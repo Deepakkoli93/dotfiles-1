@@ -93,6 +93,7 @@ the form. This function expectes `form-file-path` to be an org file."
     (org-mode)
     (goto-char (point-min))
     (let ((form-tree (org-element-parse-buffer)))
+      (kill-buffer)
       form-tree)))
 
 (defvar mylife-options

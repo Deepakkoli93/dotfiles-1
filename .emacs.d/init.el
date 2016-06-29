@@ -17,6 +17,7 @@
 (let ((default-directory (expand-file-name "packages/rest/"
                                            user-emacs-directory)))
   (normal-top-level-add-to-load-path '("hledger-mode"
+				       "utils"
                                        "powerline"
                                        "mylife-mode")))
 (package-initialize)
