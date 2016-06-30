@@ -44,7 +44,7 @@
 
 (defvar hledger-service-fetch-url
   "Service url for fetching journal entries."
-  nil)
+  "https://services.vicarie.in/api/entry")
 
 ;;; Regexes
 (defvar hledger-empty-regex "^\\s-*$"

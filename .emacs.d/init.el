@@ -451,6 +451,42 @@ Useful when showing code."
                      (buffer-substring beg end))
     (message "`my-slack-vicarie-cooking-webhook` not bound to the webhook url")))
 
+(defun screenshot-frame (window-id)
+  "Take a screenshot of 400x200 pixels of the Emacs frame.
+Taken from Chris Done's config"
+  (shell-command-to-string
+   (concat "import -window "
+           (shell-quote-argument window-id)
+           " +repage /tmp/frames/`date +%s`.png")))
+
+(defun start-recording-window ()
+  "Record screenshots of the window and prepare a gif."
+  (interactive)
+  (message "Click on the window you want to record")
+  (if (file-directory-p "/tmp/frames/")
+      (delete-directory "/tmp/frames/" t))
+  (make-directory "/tmp/frames/" t)
+  (blink-cursor-mode -1)
+  (let* ((window-id  (trim (shell-command-to-string
+                            "xwininfo | grep 'Window id' | cut -d ' ' -f 4")))
+         ;; Take a screenshot if I am idle for 1 second
+         (timer (run-with-idle-timer 0.5
+                                     t
+                                     `(lambda ()
+                                        (screenshot-frame ,window-id)))))
+    (message "Started recording... [C-c x : Stop recording]")
+    (global-set-key
+     (kbd "C-c x")
+     `(lambda ()
+        (interactive)
+        (cancel-timer ,timer)
+        (message "Stopped recording!")
+        (blink-cursor-mode 1)
+        (global-unset-key (kbd "C-c x"))
+        (message (shell-command-to-string
+                  (concat "convert -delay 35 /tmp/frames/*.png /tmp/frames/out.gif && "
+                          "echo Ouput saved to /tmp/frames/out.gif &")))))))
+
 ;;; MISCELLANY
 ;;  ─────────────────────────────────────────────────────────────────
 ;; Keep a separate custom.el

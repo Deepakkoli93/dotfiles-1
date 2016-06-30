@@ -65,7 +65,6 @@ Turn mylife-quotes into a variable maintained with `customize-save-variable`."
   "Callback for mylife-fetch-qod command. This currently replaces the contents
 of the *scratch* buffer with the quote string."
   (search-forward "\n\n")
-
   (if (not status)
     (let* ((quote-json (json-read))
            (quotes (assoc-default
