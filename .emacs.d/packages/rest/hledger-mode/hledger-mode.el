@@ -273,16 +273,10 @@ If the buffer is not intended for editing, then `q` closes it.
                         (indent-region (point-min) (point-max) hledger-comments-column)
                         (buffer-string)))))
 
-(defun hledger-fetch-entries-callback (status)
-  "Callback after fetching all the entries form the hledger web service."
-  (hledger-fetch-entries-parse-buffer))
-   
-(defun hledger-fetch-entries-parse-buffer ()
-  "Parse a buffer containg the results of an API call."
+(defun hledger-fetch-entries-insert (entries)
+  "Insert entries into a journal buffer."
   (interactive)
-  (search-forward "\n\n")
-  (let ((entries (append (json-read) nil))
-        (result ""))
+  (let ((result ""))
     (dolist (entry (reverse entries))
       (let ((description (cdr (assoc 'description entry)))
             (comment (hledger-format-comment-string
@@ -317,14 +311,20 @@ If the buffer is not intended for editing, then `q` closes it.
 
 (defun hledger-fetch-entries ()
   "Fetch journal entries from `hledger-service-url`.
-Show the results in the *Personal Finance* buffer"
+Show the results in the *Personal Finance* buffer. 
+**This is a workaround**.
+"
   (interactive)
-  (with-current-buffer 
-      (let ((url-request-method "GET")
-            (url-debug "all"))
-        (url-retrieve (url-generic-parse-url hledger-service-fetch-url)
-                      'hledger-fetch-entries-callback))))
-
+  (browse-url hledger-service-fetch-url)
+  (read-from-minibuffer "Opening browser. Hit [Enter] after copy. ")
+  (with-temp-buffer 
+    (yank)
+    (goto-char (point-min))
+    ;; Convert vector returned by json-read to a list
+    (let ((entries-list (append (json-read) nil)))
+      (kill-buffer)
+      (hledger-fetch-entries-insert entries-list)))
+  (message "Entries copied"))
 
 (defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance"
                                  "register" "incomestatement" "balancesheet"

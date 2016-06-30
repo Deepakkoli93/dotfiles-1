@@ -467,9 +467,13 @@ Useful when showing code."
 ;; mylife-mode
 (require 'mylife-mode)
 
+;; browser-url 
+(if (equal user-login-name "nj")
+    (setq browse-url-browser-function 'browse-url-chromium))
+
 ;; get quick emacs key binding suggestions
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-x 4"))
+(setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
 (guide-key-mode 1) 
 
 ;; ido
@@ -673,8 +677,6 @@ Useful when showing code."
 (setq org-habit-following-days 6
       org-habit-preceding-days 21
       org-habit-graph-column 50)
-;; browser-url
-(setq browse-url-browser-function 'browse-url-chromium)
 
 ;; org-capture
 (setq org-capture-templates

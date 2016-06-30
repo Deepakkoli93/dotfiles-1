@@ -81,11 +81,9 @@ of the *scratch* buffer with the quote string."
         (insert (propertize (mylife-prepare-quote quote-string quote-author)
                             'font-lock-face mylife-quote-face
                             'rear-nonsticky t))
-        (goto-char (point-min))
-        (fill-paragraph)
         (goto-char (point-max))
-        (justify-current-line 'right nil t)
-        (insert "\n\n")))
+        (insert "\n\n")
+        (message "Quote in *scratch*")))
     (message "Error fetching quote: %s"
              (assoc-default 'message
                             (assoc-default 'error (json-read))))))

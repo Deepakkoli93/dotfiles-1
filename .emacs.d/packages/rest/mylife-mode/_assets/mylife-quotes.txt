@@ -79,7 +79,6 @@ long for the endless immensity of the sea.”
                                           - Antoine de Saint-Exupéry  
 
 “Inside every large program is a small program struggling to get out.”
-
                                                         - Tony Hoare  
 
 “Man is most nearly himself when he achieves the seriousness of a
