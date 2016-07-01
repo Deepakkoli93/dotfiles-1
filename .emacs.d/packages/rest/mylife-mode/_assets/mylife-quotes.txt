@@ -447,8 +447,9 @@ one phrase: make use of suffering.”
 “What we wish, that we readily believe.” 
                                                        - Demosthenes  
 
-“Nothing is easier than self
--deceit. For what each man wishes, that he also believes to be true.” - Demosthenes  
+“Nothing is easier than self-deceit. For what each man wishes, that he
+also believes to be true.”
+                                                      - Demosthenes
 
 “Most writers regard truth as their most valuable possession, and
 therefore are economical in its use.” 
@@ -465,8 +466,11 @@ important to us, and keeping that picture in mind, we manage ourselves
 each day to be and to do what really matters most.” 
                                                      - Stephen Covey  
 
-“If you want happiness for an hour 
-- take a nap. If you want happiness for a day - go fishing. If you want happiness for a month - get married. If you want happiness for a year - inherit a fortune. If you want happiness for a lifetime - help someone else.” - Chinese Proverb  
+“If you want happiness for an hour - take a nap. If you want happiness
+for a day - go fishing. If you want happiness for a month - get
+married. If you want happiness for a year - inherit a fortune. If you
+want happiness for a lifetime - help someone else.”
+                                                    - Chinese Proverb
 
 “Don’t be afraid to take a big step if one is indicated. You can’t
 cross a chasm in two small jumps.” 
@@ -490,8 +494,10 @@ destroying all memory of a beginning and all fear of an end.”
                                                - Friedrich Nietzsche  
 
 “It’s only when we truly know and understand that we have a limited
-time on earth 
-- and that we have no way of knowing when our time is up, we will then begin to live each day to the fullest, as if it was the only one we had.” - Elisabeth Kubler-Ross  
+time on earth - and that we have no way of knowing when our time is
+up, we will then begin to live each day to the fullest, as if it was
+the only one we had.”
+                                            - Elisabeth Kubler-Ross
 
 “The mind cannot long act the role of the heart.” 
                                       - Francois de la Rochefoucauld  
@@ -592,8 +598,10 @@ being. Each of us owes deepest thanks to those who have rekindled this
 light.” 
                                                  - Albert Schweitzer  
 
-“I have accepted fear as a part of life 
-- specifically the fear of change. I have gone ahead despite the pounding in the heart that says: turn back.” - Erica Jong  
+“I have accepted fear as a part of life - specifically the fear of
+change. I have gone ahead despite the pounding in the heart that says:
+turn back.”
+                                                        - Erica Jong
 
 “Our chief want is someone who will inspire us to be what we know we
 could be.” 
@@ -673,8 +681,9 @@ think.”
 where it often substitutes for both.” 
                                                 - John Andrew Holmes  
 
-“A committee is a cul
--de-sac down which ideas are lured and then quietly strangled.” - Barnett Cocks  
+“A committee is a cul-de-sac down which ideas are lured and then
+quietly strangled.”
+                                                     - Barnett Cocks
 
 “It is easy enough to be friendly to one’s friends. But to befriend
 the one who regards himself as your enemy is the quintessence of true
@@ -813,8 +822,8 @@ soul.”
                                                     - Joseph Addison  
 
 “The fundamental cause of the trouble is that in the modern world the
-stupid are cocksure while the intelligent are full of doubt. 
-- Bertrand Russell (in The Triumph of Stupidity 10 May 1933)” - Bertrand Russell  
+stupid are cocksure while the intelligent are full of doubt.” 
+       - Bertrand Russell (in The Triumph of Stupidity 10 May 1933)
 
 “A bit of perfume always clings to the hand that gives the rose.” 
                                                    - Chinese proverb  
@@ -835,8 +844,9 @@ believing that their pain derives from other people and that
 consequently those people deserve to be punished.” 
                                                 - Marshall Rosenberg  
 
-“Punishment damages goodwill and self
--esteem, and shifts our attention from the intrinsic value of an action to external consequences.” - Marshall Rosenberg  
+“Punishment damages goodwill and self-esteem, and shifts our attention
+from the intrinsic value of an action to external consequences.”
+                                                 - Marshall Rosenberg
 
 “My aim is to agitate and disturb people. I’m not selling bread, I’m
 selling yeast.” 
@@ -901,8 +911,13 @@ the source of all true art and science.”
 
 “A human being is a part of a whole, called by us ‘universe’, a part
 limited in time and space. He experiences himself, his thoughts and
-feelings, as something separate from the rest 
-- a kind of optical delusion of consciousness. This delusion is a kind of prison for us, restricting us to our personal desires and to affection for a few persons nearest to us. Our task must be to free ourselves from this prison by widening our circle of compassion to embrace all living creatures and the whole of nature in its beauty.” - Albert Einstein  
+feelings, as something separate from the rest- a kind of optical
+delusion of consciousness. This delusion is a kind of prison for us,
+restricting us to our personal desires and to affection for a few
+persons nearest to us. Our task must be to free ourselves from this
+prison by widening our circle of compassion to embrace all living
+creatures and the whole of nature in its beauty.”
+                                                   - Albert Einstein
 
 “Enlightenment must come little by little—otherwise it would
 overwhelm.” 
@@ -982,8 +997,9 @@ progress depends on the unreasonable man.”
                                                - George Bernard Shaw  
 
 “Any sufficiently complicated C or Fortran program contains an ad hoc,
-informally
--specified, bug-ridden, slow implementation of half of Common Lisp.” - Philip Greenspun  
+informally-specified, bug-ridden, slow implementation of half of
+Common Lisp.”
+                                                - Philip Greenspun
 
 “I don’t mind what happens.” 
                                                 - Jiddu Krishnamurti  
@@ -1184,12 +1200,11 @@ hand, is an unreserved opening of the mind to the truth, whatever it
 may turn out to be. Faith has no preconceptions; it is a plunge into
 the unknown. Belief clings, but faith lets go. In this sense of the
 word, faith is the essential virtue of science, and likewise of any
-religion that is not self
-                                           -deception.” - Alan Watts  
+religion that is not self-deception.”
+                                                        - Alan Watts  
 
 “The object of mathematical rigor is to sanction and legitimize the
 conquests of intuition, and there was never any other object for it.”
-
                                                   - Jacques Hadamard  
 
 “Art is the elimination of the unnecessary.” 
@@ -1286,8 +1301,9 @@ IBM in France who addressed the audience at the 7th IEEE Logic
 programming conference in Paris. IBM prolog had added a lot of OO
 extensions, when asked why he replied: Our customers wanted OO prolog
 so we made OO prolog. I remember thinking “how simple, no qualms of
-conscience, no soul
--searching, no asking ‘Is this the right thing to do’” … - Joe Armstrong Why OO Sucks  
+conscience, no soul-searching, no asking ‘Is this the right thing to
+do’” …
+                                         - Joe Armstrong Why OO Sucks
 
 “The best way to have a good idea is to have a lot of ideas.” 
                                                      - Linus Pauling  
@@ -1340,8 +1356,13 @@ relationship with time.”
 you are not wholeheartedly following your own ideals.” 
                                            - Luke Palmer (blog post)  
 
-“You must be the change you wish to see in the world (
-- Mahatma Gandhi). As applied to software: design software as if it were the beautiful paradise you want it to be, then build pieces of the scaffolding back to the status quo.” - Luke Palmer (blog post)  
+“You must be the change you wish to see in the world.
+                                                    - Mahatma Gandhi
+
+As applied to software: design software as if it were the beautiful
+paradise you want it to be, then build pieces of the scaffolding back
+to the status quo.”
+                                            - Luke Palmer (blog post)
 
 “It’s not what you look at that matters; it’s what you see.” 
                                                - Henry David Thoreau  
@@ -1503,8 +1524,8 @@ persist in delusion, however satisfying and reassuring.”
 We too should make ourselves empty, that the great soul of the
 universe may fill us with its breath.  Lawrence Binyon
 
-“Practice not
-             -doing, and everything will fall into place.” - Lao-tzu  
+“Practice not-doing, and everything will fall into place.”
+                                                            - Lao-tzu  
 
 “It is no measure of health to be well adjusted to a profoundly sick
 society.” 
@@ -1587,9 +1608,8 @@ The perfect way is only difficult for those who pick and choose. Do
 not like, do not dislike; all will then be clear. Make a hairbreadth
 difference, and Heaven and Earth are set apart. If you want the truth
 to stand clearly before you, never be for or against. The struggle
-between for and against is the mind’s worst disease. — Zen master
-Sent
-                                                              -ts’an  
+between for and against is the mind’s worst disease.
+                                                — Zen master Sent-ts’an  
 
 “The recognition of the false is already the arising of the real.” 
                                                      - Eckhart Tolle  
@@ -1631,8 +1651,10 @@ through such barriers is to use the ‘Spaniel’ method: Carefully
 explain the program to your dog. Since the dog knows nothing of
 programming, you must justify every statement you make. In the process
 you will often discover the mistake. (I know it sounds weird, but it
-really does work!)” 
-- W. W. Waite (as quoted in “Literate Programming and the ‘Spaniel’ Method” by Nick Hatzigeorgiu and Apostolos Syropoulos)  
+really does work!)”
+                   - W. W. Waite (as quoted in “Literate Programming
+                   and the ‘Spaniel’ Method” by Nick Hatzigeorgiu and
+                   Apostolos Syropoulos)
 
 “Be silent or let thy words be worth more than silence.” 
                                                         - Pythagoras  
@@ -1868,8 +1890,9 @@ while daring greatly, so that his place shall never be with those cold
 and timid souls who knew neither victory nor defeat.” 
                                                 - Theodore Roosevelt  
 
-“Most of our so
--called reasoning consists in finding arguments for going on believing as we already do.” - James Harvey Robinson  
+“Most of our so-called reasoning consists in finding arguments for
+going on believing as we already do.”
+                                             - James Harvey Robinson
 
 “Do not believe in anything simply because you have heard it. Do not
 believe in anything simply because it is spoken and rumored by
@@ -1966,8 +1989,9 @@ by imagination, as I try to do.”
 “Attention Deficit Disorder was coined by regularity
 chauvinists. Regularity chauvinists are people who insist that you
 have got to do the same thing every time, every day, which drives some
-of us nuts. Attention Deficit Disorder 
-- we need a more positive term for that. Hummingbird mind, I should think.” - Ted Nelson (via Jake Elliott)  
+of us nuts. Attention Deficit Disorder- we need a more positive term
+for that. Hummingbird mind, I should think.”
+                                      - Ted Nelson (via Jake Elliott)
 
 “It is impossible for a man to learn what he thinks he already knows.”
 
@@ -2008,8 +2032,8 @@ sages, psychotics & geniuses manage to break free.”
 “There is nothing so practical as a good theory” 
                                                        - Phil Wadler  
 
-“Education is a state
-                -controlled manufactory of echoes.” - Norman Douglas  
+“Education is a state-controlled manufactory of echoes.”
+                                                     - Norman Douglas  
 
 “Hell is just resistance to life.” 
                                                       - Pema Chödrön  
@@ -2058,7 +2082,6 @@ known, so deeply tinge what we think of ourselves.”
                                                      - M. Scott Peck  
 
 “A good traveller has no fixed plans, and is not intent on arriving.”
-
                                                            - Lao Tzu  
 
 “To put it concisely, we suffer when we resist the noble and
@@ -2098,7 +2121,6 @@ simple, awesomely simple, that’s creativity.”
                                 - Charles Mingus (via Garr Reynolds)  
 
 “Every problem contains within itself the seeds of its own solution.”
-
                                                     - Stanley Arnold  
 
 “Wise men speak because they have something to say; fools because they
@@ -2189,14 +2211,17 @@ difference and, thus, the contemporary zeal for privacy.”
                                                 - William Wordsworth  
 
 “Everything you do consciously is preserved for you: everything you do
-mechanically, since you did not do it, is lost.” 
-- Maurice Nicoll (Psychological Commentaries on the Teaching of Gurdjieff and Ouspensky, volume 1, page 95)  
+mechanically, since you did not do it, is lost.”
+          - Maurice Nicoll (Psychological Commentaries on the Teaching
+                            of Gurdjieff and Ouspensky, volume 1, page
+                            95)
 
 “We hold on to hope, and hope robs us of the present moment.” 
                                                       - Pema Chödrön  
 
-“… inherited collective mind
--patterns … have kept humans in bondage to suffering for eons.” - Eckhart Tolle  
+“… inherited collective mind-patterns … have kept humans in bondage to
+suffering for eons.”
+                                                    - Eckhart Tolle
 
 “They belong to what is as yet a small but fortunately growing
 minority of spiritual pioneers: people who are reaching a point where
@@ -2304,8 +2329,9 @@ month’s study of books.”
 weakness. Why there? Because in our weakness, our familiar ways of
 controlling and manipulating our world are being stripped away, and we
 are forced to let go from doing much, thinking much, and relying on
-our self
--sufficiency. Right there where we are most vulnerable, the peace that is not of this world is mysteriously hidden.” - Henri Nouwen  
+our self-sufficiency. Right there where we are most vulnerable, the
+peace that is not of this world is mysteriously hidden.”
+                                                      - Henri Nouwen
 
 “The resistance to the unpleasant situation is the root of suffering.”
 
@@ -2384,8 +2410,9 @@ thought.”
 weak enough to be controlled.” 
                                                      - William Blake  
 
-“In the absence of clearly
--defined goals, we become loyal to performing daily trivia until we become enslaved by it.” - Robert Heinlein  
+“In the absence of clearly-defined goals, we become loyal to
+performing daily trivia until we become enslaved by it.”
+                                                   - Robert Heinlein
 
 “When your judgements parade as the truth, you deceive everyone,
 including yourself.” 
@@ -2470,8 +2497,9 @@ because they do not realize how complicated life is.”
                                                   - John von Neumann  
 
 “The two Virtues of Equanimity and Compassion become more available to
-the person whose ego
--shell has been smashed—either by great suffering or by great love—or by both.” - Richard Rohr  
+the person whose ego-shell has been smashed—either by great suffering
+or by great love—or by both.”
+                                                       - Richard Rohr
 
 “Don’t ask what the world needs. Ask what makes you come alive, and go
 do it. Because what the world needs is people who have come alive.” 
@@ -2498,7 +2526,7 @@ who could not hear the music.”
 
 “Lovers don’t finally meet somewhere. They’re in each other all
 along.” 
-                                                              - Rumi  
+                                                             - Rumi  
 
 “Time is God’s way of keeping everything from happening at once.” 
                                                          - Anonymous  
@@ -2508,7 +2536,6 @@ brainwashing has been.”
                                                      - Morton Kelsey  
 
 “What we assume, what we have never clearly thought out, controls us.”
-
                                                      - Morton Kelsey  
 
 “Honesty is not brutal. Brutality is not honest. If what you’re saying
@@ -2570,7 +2597,7 @@ with answers.”
                                   - Julio Olalla (via Holly Croydon)  
 
 “What other people think about you is none of your business.” 
-                                                           - unknown  
+                                                           - Unknown  
 
 “Let everything happen to you: beauty and terror. Just keep going. No
 feeling is final.” 
@@ -2605,17 +2632,17 @@ self
 
 “Most learning is not the result of instruction. It is rather the
 result of unhampered participation in a meaningful setting.” 
-                                                       - Ivan Illich  
+                                                     - Ivan Illich  
 
 “Pay close attention to when you’re being the real you and when you’re
 trying to impress an invisible jury.” 
-                                                      - Derek Sivers  
+                                                    - Derek Sivers  
 
 “The most basic and powerful way to connect to another person is to
 listen. Just listen. Perhaps the most important thing we ever give
 each other is our attention…. A loving silence often has far more
-power to heal and to connect than the most well
-                           -intentioned words.” - Rachel Naomi Remen  
+power to heal and to connect than the most well-intentioned words.”
+                                                - Rachel Naomi Remen
 
 “Our listening creates a sanctuary for the homeless parts within
 another person.” 
@@ -2737,8 +2764,16 @@ Declaration of Independence isn’t worth the hemp it was written on.”
 want.” 
                                                       - Esther Hicks  
 
-“…Simplifications have had a much greater long
--range scientific impact than individual feats of ingenuity. The opportunity for simplification is very encouraging, because in all examples that come to mind the simple and elegant systems tend to be easier and faster to design and get right, more efficient in execution, and much more reliable than the more contrived contraptions that have to be debugged into some degree of acceptability….Simplicity and elegance are unpopular because they require hard work and discipline to achieve and education to be appreciated.” - Edsger Dijkstra  
+“…Simplifications have had a much greater long-range scientific
+impact than individual feats of ingenuity. The opportunity for
+simplification is very encouraging, because in all examples that come
+to mind the simple and elegant systems tend to be easier and faster to
+design and get right, more efficient in execution, and much more
+reliable than the more contrived contraptions that have to be debugged
+into some degree of acceptability….Simplicity and elegance are
+unpopular because they require hard work and discipline to achieve and
+education to be appreciated.”
+                                                    - Edsger Dijkstra
 
 “Of all tyrannies, a tyranny exercised for the good of its victims may
 be the most oppressive. It may be better to live under robber barons
@@ -2786,8 +2821,13 @@ us can make a technological breakthrough capable of supporting all the
 rest. The youth of today are absolutely right in recognizing this
 nonsense of earning a living. We keep inventing jobs because of this
 false idea that everybody has to be employed at some kind of drudgery
-because, according to Malthusian
--Darwinian theory, he must justify his right to exist. So we have inspectors of inspectors and people making instruments for inspectors to inspect inspectors. The true business of people should be to go back to school and think about whatever it was they were thinking about before somebody came along and told them they had to earn a living.” - Buckminster Fuller  
+because, according to Malthusian-Darwinian theory, he must justify
+his right to exist. So we have inspectors of inspectors and people
+making instruments for inspectors to inspect inspectors. The true
+business of people should be to go back to school and think about
+whatever it was they were thinking about before somebody came along
+and told them they had to earn a living.”
+                                                - Buckminster Fuller
 
 “If I had asked people what they wanted, they would have said faster
 horses.” 
@@ -2831,8 +2871,19 @@ for granted.”
 and closed. The open mode is more relaxed, more receptive, more
 exploratory, more democratic, more playful and more humorous. The
 closed mode is the tighter, more rigid, more hierarchical, more
-tunnel
--visioned. Most people, unfortunately spend most of their time in the closed mode. Not that the closed mode cannot be helpful. If you are leaping a ravine, the moment of takeoff is a bad time for considering alternative strategies. When you charge the enemy machine-gun post, don’t waste energy trying to see the funny side of it. Do it in the”closed“ mode. But the moment the action is over, try to return to the “open” mode—to open your mind again to all the feedback from our action that enables us to tell whether the action has been successful, or whether further action is need to improve on what we have done. In other words, we must return to the open mode, because in that mode we are the most aware, most receptive, most creative, and therefore at our most intelligent.“ - John Cleese  
+tunnel-visioned. Most people, unfortunately spend most of their time
+in the closed mode. Not that the closed mode cannot be helpful. If you
+are leaping a ravine, the moment of takeoff is a bad time for
+considering alternative strategies. When you charge the enemy
+machine-gun post, don’t waste energy trying to see the funny side of
+it. Do it in the”closed“ mode. But the moment the action is over, try
+to return to the “open” mode—to open your mind again to all the
+feedback from our action that enables us to tell whether the action
+has been successful, or whether further action is need to improve on
+what we have done. In other words, we must return to the open mode,
+because in that mode we are the most aware, most receptive, most
+creative, and therefore at our most intelligent.”
+                                                     - John Cleese
 
 “Discovery consists of seeing what everybody has seen and thinking
 what nobody has thought.” 
@@ -2853,8 +2904,9 @@ and releases your creative imagination.”
 “One cannot simultaneously prevent and prepare for war.” 
                                                    - Albert Einstein  
 
-“It is the questions in life that move us forward, not the answers.” 
-- Anon (heard a talk from Unity of Hawaii in a podcast about the Yin & Yang of attachment)  
+“It is the questions in life that move us forward, not the answers.”
+- Anon (heard a talk from Unity of Hawaii in a podcast about the Yin &
+Yang of attachment)
 
 “A different world cannot be built by indifferent people.” 
                                                        - Horace Mann  
@@ -2967,8 +3019,9 @@ space for transformation to happen, for grace and love to enter.”
 
 “To be fully alive, fully human, and completely awake is to be
 continually thrown out of the nest. To live fully is to be always in
-no
--man’s-land, to experience each moment as completely new and fresh. To live is to be willing to die over and over again.” - Pema Chödrön  
+no-man’s-land, to experience each moment as completely new and
+fresh. To live is to be willing to die over and over again.”
+                                                      - Pema Chödrön
 
 “First something is a great idea, then it becomes a cause, then it
 becomes a business and finally it becomes a racket.” 
@@ -2982,8 +3035,12 @@ you are living in the future. If you are at peace, you are living in
 the present.” 
                                                            - Lao Tzu  
 
-“William James used to preach the ‘will
--to-believe.’ For my part, I should wish to preach the ‘will-to-doubt.’ None of our beliefs are quite true; all at least have a penumbra of vagueness and error. What is wanted is not the will to believe, but the will to find out, which is the exact opposite.” - Bertrand Russell in “Sceptical Essays” (1928)  
+“William James used to preach the ‘will-to-believe.’ For my part, I
+should wish to preach the ‘will-to-doubt.’ None of our beliefs are
+quite true; all at least have a penumbra of vagueness and error. What
+is wanted is not the will to believe, but the will to find out, which
+is the exact opposite.”
+                    - Bertrand Russell in “Sceptical Essays” (1928)
 
 “There is a transcendental dimension beyond language…. It’s just hard
 as hell to talk about it.” 
@@ -3007,8 +3064,12 @@ deeply you have loved and how well you have learned to let go.”
                                                    - Buddhist saying  
 
 “The plague of mankind is the fear and rejection of diversity:
-monotheism, monarchy, monogamy and, in our age, mono
--medicine. The belief that there is only one right way to live, only one right way to regulate religious, political, sexual, medical affairs is the root cause of the greatest threat to man: members of his own species, bent on ensuring his salvation, security, and sanity.” - Thomas Szasz  
+monotheism, monarchy, monogamy and, in our age, mono-medicine. The
+belief that there is only one right way to live, only one right way to
+regulate religious, political, sexual, medical affairs is the root
+cause of the greatest threat to man: members of his own species, bent
+on ensuring his salvation, security, and sanity.”
+                                                    - Thomas Szasz
 
 “The further a society drifts from the truth, the more it will hate
 those that speak it.” 
@@ -3019,11 +3080,14 @@ duties is to think in terms of authority.”
                                                   - Laurence Labadie  
 
 “Never say, and never take seriously anyone who says, ‘I cannot
-believe that so
--and-so could have evolved by gradual selection’. I have dubbed this kind of fallacy ‘the Argument from Personal Incredulity’. Time and again, it has proven the prelude to an intellectual banana-skin experience.” - Richard Dawkins  
+believe that so-and-so could have evolved by gradual selection’. I
+have dubbed this kind of fallacy ‘the Argument from Personal
+Incredulity’. Time and again, it has proven the prelude to an
+intellectual banana-skin experience.”
+                                                   - Richard Dawkins
 
-Problems worthy of attack prove their worth by hitting back.  — Piet
-Hein
+“Problems worthy of attack prove their worth by hitting back.”
+                                                    — Piet Hein
 
 “Any story that you tell about yourself is food for the ego. There is
 no authentic story.” 
@@ -3060,8 +3124,13 @@ been taught to choose.”
 “Exhale only love.” 
                                                               - Rumi  
 
-“Hand
--waving is an important factor in staying stuck in impossibility thinking, since rigorous argument uncovers unconscious limiting assumptions. I’m just as happy if you are working on showing impossibility as discovering the possible, as long as you are rigorous and get rigorous peer review. Otherwise, we all fall into the trap of self-deceit.” - Conal Elliott (Source)  
+“Hand-waving is an important factor in staying stuck in impossibility
+thinking, since rigorous argument uncovers unconscious limiting
+assumptions. I’m just as happy if you are working on showing
+impossibility as discovering the possible, as long as you are rigorous
+and get rigorous peer review. Otherwise, we all fall into the trap of
+self-deceit.”
+                                            - Conal Elliott (Source)
 
 “It is not only not right, it is not even wrong.” 
                                                     - Wolfgang Pauli  
@@ -3079,8 +3148,10 @@ and images which we did not invent, but which were given to us by our
 society.” 
                                                  - Alan Wilson Watts  
 
-“When a well
--packaged web of lies has been sold gradually to the masses over generations, the truth will seem utterly preposterous and its speaker a raving lunatic.” - Dresden James  
+“When a well-packaged web of lies has been sold gradually to the
+masses over generations, the truth will seem utterly preposterous and
+its speaker a raving lunatic.”
+                                                    - Dresden James
 
 “You have to know how to accept rejection and reject acceptance.” 
                                                       - Ray Bradbury  
@@ -3171,8 +3242,10 @@ as a mathematician, the possibility of making explicit, elegant
 computations has always come out by itself, as a byproduct of a
 thorough conceptual understanding of what was going on. Thus I never
 bothered about whether what would come out would be suitable for this
-or that, but just tried to understand —
-- and it always turned out that understanding was all that mattered.” - Alexander Grothendieck (in a letter to Ronnie Brown, December 4, 1983)  
+or that, but just tried to understand —- and it always turned out that
+understanding was all that mattered.”
+                           - Alexander Grothendieck (in a letter to
+                                       Ronnie Brown, December 4, 1983)
 
 “If a problem is fixable, if a situation is such that you can do
 something about it, then there is no need to worry. If it’s not
@@ -3198,8 +3271,9 @@ should have been, could have been.”
 yourself to be.” 
                                                         - Alan Watts  
 
-“Insanity in individuals is something rare —
-- but in groups, parties, nations and epochs, it is the rule.” - Friedrich Nietzsche  
+“Insanity in individuals is something rare —- but in groups, parties,
+nations and epochs, it is the rule.”
+                                                - Friedrich Nietzsche
 
 “I mean by intellectual integrity the habit of deciding vexed
 questions in accordance with the evidence, or of leaving them
@@ -3217,8 +3291,9 @@ aren’t working properly, you feel them. In the same way, you don’t
 hear your ears. If you have a ringing in your ears it means there’s
 something wrong with your ears. Therefore, if you do feel yourself,
 there must be something wrong with you. Whatever you have, the
-sensation of I is like spots in front of your eyes 
-- it means something’s wrong with your functioning.” - Alan Watts (Ego - from the Essential Alan Watts)  
+sensation of I is like spots in front of your eyes - it means
+something’s wrong with your functioning.”
+                  - Alan Watts (Ego - from the Essential Alan Watts)
 
 “The formulation of a problem is often more essential than its
 solution, which may be merely a matter of mathematical or experimental
@@ -3231,7 +3306,7 @@ advances in science.”
                                                    - Terence McKenna  
 
 “If you can’t get out of it, get into it.” 
-                                                              - anon  
+                                                         - Anonymous
 
 “You are an aperture through which the universe is looking at and
 exploring itself.” 
@@ -3252,7 +3327,10 @@ understand, things are just as they are.”
 “Nature does not hurry, yet everything is accomplished.” 
                                                            - Lao Tzu  
 
-“Personally, I feel inspired whenever I open Emacs. Like a craftsman entering his workshop, I feel a realm of possibility open before me. I feel the comfort of an environment that has evolved over time to fit me perfectly – an assortment of packages and keybindings which help me bring ideas to life day after day.”
- 
-- Daniel Higginbotham (Author of 'Clojure for the Brave and the True')  
+“Personally, I feel inspired whenever I open Emacs. Like a craftsman
+entering his workshop, I feel a realm of possibility open before me. I
+feel the comfort of an environment that has evolved over time to fit
+me perfectly – an assortment of packages and keybindings which help me
+bring ideas to life day after day.”
+    - Daniel Higginbotham (Author of 'Clojure for the Brave and the True')  
 

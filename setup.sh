@@ -18,7 +18,7 @@ function install-packages() {
 		  gtk-theme-switch2 gtk-chtheme 
 		  dosfstools dos2unix 
 		  recordmydesktop 
-		  openssh 
+		  openssh networkmanager network-manager-applet
 		  linux-manpages tree 
 		  gcc ghc
 		  cabal-install 
