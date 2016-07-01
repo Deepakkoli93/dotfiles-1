@@ -3,6 +3,7 @@
 
 (custom-theme-set-faces
  'vicarie
+ '(default ((t (:background "gray9" :foreground "white"))))
  '(cursor ((((background light)) (:background "black")) (((background dark)) (:background "white"))))
  '(fixed-pitch ((t (:family "Monospace"))))
  '(variable-pitch ((t (:family "Sans Serif"))))
@@ -45,7 +46,6 @@
  '(match ((((class color) (min-colors 88) (background light)) (:background "yellow1")) (((class color) (min-colors 88) (background dark)) (:background "RoyalBlue3")) (((class color) (min-colors 8) (background light)) (:foreground "black" :background "yellow")) (((class color) (min-colors 8) (background dark)) (:foreground "white" :background "blue")) (((type tty) (class mono)) (:inverse-video t)) (t (:background "gray"))))
  '(next-error ((t (:inherit (region)))))
  '(query-replace ((t (:inherit (isearch)))))
- '(default ((t (:family "Monaco" :foundry "APPL" :width normal :height 98 :weight normal :slant normal :underline nil :overline nil :strike-through nil :box nil :inverse-video nil :foreground "white" :background "gray9" :stipple nil :inherit nil))))
  '(org-hide ((t (:foreground "#2e3436"))))
  '(org-level-1 ((t (:bold nil :foreground "dodger blue" :height 1.3))))
  '(org-level-2 ((t (:bold nil :foreground "#edd400" :height 1.2))))
@@ -64,6 +64,10 @@
  '(org-agenda-structure ((t (:weight bold :foreground "tomato"))))
  '(org-agenda-date ((t (:foreground "#6ac214"))))
  '(org-agenda-date-weekend ((t (:weight normal :foreground "dodger blue"))))
- '(org-agenda-date-today ((t (:weight bold :foreground "#edd400")))))
+ '(org-agenda-date-today ((t (:weight bold :foreground "#edd400"))))
+ '(helm-candidate-number ((t (:background "goldenrod" :foreground "black"))))
+ '(helm-header-line-left-margin ((t (:background "chocolate" :foreground "black"))))
+ '(helm-selection ((t (:background "steel blue" :distant-foreground "white"))))
+ '(helm-source-header ((t (:background "saddle brown" :foreground "white" :weight bold :height 1.3 :family "Sans Serif")))))
 
 (provide-theme 'vicarie)

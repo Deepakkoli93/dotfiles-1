@@ -503,10 +503,6 @@ Taken from Chris Done's config"
 ;; mylife-mode
 (require 'mylife-mode)
 
-;; browser-url 
-(if (equal user-login-name "nj")
-    (setq browse-url-browser-function 'browse-url-chromium))
-
 ;; get quick emacs key binding suggestions
 (require 'guide-key)
 (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
@@ -907,6 +903,19 @@ Taken from Chris Done's config"
       (setq interprogram-paste-function 'x-selection-value)
       ;; for some reason, selection highlight isn't turned on by default
       (transient-mark-mode t)))
+
+;;; My personal island
+;;; ─────────────────────────────────────────────────────────────────
+;; Settings relevant only my Linux desktop at home
+(when (member user-login-name '("nj" "narendraj9"))
+  (set-face-attribute 'default nil
+                      :family "Monaco"
+                      :foundry "apple"
+                      :slant 'normal
+                      :weight 'normal
+                      :height 98
+                      :width 'normal)
+  (setq browse-url-browser-function 'browse-url-chromium))
 
 ;;; The Abiogenesis
 ;; ─────────────────────────────────────────────────────────────────
