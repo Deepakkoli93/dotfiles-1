@@ -20,7 +20,7 @@ function install-packages() {
 		  recordmydesktop 
 		  openssh 
 		  linux-manpages tree 
-		  g++ gcc ghc
+		  gcc ghc
 		  cabal-install 
 		  python-pygments python2-pygments
           espeak fortune-mod
@@ -31,9 +31,8 @@ function install-packages() {
     sudo  pacman -S  ${PACKAGES}
 
     # install dropbox
-    echo 'Do you want to install Dropbox now(y/N)?'
-    read choice
-    if [[ choice = 'y' ]] ; then
+    read -p 'Do you want to install Dropbox now(y/N)? ' choice
+    if [[ $choice = 'y' ]] ; then
 	    echo 'Installing Dropbox...'
 	    cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
     fi
@@ -60,11 +59,6 @@ function setup-dotfiles() {
     
     echo '--> Start making symlinks.'
 
-    # make directories if they don't exist!
-    if [[ ! -d ~/.config ]] ; then
-	    mkdir ~/.config
-    fi
-
     if [[ ! -d ~/.ssh ]] ; then
 	    mkdir ~/.ssh
     fi
@@ -77,10 +71,6 @@ function setup-dotfiles() {
 
     ## misc
     ln -sb dotfiles/.gitconfig .
-    [[ -d .fonts ]] && mv .fonts .fonts~
-    ln -sb dotfiles/.fonts .
-    [[ -d .ncmpcpp ]] && mv .ncmpcpp .ncmpcpp~
-    ln -sb ~/dotfiles/.ncmpcpp .
     ln -sb ~/dotfiles/.ssh/config ~/.ssh/config 
 
     # stardict dictionaries 
@@ -95,15 +85,6 @@ function setup-dotfiles() {
     ln -sb dotfiles/.xmonad .
     ln -sb ~/dotfiles/.i3status.conf .
 
-    ## mail
-    ln -sb ~/dotfiles/.muttrc .
-    ln -sb ~/dotfiles/.mailcp .
-    [[ -d .mutt ]] && mv .mutt .mutt~
-    ln -sb ~/dotfiles/.mutt .
-
-    ## awesome-wm
-    ln -sb ~/dotfiles/awesome ~/.config/
-
     # emacs
     [[ -d .emacs.d ]] && mv .emacs.d .emacs.d~
     ln -sb dotfiles/.emacs.d .
@@ -116,21 +97,13 @@ function setup-dotfiles() {
     # ghci
     ln -sb dotfiles/.ghci .
 
-    # weechat
-    [[ -d .weechat ]] && mv .weechat .weechat~
-    ln -sb dotfiles/.weechat .
-
-    # email
-    ln -sb ~/dotfiles/.offlineimaprc .
-
     echo '--> Done '
 
 }
 
 # Do the real work now.
-echo 'Install archlinux packages? (y/N)'
-read choice
-if [[ choice = 'y' ]]; then
+read -p 'Install archlinux packages? (y/N) ' choice
+if [[ $choice =~ ^(y) ]]; then
     install-packages
 fi
 

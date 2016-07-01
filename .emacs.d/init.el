@@ -916,7 +916,7 @@ Taken from Chris Done's config"
                       :height 98
                       :width 'normal)
   (set-fontset-font "fontset-default" 'unicode
-                    (font-spec :name "Symbola" :size 16))
+                    (font-spec :name "Symbola" :size 20))
   (setq browse-url-browser-function 'browse-url-chromium))
 
 ;;; The Abiogenesis

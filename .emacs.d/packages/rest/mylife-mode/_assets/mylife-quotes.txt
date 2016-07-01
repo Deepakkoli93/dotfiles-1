@@ -1073,8 +1073,10 @@ are no obvious deficiencies. The first method is far more difficult.”
 premature optimization is the root of all evil.” 
                                                         - Tony Hoare  
 
-“Faith is a cop
--out. If the only way you can accept an assertion is by faith, then you are conceding that it can’t be taken on its own merits.” - Dan Barker  
+“Faith is a cop-out. If the only way you can accept an assertion is by
+faith, then you are conceding that it can’t be taken on its own
+merits.”
+                                                         - Dan Barker
 
 “There’s only one wrong way to live and that’s unhappily.” 
                                                    - Patrick Elliott  
