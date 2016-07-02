@@ -119,7 +119,41 @@ current buffer with a timestamp. Use diary/calender/org-mode instead."
 (defun mylife-mode-init ()
   "Function that does initial setup in the major-mode function."
   (ignore))
-    
+
+(defun mylife-get-week-day ()
+  "Return a message for a weekday. Taken from @tw1tt3rart!"
+  (let ((day (format-time-string "%a")))
+    (propertize 
+     (pcase day
+       ("Fri"
+"┊┊┊┊IT'S┊FINALLY┊
+╭━━┓┊╭╮┊┏┓┊┊┊┊┊┊
+┃╭━┛┊╰╯┊┃┃┊┊┊┊┊┊
+┃┗┳┳━┳┳━╯┣━━┳┓┏┓
+┃╭┫╭╮┃┃╭┓┃╭╮┃╰╯┃
+┃┃┃┃┗┫┃╰╯┃╰┛┣━━┃
+┗┛┗┛┊┗┻━━┻━┻┻━━╯
+
+")
+       ("Sat"
+"")
+
+       ("Sun"
+"▂▂╱▔▔▔▔▔▔▔▔▔▔▔╲┈
+╲┈╭━╮┈┈┈┈┈┃┈┈┈┈╲
+┈▏┃╰╯┃┃┳╮╭┫╭╮┃┃▕
+┈▏╰━╮┃┃┃┃┃┃╭┫┃┃▕
+┈▏╭╮┃╰╯┃┃╰┻╰┻╰┫▕
+┈╲╰━╯╰━━━━━━━━╯╱
+┈┈╲▂▂▂▂▂▂▂▂▂▂▂╱┈
+
+")
+
+       (n ""))
+     'font-lock-face '(:foreground "Sienna" :height 3.0)
+     'rear-nonsticky t
+     )))
+
 ;;;###autoload
 (define-derived-mode mylife-mode prog-mode "Mylife" ()
   "Major mode for almost anything random."
@@ -127,3 +161,4 @@ current buffer with a timestamp. Use diary/calender/org-mode instead."
   (mylife-mode-init))
 
 (provide 'mylife-mode)
+

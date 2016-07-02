@@ -497,7 +497,7 @@ Taken from Chris Done's config"
         (blink-cursor-mode 1)
         (global-unset-key (kbd "C-c x"))
         (message (shell-command-to-string
-                  (concat "convert -delay 35 /tmp/frames/*.png /tmp/frames/out.gif && "
+                  (concat "convert -delay 70 /tmp/frames/*.png /tmp/frames/out.gif && "
                           "echo Ouput saved to /tmp/frames/out.gif &")))))))
 
 ;;; MISCELLANY
@@ -542,7 +542,7 @@ Taken from Chris Done's config"
 
 ;; line numbers for rows
 (global-linum-mode 0)
-(setq linum-format "%2d| ")
+(setq linum-format "%2d│")
 (set-face-attribute 'linum nil
                     :background "black"
                     :foreground "steel blue")
@@ -937,7 +937,8 @@ Taken from Chris Done's config"
 ;; ─────────────────────────────────────────────────────────────────
 ;; A random quote from mylife-mode in the *scratch* buffer.
 (setq initial-major-mode 'fundamental-mode)
-(setq initial-scratch-message (mylife-random-quote-string))
+(setq initial-scratch-message (concat (mylife-random-quote-string)
+                                      (mylife-get-week-day)))
 
 ;; Show emacs startup time after init
 (add-hook 'after-init-hook
