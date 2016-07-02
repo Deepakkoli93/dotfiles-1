@@ -11,6 +11,6 @@ use for anything that I can use it for, e.g. managing my
 expenses, writing down notes, managing a journal. Here
 is a demo my Emacs setup recorded with Emacs:
 
-![Emacs Demo](local/assets/emacs.gif)
+![Emacs Demo](./local/assets/emacs.gif?raw=true)
 
 
