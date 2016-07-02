@@ -74,8 +74,8 @@ function setup-dotfiles() {
     ln -sb ~/dotfiles/.ssh/config ~/.ssh/config 
 
     # stardict dictionaries 
-    [[ -d .stardict ]] && mv .stardict .startdict~
-    ln -sb ~/dotfiles/.startdict .
+    [[ -d .stardict ]] && mv .stardict .stardict~
+    ln -sb ~/dotfiles/.stardict .
 
     ## X server
     ln -sb dotfiles/.xinitrc .

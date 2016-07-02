@@ -8,6 +8,7 @@ fi
 export HISTSIZE=10000
 export HISTCONTROL=ignoredups
 
+export STARDICT_DATA_DIR=~/dotfiles/.stardict/
 export TERM="rxvt"
 export EDITOR="emacsclient -nw -c -a \"\""
 export ALTERNATE_EDITOR=""

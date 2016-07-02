@@ -103,20 +103,33 @@
 (global-set-key (kbd "C-c e") 'hledger-jentry)
 (global-set-key (kbd "C-c j") 'hledger-jdo)
 ;; utilities
-(global-set-key (kbd "C-c d") 'insert-date-at-point)
+(global-set-key (kbd "C-c D") 'insert-date-at-point)
 (global-set-key (kbd "C-c L") 'linum-mode)
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
 (global-set-key (kbd "C-c +") 'vicarie/eval-replace-last-sexp)
 (global-set-key (kbd "C-c i") 'go-back-to-intellij)
 (global-set-key (kbd "C-c q") 'fill-paragraph-and-move-forward)
 (global-set-key (kbd "C-c u") 'enlarge-current-window)
+(global-set-key (kbd "C-c d") 'define-word-at-point)
 
-;; rarely used bindings
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 (global-set-key (kbd "M-x") 'helm-M-x)
 
 ;;; UTILITY FUNCTION DEFINITIONS
 ;;  ─────────────────────────────────────────────────────────────────
+(defun define-word-at-point ()
+  "Shows the definition of the word at point.
+Assumes that popup.el is already loaded, wordnet dictionary is available
+and sdcv is installed."
+  (interactive)
+  (let* ((word (word-at-point)))
+    (if word
+        (popup-tip (shell-command-to-string
+                    (concat "sdcv -u \"WordNet\" "
+                            (shell-quote-argument word)
+                            " | tail -n +5 ")))
+      (message "No word at point"))))
+
 (defun enlarge-current-window ()
   "Enlarge the current window by 5 lines."
   (interactive)
