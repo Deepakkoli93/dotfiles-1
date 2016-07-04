@@ -80,7 +80,7 @@
     ;; Load my custom theme { Some of the lines above may be redundant }
     (add-hook 'after-init-hook (lambda ()
                                  (interactive)
-                                 (load-theme 'vicarie t)))
+                                 (load-theme 'vicarie-and-blackboard t)))
     
     ;; Powerline
     (require 'powerline)
@@ -564,9 +564,9 @@ Taken from Chris Done's config"
 (add-hook 'Man-mode-hook 'easy-move)
 ;; width of man pages
 (setenv "MANWIDTH" "80")
-;; frame size and position on emacs startup | for consitency
-(set-frame-size (selected-frame) 100 30)
-(set-frame-position (selected-frame) 250 150)
+;; Maximize emacs on startup
+(if (window-system)
+    (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 ;; cmake-mode
 (require 'cmake-mode)
