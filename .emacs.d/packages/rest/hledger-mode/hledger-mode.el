@@ -43,8 +43,8 @@
   "String to be used for currency. Assumes it is prefixed.")
 
 (defvar hledger-service-fetch-url
-  "Service url for fetching journal entries."
-  "https://services.vicarie.in/api/entry")
+  "https://services.vicarie.in/api/entry"
+    "Service url for fetching journal entries.")
 
 ;;; Regexes
 (defvar hledger-empty-regex "^\\s-*$"

@@ -125,31 +125,60 @@ current buffer with a timestamp. Use diary/calender/org-mode instead."
   (let ((day (format-time-string "%a")))
     (propertize 
      (pcase day
+       ("Mon"
+"
+               誠実
+             Seijitsu
+             Sincerity
+
+")
+
+       ("Tue"
+"
+               謙虚
+              Kenkyo
+             Humility
+
+")
+       ("Wed"
+"
+               感謝
+              Kansha
+             Gratitude
+
+")
+       ("Thu"
+"
+              忍耐力
+           Nintai-ryoku
+           Perseverance
+
+")
+
        ("Fri"
-"┊┊┊┊IT'S┊FINALLY┊
-╭━━┓┊╭╮┊┏┓┊┊┊┊┊┊
-┃╭━┛┊╰╯┊┃┃┊┊┊┊┊┊
-┃┗┳┳━┳┳━╯┣━━┳┓┏┓
-┃╭┫╭╮┃┃╭┓┃╭╮┃╰╯┃
-┃┃┃┃┗┫┃╰╯┃╰┛┣━━┃
-┗┛┗┛┊┗┻━━┻━┻┻━━╯
+"
+               勇気
+               Yūki
+              Courage
 
-")
+"
+)
+
        ("Sat"
-"")
-
-       ("Sun"
-"▂▂╱▔▔▔▔▔▔▔▔▔▔▔╲┈
-╲┈╭━╮┈┈┈┈┈┃┈┈┈┈╲
-┈▏┃╰╯┃┃┳╮╭┫╭╮┃┃▕
-┈▏╰━╮┃┃┃┃┃┃╭┫┃┃▕
-┈▏╭╮┃╰╯┃┃╰┻╰┻╰┫▕
-┈╲╰━╯╰━━━━━━━━╯╱
-┈┈╲▂▂▂▂▂▂▂▂▂▂▂╱┈
+"
+              感受性
+             Kanjusei
+            Receptivity
 
 ")
+       
+       ("Sun"
+"
+               平和
+              Heiwa
+              Peace
 
-       (n ""))
+"))
      'font-lock-face '(:foreground "Sienna" :height 3.0)
      'rear-nonsticky t
      )))

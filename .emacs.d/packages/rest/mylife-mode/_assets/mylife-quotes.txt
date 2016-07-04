@@ -2334,7 +2334,6 @@ peace that is not of this world is mysteriously hidden.”
                                                       - Henri Nouwen
 
 “The resistance to the unpleasant situation is the root of suffering.”
-
                                                           - Ram Dass  
 
 “The first step in conflict is to shift from agree/disagree to trying
@@ -3334,3 +3333,5 @@ me perfectly – an assortment of packages and keybindings which help me
 bring ideas to life day after day.”
     - Daniel Higginbotham (Author of 'Clojure for the Brave and the True')  
 
+“Emacs is a way of Life.”
+                                                           - Saccharine

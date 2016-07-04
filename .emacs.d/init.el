@@ -125,7 +125,7 @@ and sdcv is installed."
   (let* ((word (word-at-point)))
     (if word
         (popup-tip (shell-command-to-string
-                    (concat "sdcv -u \"WordNet\" "
+                    (concat "sdcv -nu \"WordNet\" "
                             (shell-quote-argument word)
                             " | tail -n +5 ")))
       (message "No word at point"))))
@@ -278,15 +278,15 @@ If format isn't specified it defaults to `%Y %m %d`"
 (defun make-old-content-read-only ()
   "Only allow for appending new content in the buffer."
   (interactive)
-  (put-text-property 1 2 'front-sticky '(read-only))
   (save-excursion
     (let ((begin (point-min))
           (end (progn
                  (goto-char (point-max))
                  (backward-word)  ; Upto the line containing a word
-                 (end-of-line nil)
+                 (end-of-line)
                  (point))))
-      (put-text-property begin end 'read-only t))))
+      (add-text-properties begin end
+                         '(read-only t rear-nonsticky t front-sticky t)))))
 
 ;; Minor mode for enabling rainbow mode everywhere
 (define-globalized-minor-mode global-rainbow-mode rainbow-mode
@@ -518,7 +518,7 @@ Taken from Chris Done's config"
 
 ;; get quick emacs key binding suggestions
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
+(setq guide-key/guide-key-sequence '("C-x" "C-x r" "C-x 4" "C-c"))
 (guide-key-mode 1) 
 
 ;; ido
