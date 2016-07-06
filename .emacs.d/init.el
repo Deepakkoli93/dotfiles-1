@@ -118,20 +118,27 @@
 
 ;;; UTILITY FUNCTION DEFINITIONS
 ;;  ─────────────────────────────────────────────────────────────────
+(defun lookup-word (word dict fallback-function)
+  "Lookup a given WORD in the dictionary DICT or fallback to FALLBACK-FUNCTION"
+  (progn
+    (if  (executable-find "sdcv")
+        (popup-tip (shell-command-to-string
+                    (format "sdcv -nu \"%s\" %s %s"
+                            dict
+                            (shell-quote-argument word)
+                            " | tail -n +5 ")))
+      (funcall fallback-function word))))
+
 (defun lookup-word-at-point (dict fallback-function)
   "Generic helper function for `define-word-at-point' and 
 `show-synonyms-for-word-at-point'."
   (let* ((word (word-at-point)))
     (if word
-        (progn
-          (if  (executable-find "sdcv")
-              (popup-tip (shell-command-to-string
-                          (format "sdcv -nu \"%s\" %s %s"
-                                  dict
-                                  (shell-quote-argument word)
-                                  " | tail -n +5 ")))
-            (funcall fallback-function word)))
-      (message "No word at point"))))
+        (lookup-word word dict fallback-function)
+      (lookup-word
+       (read-from-minibuffer "No word at point. Enter word: ")
+       dict
+       fallback-function))))
 
 (defun define-word-at-point ()
     "Shows the definition of the word at point.
