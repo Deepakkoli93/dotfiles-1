@@ -111,28 +111,39 @@
 (global-set-key (kbd "C-c q") 'fill-paragraph-and-move-forward)
 (global-set-key (kbd "C-c u") 'enlarge-current-window)
 (global-set-key (kbd "C-c d") 'define-word-at-point)
+(global-set-key (kbd "C-c s") 'show-synonyms-for-word-at-point)
 
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 (global-set-key (kbd "M-x") 'helm-M-x)
 
 ;;; UTILITY FUNCTION DEFINITIONS
 ;;  ─────────────────────────────────────────────────────────────────
-(defun define-word-at-point ()
-  "Shows the definition of the word at point.
-Assumes that popup.el is already loaded, wordnet dictionary is available
-and sdcv is installed."
-  (interactive)
+(defun lookup-word-at-point (dict fallback-function)
+  "Generic helper function for `define-word-at-point' and 
+`show-synonyms-for-word-at-point'."
   (let* ((word (word-at-point)))
     (if word
         (progn
-          (if  (executable-find "sdcvu")
+          (if  (executable-find "sdcv")
               (popup-tip (shell-command-to-string
-                          (concat "sdcv -nu \"WordNet\" "
+                          (format "sdcv -nu \"%s\" %s %s"
+                                  dict
                                   (shell-quote-argument word)
                                   " | tail -n +5 ")))
-            ;; Let's try the Merriam Webster's API
-            (mylife-define-word word)))
+            (funcall fallback-function word)))
       (message "No word at point"))))
+
+(defun define-word-at-point ()
+    "Shows the definition of the word at point.
+Assumes that popup.el is already loaded, wordnet dictionary is available
+and sdcv is installed."
+    (interactive)
+    (lookup-word-at-point "WordNet" 'mylife-define-word))
+
+(defun show-synonyms-for-word-at-point ()
+  "Shows synonyms similar to `define-word-at-point'"
+  (interactive)
+  (lookup-word-at-point "Moby Thesaurus II" 'mylife-find-synonyms))
 
 (defun enlarge-current-window ()
   "Enlarge the current window by 5 lines."
