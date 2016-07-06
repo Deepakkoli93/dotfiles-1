@@ -124,10 +124,14 @@ and sdcv is installed."
   (interactive)
   (let* ((word (word-at-point)))
     (if word
-        (popup-tip (shell-command-to-string
-                    (concat "sdcv -nu \"WordNet\" "
-                            (shell-quote-argument word)
-                            " | tail -n +5 ")))
+        (progn
+          (if  (executable-find "sdcvu")
+              (popup-tip (shell-command-to-string
+                          (concat "sdcv -nu \"WordNet\" "
+                                  (shell-quote-argument word)
+                                  " | tail -n +5 ")))
+            ;; Let's try the Merriam Webster's API
+            (mylife-define-word word)))
       (message "No word at point"))))
 
 (defun enlarge-current-window ()
@@ -643,6 +647,9 @@ Taken from Chris Done's config"
 (setq abbrev-file-name abbrev-file)
 (if (file-exists-p abbrev-file-name)
     (quietly-read-abbrev-file))
+
+;; Encoding
+(prefer-coding-system 'utf-8)
 
 ;; general settings
 (show-paren-mode 1)

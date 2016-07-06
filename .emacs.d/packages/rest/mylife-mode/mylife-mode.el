@@ -22,6 +22,7 @@
 
 (require 'mylife-relationships)
 (require 'mylife-quotes)
+(require 'mylife-dictionary)
 
 (defgroup mylife nil
   "Customization group for mylife-mode.")
