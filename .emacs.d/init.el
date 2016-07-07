@@ -121,7 +121,6 @@
 (defun toggle-reading-mode ()
   "Set up the current window for reading."
   (interactive)
-  (require 'evil)
   (if (not (get 'this-command 'readingp))
       (let* ((width (window-text-width))
              (reading-pane-width 80)
@@ -129,18 +128,20 @@
         (setq left-margin-width margin-width
               right-margin-width left-margin-width)
         (visual-line-mode)
-        (evil-local-mode)
         (fill-region (point-min) (point-max))
+        (easy-move)
+        ;; Re-set the window buffer to display changes
+        (set-window-buffer (selected-window) (current-buffer))
+        ;; Cannot do ^^ after read-only-mode
+        (read-only-mode)
         (put 'this-command 'readingp t))
     (setq left-margin-width 0
           right-margin-width left-margin-width)
     (visual-line-mode -1)
-    (evil-local-mode -1)
-    ;; I don't want any of vim beyond current buffer
-    (global-undo-tree-mode -1)
-    (put 'this-command 'readingp nil))
-  ;; Re-set the window buffer to display changes
-  (set-window-buffer (selected-window) (current-buffer)))
+    (uneasy-move)
+    (read-only-mode -1)
+    (set-window-buffer (selected-window) (current-buffer))
+    (put 'this-command 'readingp nil)))
 
 (defun lookup-word (word dict fallback-function)
   "Lookup a given WORD in the dictionary DICT or fallback to FALLBACK-FUNCTION.
