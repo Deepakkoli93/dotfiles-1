@@ -118,13 +118,39 @@
 
 ;;; UTILITY FUNCTION DEFINITIONS
 ;;  ─────────────────────────────────────────────────────────────────
+(defun toggle-reading-mode ()
+  "Set up the current window for reading."
+  (interactive)
+  (require 'evil)
+  (if (not (get 'this-command 'readingp))
+      (let* ((width (window-text-width))
+             (reading-pane-width 80)
+             (margin-width (round (/ (- width reading-pane-width) 2.0))))
+        (setq left-margin-width margin-width
+              right-margin-width left-margin-width)
+        (visual-line-mode)
+        (evil-local-mode)
+        (fill-region (point-min) (point-max))
+        (put 'this-command 'readingp t))
+    (setq left-margin-width 0
+          right-margin-width left-margin-width)
+    (visual-line-mode -1)
+    (evil-local-mode -1)
+    ;; I don't want any of vim beyond current buffer
+    (global-undo-tree-mode -1)
+    (put 'this-command 'readingp nil))
+  ;; Re-set the window buffer to display changes
+  (set-window-buffer (selected-window) (current-buffer)))
+
 (defun lookup-word (word dict fallback-function)
-  "Lookup a given WORD in the dictionary DICT or fallback to FALLBACK-FUNCTION"
+  "Lookup a given WORD in the dictionary DICT or fallback to FALLBACK-FUNCTION.
+Currently I think the online dictionary is more useful so I have
+an invalid command name 'sdcv-invalid'. "
   (progn
-    (if  (executable-find "sdcv")
+    (if  (executable-find "sdcv-invalid")
         (popup-tip (shell-command-to-string
                     (format "sdcv -nu \"%s\" %s %s"
-                            dict
+                            (shell-quote-argument dict)
                             (shell-quote-argument word)
                             " | tail -n +5 ")))
       (funcall fallback-function word))))
