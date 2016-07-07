@@ -242,7 +242,7 @@ If the buffer is not intended for editing, then `q` closes it.
         (local-set-key (kbd "q")
                        (lambda ()
                          (interactive)
-                         (quit-restore-window (selected-window) 'kill)))
+                         (kill-buffer-and-window)))
         (setq header-line-format " q : Quit "))
       (local-set-key (kbd "C-c w")
                      (lambda ()
