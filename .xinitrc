@@ -1,5 +1,7 @@
 # choose window-manager
-wm=xmonad
+WM=xmonad
+WALLPAPER_DIR=~/miscellany/assets/images/casper-david-friedrich/
+POWER_INFO_BIN=~/dotfiles/local/bin/power_info
 
 #xrandr --output LVDS --mode 1280x768
 [[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
@@ -14,7 +16,7 @@ start-pulseaudio-x11
 xset -b
 
 # start power monitor 
-~/dotfiles/local/bin/power_info &
+${POWER_INFO_BIN} &
 
 # start a composite manager
 xcompmgr -Cc -r 8 &
@@ -22,7 +24,7 @@ xcompmgr -Cc -r 8 &
 # start syndaemon
 syndaemon -d -i 1.0
 
-case $wm in
+case $WM in
 	awesome)
 		# start awesome
 		awesome
@@ -31,8 +33,8 @@ case $wm in
 		# set cursor
 		xsetroot -cursor_name left_ptr
 
-		# wallpaper
-		feh --bg-fill ~/dotfiles/local/assets/background.png
+		# randomly pick a wallpaper
+		feh --bg-fill "$(find ${WALLPAPER_DIR} -type f | shuf -n 1)"
 
 		# start xmonad | /usr/bin/bash so that ~/.bashrc is source and env set up!
 	    /usr/bin/bash --login -c xmonad &> /dev/null

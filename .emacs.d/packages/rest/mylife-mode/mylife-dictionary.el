@@ -14,9 +14,16 @@
   "The number of results to fetch.")
 
 (defvar mylife-pearson-base-url
-  "https://api.pearson.com"
+  "http://api.pearson.com"
   "Base url for the Pearson API")
 
+(defvar mylife-webster-base-url
+  "http://www.dictionaryapi.com/api"
+  "Base url for the Merriam-Webster's API.")
+
+(defvar mylife-webster-thesaurus-key
+  "THESAURUS-KEY"
+  "Key for the Merriam-Webster's Thesaurus.")
 
 (defun mylife-pearson-build-url (word &optional synonymp)
   "Builds the url end point for finding WORD in REFERENCE."
@@ -44,25 +51,28 @@ parsed value. `parser` parses the contents of the buffer from point "
                             (search-forward "\n\n")
                             (,action (,parser) ,query-buffer ,query-point)
                             (kill-buffer)))))
-    (message "Fetching %s" url)
+    (message url)
     (url-retrieve url url-callback)))
 
 (defun mylife-pearson-parser ()
   "Parsers the current buffer from `point` to return a string."
+  (recode-region (point) (point-max) 'utf-8 'binary)
   (let* ((json-response (json-read))
          (results (assoc-default 'results json-response)))
     (if (equal results [])
-        (message "Couldn't find anything :(")
+        "Couldn't find anything :("
       (mapconcat 'mylife-pearson-parser-result results "\n"))))
 
 (defun mylife-pearson-parser-result (r)
   "Parse a result json object."
   (let* ((headword (assoc-default 'headword r))
+         (ipa (assoc-default 'ipa (elt (assoc-default 'pronunciations r) 0)))
          (part-of-speech (assoc-default 'part_of_speech r))
          (senses (mapconcat 'mylife-pearson-parser-sense
                               (assoc-default 'senses r)
                               "\n")))
-    (format "%s: %s\n%s" part-of-speech headword senses)))
+    (format "%s: %s\n%s"
+            part-of-speech headword senses)))
 
 (defun mylife-pearson-parser-string-or-empty (f s)
   "If s is non-empty use f as argument to `format' else return empty string"
@@ -115,10 +125,33 @@ query-point."
    'mylife-pearson-show-popup))
 
 (defun mylife-find-synonyms (word)
-  "Find out synonyms for word"
+  "Find out synonyms for word.  
+Since the pearson api isn't very good at finding synonyms, I am
+using the Merriam Webster's API for the task."
   (mylife-pearson-fetch-parse-do
-   (mylife-pearson-build-url word t)
-   'mylife-pearson-parser
+   (url-encode-url (format "%s/v1/references/thesaurus/xml/%s?key=%s"
+                           mylife-webster-base-url
+                           word
+                           mylife-webster-thesaurus-key))
+   `(lambda ()
+      "The Great Anynymous Parser for the Merriam-Webster's Thesaurus."
+      (while (re-search-forward "<it>\\|</it>" nil t)
+        (replace-match "" nil nil))
+      (goto-char (point-min))
+      (search-forward "\n\n")
+      (let* ((root (car (xml-parse-region (point) (point-max))))
+             (entries (xml-get-children root 'entry))
+             (sense (car (xml-get-children (car entries) 'sens)))
+             (synonyms (xml-node-children (car (xml-get-children sense
+                                                                 'syn))))
+             (antonyms (xml-node-children (car (xml-get-children sense
+                                                                 'ant)))))
+        (format  "%s\n• Synonyms: %s\n• Antonyms: %s"
+                 ,word
+                 (and synonyms
+                      (replace-regexp-in-string "\\(\\|\\)" ""  (car synonyms)))
+                 (and antonyms
+                      (replace-regexp-in-string "\\(\\|\\)" "" (car antonyms))))))
    'mylife-pearson-show-popup))
 
 (provide 'mylife-dictionary)

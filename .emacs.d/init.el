@@ -118,10 +118,14 @@
 
 ;;; UTILITY FUNCTION DEFINITIONS
 ;;  ─────────────────────────────────────────────────────────────────
+(defvar toggle-reading-mode nil
+  "Buffer local variable to keep track of reading mode state.")
+(make-variable-buffer-local 'toggle-reading-mode)
+
 (defun toggle-reading-mode ()
   "Set up the current window for reading."
   (interactive)
-  (if (not (get 'this-command 'readingp))
+  (if (not toggle-reading-mode)
       (let* ((width (window-text-width))
              (reading-pane-width 80)
              (margin-width (round (/ (- width reading-pane-width) 2.0))))
@@ -134,14 +138,14 @@
         (set-window-buffer (selected-window) (current-buffer))
         ;; Cannot do ^^ after read-only-mode
         (read-only-mode)
-        (put 'this-command 'readingp t))
+        (put 'toggle-reading-mode 'readingp t))
+    (read-only-mode -1)
     (setq left-margin-width 0
           right-margin-width left-margin-width)
     (visual-line-mode -1)
     (uneasy-move)
-    (read-only-mode -1)
     (set-window-buffer (selected-window) (current-buffer))
-    (put 'this-command 'readingp nil)))
+    (setq toggle-reading-mode t)))
 
 (defun lookup-word (word dict fallback-function)
   "Lookup a given WORD in the dictionary DICT or fallback to FALLBACK-FUNCTION.
@@ -556,6 +560,14 @@ Taken from Chris Done's config"
 (if (file-exists-p custom-file)
     (load custom-file))
 
+;; I think I will mostly want the pointer to go to the end with M-r
+;; And then I would do a M-l to re-center it. Since both of them use
+;; `recenter-positions'. I am using advices.
+(setq recenter-positions '(bottom top middle))
+(advice-add 'recenter-top-bottom
+            :around (lambda (f &rest args)
+                      (let ((recenter-positions '(middle top bottom)))
+                        (apply f args))))
 ;; personal finance
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook 'easy-auto-complete-mode-hook)
@@ -567,7 +579,7 @@ Taken from Chris Done's config"
 
 ;; get quick emacs key binding suggestions
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x" "C-x r" "C-x 4" "C-c"))
+(setq guide-key/guide-key-sequence '("C-x" "C-x r" "C-x 4" "C-c" "C-x n"))
 (guide-key-mode 1) 
 
 ;; ido
@@ -708,6 +720,9 @@ Taken from Chris Done's config"
 (setq-default indent-tabs-mode nil)
 (setq x-select-enable-clipboard t)
 (setq inhibit-splash-screen t)
+
+;; Enable disabled commands
+(put 'narrow-to-region 'disabled nil)
 
 ;;; ESHELL
 ;;  ─────────────────────────────────────────────────────────────────
@@ -996,6 +1011,8 @@ Taken from Chris Done's config"
 (add-hook 'after-init-hook
           `(lambda ()
             "Show the emacs load time on startup in the echo area."
+            (with-current-buffer "*scratch*"
+              (make-old-content-read-only))
             (message (format "Finished loading %s in %.2f seconds."
                              ,load-file-name
                              (time-to-seconds (time-subtract (current-time)
@@ -1004,5 +1021,3 @@ Taken from Chris Done's config"
 (defun display-startup-echo-area-message ()
   "Does nothing. Says nothing. Displays nothing. That's so it."
   (ignore))
-
-
