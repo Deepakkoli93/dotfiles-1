@@ -468,10 +468,6 @@ highlighting in both kinds of buffers."
   (hledger-mode-init)
   ;; Highlight current line for better readability
   (hl-line-mode 1)
-  ;; Use vim-like bindings for navigating up, down, left and right
-  ;; But this function call makes this mode dependent on my init.el
-  ;; I think I should move these functions into util.el .
-  (easy-move)
   ;; A freshly preprared keymap
   (use-local-map (make-keymap)))
 
