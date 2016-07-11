@@ -103,6 +103,7 @@
 (global-set-key (kbd "C-c e") 'hledger-jentry)
 (global-set-key (kbd "C-c j") 'hledger-jdo)
 ;; utilities
+(global-set-key (kbd "M-g f") 'avy-goto-char-timer)
 (global-set-key (kbd "C-c D") 'insert-date-at-point)
 (global-set-key (kbd "C-c L") 'linum-mode)
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
@@ -581,6 +582,9 @@ Taken from Chris Done's config"
 (require 'guide-key)
 (setq guide-key/guide-key-sequence '("C-x" "C-x r" "C-x 4" "C-c" "C-x n"))
 (guide-key-mode 1) 
+
+;; avy
+(require 'avy)
 
 ;; ido
 ;; show completions vertically
