@@ -51,7 +51,6 @@ parsed value. `parser` parses the contents of the buffer from point "
                             (search-forward "\n\n")
                             (,action (,parser) ,query-buffer ,query-point)
                             (kill-buffer)))))
-    (message url)
     (url-retrieve url url-callback)))
 
 (defun mylife-pearson-parser ()

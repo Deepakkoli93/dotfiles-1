@@ -17,43 +17,54 @@
 (let ((default-directory (expand-file-name "packages/rest/"
                                            user-emacs-directory)))
   (normal-top-level-add-to-load-path '("hledger-mode"
-				       "utils"
+                                       "utils"
                                        "powerline"
                                        "mylife-mode")))
 (package-initialize)
 
 ;;; VARIABLES
 ;;  ─────────────────────────────────────────────────────────────────
-(setq secrets-file
-      (expand-file-name "~/miscellany/assets/secrets.el"))
-;;; secrets.el [Sets up a few variables]
-(if (file-exists-p secrets-file)
-    (load secrets-file))
+(defvar org-directory
+  (expand-file-name "~/miscellany/personal/org/")
+  "Directory for keeping my org-mode files.")
 
-(setq org-directory
-      (expand-file-name "~/miscellany/personal/org/"))
-(setq emacs-themes-directory
-      (expand-file-name "~/.emacs.d/themes/"))
-(setq backups-directory
-      (expand-file-name "backups/"
-                        user-emacs-directory))
-(setq abbrev-file
-      (expand-file-name "abbrev_defs"
-                        user-emacs-directory))
-(setq personal-dictionary-file 
-      (expand-file-name "~/miscellany/assets/personal-dict.en.pws"))
+(defvar emacs-themes-directory
+  (expand-file-name "~/.emacs.d/themes/")
+  "Directory containing emacs custom themes.")
+
+(defvar abbrev-file
+  (expand-file-name "abbrev_defs"
+                    user-emacs-directory)
+  "File to keep abbrev definitions. ")
+
+(defvar temp-files-directory
+  (concat user-emacs-directory "tmp/")
+  "This is where I intend to keep all the state related stuff.")
+
+(defvar backups-directory
+  (expand-file-name "backups/"
+                    temp-files-directory)
+  "Backups everywhere isn't cool. Keep all of them in this directory.")
+
+(defvar personal-dictionary-file 
+  (expand-file-name "~/miscellany/assets/personal-dict.en.pws")
+  "File to keep words that I think should be a part of my dictionary")
 
 ;; Blog
-(setq blog-dir
+(defvar blog-dir
       (expand-file-name "~/code/blog/narendraj9.github.io"))
-(setq blog-posts-dir
+(defvar blog-posts-dir
       (expand-file-name "web/posts/" blog-dir))
 ;; Hledger
-(setq hledger-jfile
+(defvar hledger-jfile
       (expand-file-name "~/miscellany/personal/finance/accounting.journal"))
 (when (boundp 'my-hledger-service-fetch-url)
   (setq hledger-service-fetch-url
 	my-hledger-service-fetch-url))
+
+(defvar toggle-reading-mode nil
+  "Buffer local variable to keep track of reading mode state.")
+(make-variable-buffer-local 'toggle-reading-mode)
 
 ;;;APPEARANCE
 ;;  ─────────────────────────────────────────────────────────────────
@@ -91,37 +102,79 @@
 
 ;;; GLOBAL KEY BINDINGS
 ;;  ─────────────────────────────────────────────────────────────────
+;; Keeping things in reach!
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c m") 'switch-to-minibuffer)
+
 ;; org-mode
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c r") 'recentf-open-files)
 (global-set-key (kbd "C-c k") 'kill-buffer-delete-window)
+
 ;; personal accounting
 (global-set-key (kbd "C-c e") 'hledger-jentry)
 (global-set-key (kbd "C-c j") 'hledger-jdo)
+
 ;; utilities
+(global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-g f") 'avy-goto-char-timer)
-(global-set-key (kbd "C-c D") 'insert-date-at-point)
-(global-set-key (kbd "C-c L") 'linum-mode)
+(global-set-key (kbd "C-c w") 'switch-to-window)
+
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
 (global-set-key (kbd "C-c +") 'vicarie/eval-replace-last-sexp)
-(global-set-key (kbd "C-c i") 'go-back-to-intellij)
 (global-set-key (kbd "C-c q") 'fill-paragraph-and-move-forward)
-(global-set-key (kbd "C-c u") 'enlarge-current-window)
+
+(global-set-key (kbd "C-c D") 'insert-date-at-point)
+(global-set-key (kbd "C-c L") 'linum-mode)
+
 (global-set-key (kbd "C-c d") 'define-word-at-point)
 (global-set-key (kbd "C-c s") 'show-synonyms-for-word-at-point)
 
+(global-set-key (kbd "C-c u") 'enlarge-current-window)
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
-(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-c i") 'go-back-to-intellij)
 
 ;;; UTILITY FUNCTION DEFINITIONS
 ;;  ─────────────────────────────────────────────────────────────────
-(defvar toggle-reading-mode nil
-  "Buffer local variable to keep track of reading mode state.")
-(make-variable-buffer-local 'toggle-reading-mode)
+(defun switch-to-window (direction)
+  "Switch to another window with vim like keys."
+  (interactive "c")
+  (pcase direction
+    (?h (windmove-left))
+    (?j (windmove-down))
+    (?k (windmove-up))
+    (?l (windmove-right))
+    (other (ido-jump-to-window))))
+
+(defun ido-jump-to-window ()
+  "This is shamelessly copied from the Emacs Wiki.
+I will rewrite it to mak it simpler"
+  (interactive)
+  (let* ((swap (lambda (l)
+                 (if (cdr l)
+                     (cons (cadr l) (cons (car l) (cddr l)))
+                   l)))
+         (visible-buffers (funcall
+                           swap
+                           (mapcar
+                            (lambda (window)
+                              (buffer-name (window-buffer window)))
+                            (window-list))))
+         (buffer-name (ido-completing-read "Window: " visible-buffers))
+         window-of-buffer)
+    (if (not (member buffer-name visible-buffers))
+        (error "'%s' does not have a visible window" buffer-name)
+      (setq window-of-buffer
+            (delq nil (mapcar
+                       (lambda (window)
+                         (if (equal buffer-name
+                                    (buffer-name (window-buffer window)))
+                             window
+                           nil))
+                       (window-list))))
+      (select-window (car window-of-buffer)))))
 
 (defun toggle-reading-mode ()
   "Set up the current window for reading."
@@ -479,6 +532,12 @@ Useful when showing code."
 
 ;;; Defunctional Playground 
 ;;  ─────────────────────────────────────────────────────────────────
+(defun take-notes ()
+  (interactive)
+  "Quick go to the notes file. "
+  (find-file (expand-file-name "notes.org" org-directory))
+  (goto-char (point-max)))
+
 (defun snap-it-to-file ()
   "Take a screenshot of emacs and return the file path."
   (make-directory "/tmp/screenshots/" t)
@@ -556,8 +615,33 @@ Taken from Chris Done's config"
 
 ;;; MISCELLANY
 ;;  ─────────────────────────────────────────────────────────────────
-;; Keep a separate custom.el
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+;; Make directories if not available already
+(make-directory temp-files-directory t)
+(make-directory backups-directory t)
+
+;; Keep all state in ~/.emacs.d/tmp/
+(setq ac-comphist-file (expand-file-name "ac-comphist.dat"
+                                         temp-files-directory)
+      bookmark-default-file (expand-file-name "bookmarks"
+                                              temp-files-directory)
+      eshell-directory-name (expand-file-name "eshell/"
+                                              temp-files-directory)
+      url-configuration-directory (expand-file-name "url/"
+                                                    temp-files-directory)
+      server-auth-dir (expand-file-name "server/"
+                                        temp-files-directory))
+
+(setq secrets-file
+  (expand-file-name "~/miscellany/assets/secrets.el"))
+
+(setq custom-file
+  (expand-file-name "custom.el" user-emacs-directory))
+
+;; Load secrets.el if available
+(if (file-exists-p secrets-file)
+    (load secrets-file))
+
+;; Load  custom.el
 (if (file-exists-p custom-file)
     (load custom-file))
 
@@ -580,7 +664,7 @@ Taken from Chris Done's config"
 
 ;; get quick emacs key binding suggestions
 (require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x" "C-x r" "C-x 4" "C-c" "C-x n"))
+(setq guide-key/guide-key-sequence t)
 (guide-key-mode 1) 
 
 ;; avy
@@ -691,7 +775,7 @@ Taken from Chris Done's config"
 
 ;; save all backup files in a fixed directory
 (setq auto-save-list-file-prefix
-      (concat backups-directory "/autosaves-"))
+      (concat backups-directory "autosaves-"))
 (setq backup-directory-alist
       `((".*" . ,backups-directory)
         backup-by-copying t
@@ -808,7 +892,7 @@ Taken from Chris Done's config"
                     " %i                  \n"
                     "╰──────────────        ")
            :kill-buffer t)
-          ("n" "Note" entry (file+headline "notes.org" "Notes")
+          ("n" "Notes" entry (file+headline "notes.org" "Notes")
            "* %?\n "
            :kill-buffer t)
           ("h" "Habit" entry (file+headline "habits.org"  "Habits")
@@ -825,6 +909,9 @@ Taken from Chris Done's config"
            "\%\\%(org-anniversary %(read-date)) %?"
            :kill-buffer t)))
 
+;; refiling across multiple levels
+(setq org-refile-targets '((nil . (:maxlevel . 6))))
+
 ;; org-mode inline image size
 (setq org-image-actual-width nil)
 
@@ -833,6 +920,9 @@ Taken from Chris Done's config"
           (lambda ()
             ;; bindings
             (local-set-key (kbd "M-<return>") 'org-insert-subheading)
+            (local-set-key (kbd "<return>") (lambda ()
+                                             (interactive)
+                                             (org-return t)))
             (local-set-key (kbd "C-c p") 'org-pomodoro)
             (local-set-key (kbd "C-c a") 'org-agenda)))
 
