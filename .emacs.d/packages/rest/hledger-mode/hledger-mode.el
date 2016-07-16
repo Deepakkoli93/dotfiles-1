@@ -212,12 +212,24 @@ do different stuff while interactively editing an entry."
                          (concat "hledger -f" hledger-jfile " accounts")))
        (accounts-list (split-string accounts-string)))
     (setq hledger-source-cache accounts-list)))
-(hledger-source-init)
 
 (defvar ac-source-hledger-source
   '((init . hledger-source-init)
     (candidates . hledger-source-cache))
   "A source for completing account names in a hledger buffer.")
+
+(defun company-hledger (command &optional arg &rest ignored)
+  (interactive (list 'interactive))
+
+  (pcase command
+    (`interactive (company-begin-backend 'company-hledger))
+    (`prefix (and (eq major-mode 'hledger-mode)
+                  (company-grab-symbol)))
+    (`candidates
+     (remove-if-not
+      (lambda (c)
+        (string-prefix-p arg c))
+      hledger-source-cache))))
 
 ;;; Utility functions
 
@@ -434,7 +446,7 @@ Show the results in the *Personal Finance* buffer.
 
 (defvar hledger-mode-syntax-table (let ((st (make-syntax-table)))
                                     (modify-syntax-entry ?: "_" st)
-                                    (modify-syntax-entry ?; "<" st)
+                                    (modify-syntax-entry ?\; "<" st)
                                     (modify-syntax-entry ?\n ">" st)
                                     st)
   "Syntax table for hledger mode.")
@@ -445,6 +457,7 @@ Show the results in the *Personal Finance* buffer.
   (setq-local font-lock-defaults hledger-font-lock-defaults)
   (setq-local indent-line-function 'hledger-indent-line)
   (setq-local indent-region-function 'hledger-indent-region-function)
+  (hledger-source-init)
   (setq-local ac-sources '(ac-source-hledger-source))
   (setq-local comment-start "; ")
   (setq-local comment-end "")

@@ -24,6 +24,14 @@
 
 ;;; VARIABLES
 ;;  ─────────────────────────────────────────────────────────────────
+(defvar use-auto-completep
+  nil
+  "Boolean that decides whether auto-complete is configured and used.")
+
+(defvar use-companyp
+  t
+  "Boolean that decides whether company-mode is configured and used.")
+
 (defvar org-directory
   (expand-file-name "~/miscellany/personal/org/")
   "Directory for keeping my org-mode files.")
@@ -620,16 +628,14 @@ Taken from Chris Done's config"
 (make-directory backups-directory t)
 
 ;; Keep all state in ~/.emacs.d/tmp/
-(setq ac-comphist-file (expand-file-name "ac-comphist.dat"
-                                         temp-files-directory)
-      bookmark-default-file (expand-file-name "bookmarks"
-                                              temp-files-directory)
-      eshell-directory-name (expand-file-name "eshell/"
-                                              temp-files-directory)
-      url-configuration-directory (expand-file-name "url/"
-                                                    temp-files-directory)
-      server-auth-dir (expand-file-name "server/"
-                                        temp-files-directory))
+(setq ac-comphist-file (expand-file-name "ac-comphist.dat" temp-files-directory)
+      bookmark-default-file (expand-file-name "bookmarks"  temp-files-directory)
+      eshell-directory-name (expand-file-name "eshell/"    temp-files-directory)
+      url-configuration-directory (expand-file-name "url/" temp-files-directory)
+      server-auth-dir (expand-file-name "server/"          temp-files-directory)
+      recentf-save-file (expand-file-name "recentf"        temp-files-directory)
+      ido-save-directory-list-file (expand-file-name "ido.last"
+                                                     temp-files-directory))
 
 (setq secrets-file
   (expand-file-name "~/miscellany/assets/secrets.el"))
@@ -653,14 +659,6 @@ Taken from Chris Done's config"
             :around (lambda (f &rest args)
                       (let ((recenter-positions '(middle top bottom)))
                         (apply f args))))
-;; personal finance
-(require 'hledger-mode)
-(add-hook 'hledger-mode-hook 'easy-auto-complete-mode-hook)
-(add-hook 'hledger-mode-hook (lambda ()
-                               (flyspell-mode 1)))
-
-;; mylife-mode
-(require 'mylife-mode)
 
 ;; get quick emacs key binding suggestions
 (require 'guide-key)
@@ -732,36 +730,48 @@ Taken from Chris Done's config"
 (yas-global-mode 1)
 
 ;; Auto-complete stuff
-(require 'auto-complete)
-(require 'auto-complete-config)
-(ac-config-default)
-(setq ac-ignore-case nil)
-(ac-flyspell-workaround)
+;; company-mode
+(when (and (boundp 'use-companyp)
+           use-companyp)
+  (require 'company)
+  (setq company-global-modes '(hledger-mode java-mode))
+  (global-company-mode)
+  (define-key company-active-map (kbd "C-n") 'company-select-next-or-abort)
+  (define-key company-active-map (kbd "C-p") 'company-select-previous-or-abort))
 
-;; Start these modes with auto-complete on
-(add-to-list 'ac-modes 'hledger-mode)
+;; auto-complete
+(when (and (boundp 'use-auto-completep)
+           use-auto-completep)
+  (require 'auto-complete)
+  (require 'auto-complete-config)
+  (ac-config-default)
+  (setq ac-ignore-case nil)
+  (ac-flyspell-workaround)
 
-;; Usually, do not complete automatically
-;; Auto-complete trigger on Meta-Tab
-(setq ac-auto-start nil)
-(define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
+  ;; Start these modes with auto-complete on
+  (add-to-list 'ac-modes 'hledger-mode)
 
-;; Inline completion suggestions are distracting!
-(setq ac-disable-inline t)
+  ;; Usually, do not complete automatically
+  ;; Auto-complete trigger on Meta-Tab
+  (setq ac-auto-start nil)
+  (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
 
-;; Make auto-complete easier for a mode
-(defun easy-auto-complete-mode-hook ()
-  (setq-local ac-auto-start t)
-  (setq-local ac-auto-show-menu 0.4)
-  (setq-local ac-disable-inline nil))
+  ;; Inline completion suggestions are distracting!
+  (setq ac-disable-inline t)
 
-;; Key bindings for auto-complete-menu
-(setq ac-use-menu-map t)
-(define-key ac-menu-map "\C-n" 'ac-next)
-(define-key ac-menu-map "\C-p" 'ac-previous)
-(define-key ac-menu-map (kbd "TAB") 'ac-complete)
+  ;; Make auto-complete easier for a mode
+  (defun easy-auto-complete-mode-hook ()
+    (setq-local ac-auto-start t)
+    (setq-local ac-auto-show-menu 0.4)
+    (setq-local ac-disable-inline nil))
 
-;; Unique buffer names:
+  ;; Key bindings for auto-complete-menu
+  (setq ac-use-menu-map t)
+  (define-key ac-menu-map "\C-n" 'ac-next)
+  (define-key ac-menu-map "\C-p" 'ac-previous)
+  (define-key ac-menu-map (kbd "TAB") 'ac-complete))
+
+;; Unique buffer names
 (require 'uniquify)
 (setq
  uniquify-buffer-name-style 'post-forward
@@ -811,6 +821,13 @@ Taken from Chris Done's config"
 
 ;; Enable disabled commands
 (put 'narrow-to-region 'disabled nil)
+
+;; personal finance
+(require 'hledger-mode)
+(add-hook 'hledger-mode-hook (lambda ()
+                               (flyspell-mode 1)))
+;; mylife-mode
+(require 'mylife-mode)
 
 ;;; ESHELL
 ;;  ─────────────────────────────────────────────────────────────────
@@ -1014,10 +1031,6 @@ Taken from Chris Done's config"
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'lisp-mode-hook 'enable-paredit-mode)          
 
-;;; JAVA MODE
-;;  ─────────────────────────────────────────────────────────────────
-(add-hook 'java-mode-hook 'easy-auto-complete-mode-hook)
-
 ;;; RUBY MODE
 ;;  ─────────────────────────────────────────────────────────────────
 (autoload 'inf-ruby "inf-ruby" "Run on inferior Ruby process" t)
@@ -1068,15 +1081,23 @@ Taken from Chris Done's config"
 (unless (server-running-p)
   (server-start))
 
-;;; For MS-WINDOWS
+;;; For MS-WINDOWS and OSX
 ;;  ─────────────────────────────────────────────────────────────────
-(if (eq system-type 'windows-nt)
-    (progn
-      ;; Default directory on windows isn't ~/
-      (setq default-directory (expand-file-name "~/"))
-      (setq interprogram-paste-function 'x-selection-value)
-      ;; for some reason, selection highlight isn't turned on by default
-      (transient-mark-mode t)))
+(pcase system-type
+  (`windows-nt
+   ;; Default directory on windows isn't ~/
+   (setq default-directory (expand-file-name "~/"))
+   (setq interprogram-paste-function 'x-selection-value)
+   ;; for some reason, selection highlight isn't turned on by default
+   (transient-mark-mode t))
+  (`darwin
+   ;; Modify the CMD key to be Meta key
+   (setq mac-command-modifier 'meta)
+   (when (< emacs-major-version 25)
+     (setq visible-bell nil)))
+  (`gnu/linux
+   ;; Feels like home! We can ignore the worries of the world.
+   (ignore "everything" "I" "say.")))
 
 ;;; My personal island
 ;;; ─────────────────────────────────────────────────────────────────
@@ -1099,7 +1120,7 @@ Taken from Chris Done's config"
 ;; A random quote from mylife-mode in the *scratch* buffer.
 (setq initial-major-mode 'fundamental-mode)
 (setq initial-scratch-message (concat (mylife-random-quote-string)
-                                      (mylife-get-week-day)))
+                                      (mylife-get-auroville-quality)))
 
 ;; Show emacs startup time after init
 (add-hook 'after-init-hook

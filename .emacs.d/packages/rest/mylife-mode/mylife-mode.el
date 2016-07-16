@@ -121,68 +121,97 @@ current buffer with a timestamp. Use diary/calender/org-mode instead."
   "Function that does initial setup in the major-mode function."
   (ignore))
 
-(defun mylife-get-week-day ()
-  "Return a message for a weekday. Taken from @tw1tt3rart!"
-  (let ((day (format-time-string "%a")))
-    (propertize 
-     (pcase day
-       ("Mon"
-"
-               誠実
-             Seijitsu
-             Sincerity
 
-")
-
-       ("Tue"
-"
-               謙虚
-              Kenkyo
-             Humility
-
-")
-       ("Wed"
-"
-               感謝
-              Kansha
-             Gratitude
-
-")
-       ("Thu"
-"
-              忍耐力
-           Nintai-ryoku
-           Perseverance
-
-")
-
-       ("Fri"
-"
-               勇気
-               Yūki
-              Courage
+(defun mylife-get-auroville-quality ()
+  "Return one of the Auroville qualities."
+  (let ((index (string-to-number (format-time-string "%d")))
+        (qualities
+         '(
 
 "
-)
-
-       ("Sat"
+                  誠実
+                Seijitsu
+               Sincerity
+                    
 "
-              感受性
-             Kanjusei
-            Receptivity
 
-")
-       
-       ("Sun"
 "
-               平和
-              Heiwa
-              Peace
+                  謙虚
+                 Kenkyo
+                Humility
 
-"))
-     'font-lock-face '(:foreground "Sienna" :height 3.0)
-     'rear-nonsticky t
-     )))
+"
+
+"
+                  感謝
+                 Kansha
+               Gratitude
+
+"
+
+"
+                 忍耐力
+              Nintai-ryoku
+              Perseverance
+
+"
+
+"
+                  吸引
+                 Kyūin
+               Aspiration
+
+"
+
+"
+                 感受性
+                Kanjusei
+              Receptivity
+
+"
+
+"
+                  進捗
+               Shinchoku
+                Progress
+
+"
+"
+                  勇気
+                  Yūki
+                Courage
+
+"
+"
+                   善
+                  Zen
+                Goodness
+"
+
+"
+                 寛大さ
+               Kandai-sa
+               Generosity
+
+
+"
+"
+                  平等
+                 Byōdō
+                Equality
+
+"
+
+"
+                  平和
+                 Heiwa
+                 Peace
+
+")))
+    (propertize (nth  (mod index (length qualities)) qualities)
+                'font-lock-face '(:foreground "Sienna" :height 3.0)
+                'rear-nonsticky t)))
+     
 
 ;;;###autoload
 (define-derived-mode mylife-mode prog-mode "Mylife" ()

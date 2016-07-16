@@ -65,6 +65,11 @@
  '(org-agenda-date ((t (:foreground "#6ac214"))))
  '(org-agenda-date-weekend ((t (:weight normal :foreground "dodger blue"))))
  '(org-agenda-date-today ((t (:weight bold :foreground "#edd400"))))
+
+  ;; company
+ '(company-tooltip ((t (:background "#cccccc" :foreground "black"))))
+
+
  '(helm-candidate-number ((t (:background "goldenrod" :foreground "black"))))
  '(helm-header-line-left-margin ((t (:background "chocolate" :foreground "black"))))
  '(helm-selection ((t (:background "steel blue" :distant-foreground "white"))))
