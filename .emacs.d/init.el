@@ -1062,13 +1062,6 @@ Taken from Chris Done's config"
 (setq erc-join-buffer 'bury)
 (add-hook 'erc-mode-hook (lambda ()
                            (interactive)
-                           ;; Override the functions that sends notifications #TOFIX
-                           (eval-after-load "erc-desktop-notifications"
-                             '(defun erc-notifications-notify (nick msg)
-                                (notify (format "%s said: %s"
-                                                nick msg)
-                                        10
-                                        20)))
                            (erc-notifications-mode)
                            (set-face-attribute 'erc-default-face nil
                                                :foreground "papaya whip")

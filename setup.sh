@@ -9,7 +9,7 @@ function install-packages() {
     PACKAGES="git time ngrep
 		  vim tmux emacs markdown poppler-glib
 		  xorg-server xorg-xinit xorg-server-utils  xorg-xinput
-		  xmonad dzen2 i3status xcompmgr dmenu xdotool xmonad-contrib wmctrl
+		  xmonad dzen2 i3status xcompmgr dmenu xdotool xmonad-contrib wmctrl dunst
 		  weechat rxvt-unicode urxvt-perls
 		  sdcv scrot xclip zathura feh youtube-dl 
 		  mpc mpd ncmpcpp

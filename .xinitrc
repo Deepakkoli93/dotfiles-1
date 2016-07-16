@@ -2,6 +2,7 @@
 WM=xmonad
 WALLPAPER_DIR=~/miscellany/assets/images/casper-david-friedrich/
 POWER_INFO_BIN=~/dotfiles/local/bin/power_info
+CONFIG_DIR=~/dotfiles/
 
 #xrandr --output LVDS --mode 1280x768
 [[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
@@ -23,6 +24,9 @@ xcompmgr -Cc -r 8 &
 
 # start syndaemon
 syndaemon -d -i 1.0
+
+# start the notificaion daemon
+dunst -config $CONFIG_DIR/.dunstrc &
 
 case $WM in
 	awesome)
