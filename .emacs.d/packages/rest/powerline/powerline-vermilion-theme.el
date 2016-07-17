@@ -71,10 +71,10 @@
                           (face1 (if active 'custom-active1 'custom-inactive1))
                           (face2 (if active 'custom-active2 'custom-inactive2))
                           (separator-left (intern (format "powerline-%s-%s"
-							  (powerline-current-separator)
+                                                          'wave
                                                           (car powerline-default-separator-dir))))
                           (separator-right (intern (format "powerline-%s-%s"
-                                                           (powerline-current-separator)
+                                                           'wave
                                                            (cdr powerline-default-separator-dir))))
                           (lhs (list (powerline-raw "%*" nil 'l)
                                      (when powerline-display-buffer-size
@@ -90,7 +90,6 @@
                                        (powerline-raw erc-modified-channels-object face1 'l))
                                      (powerline-major-mode face1 'l)
                                      (powerline-process face1)
-                                     (powerline-minor-modes face1 'l)
                                      (powerline-narrow face1 'l)
                                      (powerline-raw " " face1)
                                      (funcall separator-left face1 face2)

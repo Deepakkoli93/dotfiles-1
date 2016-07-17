@@ -1028,8 +1028,22 @@ Taken from Chris Done's config"
 ;;; LISP MODE
 ;;  ─────────────────────────────────────────────────────────────────
 (setq inferior-lisp-program "/usr/bin/clisp")
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'lisp-mode-hook 'enable-paredit-mode)          
+
+;; Key-bindings for extrerem barfing and slupring
+(eval-after-load 'paredit
+  `(progn
+     (define-key paredit-mode-map
+       (kbd "C-M-)") 'utils-paredit-slurp-all-the-way-forward)
+     (define-key paredit-mode-map
+       (kbd "C-M-(") 'utils-paredit-slurp-all-the-way-backward)
+     (define-key paredit-mode-map
+       (kbd "C-M-}") 'utils-paredit-barf-all-the-way-forward)
+     (define-key paredit-mode-map
+       (kbd "C-M-{") 'utils-paredit-barf-all-the-way-backward)))
+
+(mapc (lambda (h)
+        (add-hook h 'enable-paredit-mode))
+      '(emacs-lisp-mode-hook lisp-mode-hook clojure-mode))
 
 ;;; RUBY MODE
 ;;  ─────────────────────────────────────────────────────────────────
@@ -1062,9 +1076,11 @@ Taken from Chris Done's config"
 (setq erc-join-buffer 'bury)
 (add-hook 'erc-mode-hook (lambda ()
                            (interactive)
+                           (define-key erc-mode-map
+                             (kbd "C-c t") 'erc-notifications-mode)
                            (erc-notifications-mode)
                            (set-face-attribute 'erc-default-face nil
-                                               :foreground "papaya whip")
+                            :foreground "papaya whip")
                            (set-face-attribute 'erc-input-face nil
                                                :foreground "burlywood")))
 ;;; EMACS-SERVER
