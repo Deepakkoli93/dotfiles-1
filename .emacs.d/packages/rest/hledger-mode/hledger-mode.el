@@ -220,7 +220,6 @@ do different stuff while interactively editing an entry."
 
 (defun company-hledger (command &optional arg &rest ignored)
   (interactive (list 'interactive))
-
   (pcase command
     (`interactive (company-begin-backend 'company-hledger))
     (`prefix (and (eq major-mode 'hledger-mode)

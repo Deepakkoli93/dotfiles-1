@@ -166,20 +166,20 @@ current buffer with a timestamp. Use diary/calender/org-mode instead."
 "
                  感受性
                 Kanjusei
-              Receptivity
+               Receptivity
 
 "
 
 "
                   進捗
                Shinchoku
-                Progress
+               Progress
 
 "
 "
                   勇気
                   Yūki
-                Courage
+                 Courage
 
 "
 "

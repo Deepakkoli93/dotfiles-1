@@ -114,7 +114,12 @@ parsed value. `parser` parses the contents of the buffer from point "
   "Shows the results in a popup in the buffer query-buffer at the position
 query-point."
   (with-current-buffer query-buffer
-    (popup-tip s :point query-point :margin t :around t :truncate nil)))
+    (popup-tip s
+               :point query-point
+               :margin t
+               :around t
+               :truncate nil
+               :scroll-bar t)))
 
 (defun mylife-define-word (word)
   "Provide definition for `word`."

@@ -3330,3 +3330,6 @@ bring ideas to life day after day.”
 
 “Emacs is a way of Life.”
                                                            - Saccharine
+
+“As if you could kill time without injuring eternity.”
+                                                  - Henry David Thoreau

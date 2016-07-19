@@ -45,7 +45,7 @@
   "Powerline face 2."
   :group 'custom-powerline)
 
-;;; ###autoload
+;;;###autoload
 (defun powerline-orange-theme ()
   "Setup the default mode-line."
   (interactive)

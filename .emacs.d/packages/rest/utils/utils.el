@@ -46,5 +46,29 @@ Cleans up whitespace."
             (throw 'done t)))
       (paredit-forward-slurp-sexp))))
 
+(defun utils-easy-move (map)
+  "Set key-binding for easier navigation. Use when in read-only/view-mode."
+  (interactive)
+  (define-key map (kbd "h") 'backward-char)
+  (define-key map (kbd "l") 'forward-char)
+  (define-key map (kbd "j") 'next-line)
+  (define-key map (kbd "k") 'previous-line)
+  map)
+
+(defun utils-uneasy-move (map)
+  "Reset key bindings set by easy-move."
+  (interactive)
+  (define-key map (kbd "h"))
+  (define-key map (kbd "l"))
+  (define-key map (kbd "j"))
+  (define-key map (kbd "k"))
+  map)
+
+;;;###autoload 
+(define-minor-mode utils-easy-move-mode
+  "A mode for bindings in a read only environment. Mimicks vim."
+  nil
+  "Easy"
+  (utils-easy-move (make-sparse-keymap)))
 
 (provide 'utils)

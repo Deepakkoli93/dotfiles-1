@@ -195,43 +195,46 @@ I will rewrite it to mak it simpler"
               right-margin-width left-margin-width)
         (visual-line-mode)
         (fill-region (point-min) (point-max))
-        (easy-move)
+        (utils-easy-move-mode)
         ;; Re-set the window buffer to display changes
         (set-window-buffer (selected-window) (current-buffer))
         ;; Cannot do ^^ after read-only-mode
-        (read-only-mode)
-        (put 'toggle-reading-mode 'readingp t))
-    (read-only-mode -1)
+        (view-mode)
+        (setq toggle-reading-mode t))
+    (view-mode -1)
     (setq left-margin-width 0
           right-margin-width left-margin-width)
     (visual-line-mode -1)
-    (uneasy-move)
+    (utils-easy-move-mode -1)
     (set-window-buffer (selected-window) (current-buffer))
-    (setq toggle-reading-mode t)))
+    (setq toggle-reading-mode nil)))
 
 (defun lookup-word (word dict fallback-function)
   "Lookup a given WORD in the dictionary DICT or fallback to FALLBACK-FUNCTION.
 Currently I think the online dictionary is more useful so I have
 an invalid command name 'sdcv-invalid'. "
-  (progn
-    (if  (executable-find "sdcv-invalid")
-        (popup-tip (shell-command-to-string
-                    (format "sdcv -nu \"%s\" %s %s"
-                            (shell-quote-argument dict)
-                            (shell-quote-argument word)
-                            " | tail -n +5 ")))
-      (funcall fallback-function word))))
+  (message "%s" word)
+  (if  (executable-find "sdcv-invalid")
+      (popup-tip (shell-command-to-string
+                  (format "sdcv -nu \"%s\" %s %s"
+                          (shell-quote-argument dict)
+                          (shell-quote-argument word)
+                          " | tail -n +5 ")))
+    (funcall fallback-function word)))
 
 (defun lookup-word-at-point (dict fallback-function)
   "Generic helper function for `define-word-at-point' and 
 `show-synonyms-for-word-at-point'."
   (let* ((word (word-at-point)))
-    (if word
-        (lookup-word word dict fallback-function)
-      (lookup-word
-       (read-from-minibuffer "No word at point. Enter word: ")
-       dict
-       fallback-function))))
+    (cond (mark-active
+           (lookup-word (buffer-substring (mark) (point)) dict fallback-function))
+          (word
+           (lookup-word word dict fallback-function))
+          (t
+           (lookup-word
+              (read-from-minibuffer "No word at point. Enter word: ")
+              dict
+              fallback-function)))))
 
 (defun define-word-at-point ()
     "Shows the definition of the word at point.
@@ -472,22 +475,6 @@ Useful when showing code."
   (interactive "r")
   (shell-command-on-region region-beg region-end "xclip -i -selec clip"))
 
-(defun easy-move ()
-  "Set key-binding for easier navigation. Use when in read-only/view-mode."
-  (interactive)
-  (local-set-key (kbd "h") 'backward-char)
-  (local-set-key (kbd "l") 'forward-char)
-  (local-set-key (kbd "j") 'next-line)
-  (local-set-key (kbd "k") 'previous-line))
-
-(defun uneasy-move ()
-  "Reset key bindings set by easy-move."
-  (interactive)
-  (local-unset-key (kbd "h"))
-  (local-unset-key (kbd "l"))
-  (local-unset-key (kbd "j"))
-  (local-unset-key (kbd "k")))
-
 (defun blog-post (file)
   "Start a post in the blog-dir directory"
   (interactive (list (let ((default-directory blog-posts-dir))
@@ -708,7 +695,7 @@ Taken from Chris Done's config"
                                  
 
 ;; easy-move bindings in man-mode as well
-(add-hook 'Man-mode-hook 'easy-move)
+(add-hook 'Man-mode-hook 'utils-easy-move-mode)
 ;; width of man pages
 (setenv "MANWIDTH" "80")
 ;; Maximize emacs on startup
@@ -735,7 +722,10 @@ Taken from Chris Done's config"
            use-companyp)
   (require 'company)
   (setq company-global-modes '(hledger-mode java-mode))
+  (setq company-idle-delay 0.3)
   (global-company-mode)
+  (add-to-list 'company-backends 'company-hledger)
+  ;; ^ company-hledger should be defined before company mode is used.
   (define-key company-active-map (kbd "C-n") 'company-select-next-or-abort)
   (define-key company-active-map (kbd "C-p") 'company-select-previous-or-abort))
 
@@ -778,9 +768,10 @@ Taken from Chris Done's config"
  uniquify-separator " • ")
 
 ;; recent files menu | remote files mess things up
-(add-hook 'recentf-dialog-mode-hook 'easy-move)
+(add-hook 'recentf-dialog-mode-hook 'utils-easy-move-mode)
 (setq recentf-auto-cleanup 'never)
-(setq recentf-kepp '(file-remote-p file-readable-p))
+(setq recentf-keep '(file-remote-p file-readable-p))
+(setq recentf-max-saved-items 100)
 (recentf-mode 1)
 
 ;; save all backup files in a fixed directory
