@@ -145,7 +145,7 @@ current buffer with a timestamp. Use diary/calender/org-mode instead."
 "
                   感謝
                  Kansha
-               Gratitude
+                Gratitude
 
 "
 
@@ -192,7 +192,6 @@ current buffer with a timestamp. Use diary/calender/org-mode instead."
                  寛大さ
                Kandai-sa
                Generosity
-
 
 "
 "

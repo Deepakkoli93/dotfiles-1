@@ -34,6 +34,11 @@
   :group 'hledger
   :type 'string)
 
+(defcustom hledger-reports-file "~/miscellany/personal/finance/reports.org"
+  "Location to the file where to store the monthly reports."
+  :group 'hledger
+  :type 'string)
+
 (defcustom hledger-comments-column 11
   "Column number where the comments start."
   :group 'hledger
@@ -232,7 +237,7 @@ do different stuff while interactively editing an entry."
 
 ;;; Utility functions
 
-(defun hledger-get-perfin-buffer (&optional fetched-entriesp)
+(defun hledger-get-perfin-buffer (&optional keep-bufferp fetched-entriesp)
   "Get/create the *Personal Finance* buffer.
 If the buffer is not intended for editing, then `q` closes it.
 `C-c y` copies the whole buffer to clipboard. "
@@ -250,11 +255,11 @@ If the buffer is not intended for editing, then `q` closes it.
                                (insert entries)
                                (format "Fetched entries append to journal buffer"))))
             (setq header-line-format " C-c i : Insert into journal "))
-        (local-set-key (kbd "q")
+        (local-set-key (kbd "C-c q")
                        (lambda ()
                          (interactive)
                          (kill-buffer-and-window)))
-        (setq header-line-format " q : Quit "))
+        (setq header-line-format " C-c q : Quit "))
       (local-set-key (kbd "C-c w")
                      (lambda ()
                        "Copy buffer contents to clipboard"
@@ -264,7 +269,7 @@ If the buffer is not intended for editing, then `q` closes it.
       (setq header-line-format (concat
                                 header-line-format
                                 " C-c w : Copy to clipboard "))
-      (erase-buffer))
+      (or keep-bufferp (erase-buffer)))
     jbuffer))
 
 (defun hledger-format-comment-string (comment)
@@ -314,7 +319,7 @@ If the buffer is not intended for editing, then `q` closes it.
       (setf result (concat result "\n")))
     (kill-buffer (current-buffer))
           
-    (let ((jbuffer (hledger-get-perfin-buffer t)))
+    (let ((jbuffer (hledger-get-perfin-buffer nil t)))
       (with-current-buffer jbuffer
         (insert result))
       (pop-to-buffer jbuffer)
@@ -398,13 +403,14 @@ Show the results in the *Personal Finance* buffer.
   (hledger-go-to-starting-line)
   (recenter))
 
-(defun hledger-jdo (command)
-  "Run a hledger command on the journal file."
+(defun hledger-jdo (command &optional keep-bufferp)
+  "Run a hledger command on the journal file.
+Returns the buffer with the info inserted."
   (interactive (list (completing-read "jdo> " hledger-jcompletions)))
   (hledger-ask-and-save-buffer)
   (if (eq major-mode 'hledger-mode)
       (setq-local hledger-jfile (buffer-file-name)))
-  (let ((jbuffer (hledger-get-perfin-buffer))
+  (let ((jbuffer (hledger-get-perfin-buffer keep-bufferp))
         (jcommand (concat "hledger -f " 
                           (shell-quote-argument hledger-jfile)
                            " " 
@@ -412,7 +418,8 @@ Show the results in the *Personal Finance* buffer.
     (with-current-buffer jbuffer
       (call-process-shell-command jcommand nil t nil)
       (pop-to-buffer jbuffer)
-      (beginning-of-buffer))))
+      (beginning-of-buffer))
+    jbuffer))
       
 (defun hledger-jreg (pattern)
   "Run hledger register command."
@@ -420,6 +427,73 @@ Show the results in the *Personal Finance* buffer.
   (let ((jcmd (concat "register -w 150 " pattern)))
     (hledger-jdo jcmd)
     (delete-other-windows)))
+
+(defun hledger-monthly-report ()
+  "Build the monthly report.
+I make reports from 15th of the Month to 15th of the next month."
+  (interactive)
+  (let* ((now (current-time))
+         (day (string-to-number (format-time-string "%d" now)))
+         (end-time (time-add now (days-to-time (- 15 day))))
+         (previous-time (time-subtract end-time (days-to-time 31)))
+         (previous-day (string-to-number (format-time-string "%d"
+                                                             previous-time)))
+         (beg-time (time-add previous-time (days-to-time
+                                            (- 15 previous-day))))
+         (beg-time-string (format-time-string "%Y/%m/%d" beg-time))
+         (end-time-string (format-time-string "%Y/%m/%d" end-time)))
+    (hledger-jdo (format "balance expenses income --flat -b %s -e %s"
+                         beg-time-string
+                         end-time-string))
+    ;; Now in the *Personal Finance* Buffer
+    (with-current-buffer (get-buffer "*Personal Finance*")
+      (goto-char (point-min))
+      (insert (format "Report: %s - %s\n====================\n"
+                      (format-time-string "%B %Y" beg-time)
+                      (format-time-string "%B %Y" end-time)))
+      (let ((beg (point)))
+        (while (not (looking-at "--"))
+          (forward-line))
+        (sort-numeric-fields 2 beg (point))
+        (reverse-region beg (point)))
+      (goto-char (point-max))
+      (insert "\nExpenses [Top Level]\n====================\n"))
+    (hledger-jdo (format "balance expenses --depth 2 --flat -b %s -e %s"
+                         beg-time-string
+                         end-time-string)
+                 t)
+    (with-current-buffer (get-buffer "*Personal Finance*")
+      (goto-char (point-min))
+      (while (not (looking-at "Expenses"))
+        (next-line))
+      (next-line 2)
+      (let ((beg (point)))
+        (while (not (looking-at "--"))
+          (next-line))
+        (sort-numeric-fields 2 beg (point))
+        (reverse-region beg (point)))
+      ;; Back to the start
+      (goto-char (point-min)))))
+
+(defun hledger-running-report ()
+  "Show the cashflow for the past 5 months."
+  (interactive)
+  (let* ((beg-time (time-subtract (current-time) (days-to-time (* 4 31))))
+         (beg-time-string (format-time-string "%Y/%m/%d" beg-time)))
+    (hledger-jdo (format "balance expenses income --depth 2 -META -b %s"
+                         beg-time-string))
+    (pop-to-buffer "*Personal Finance*")
+    (delete-other-windows)
+    ;; Let's sort according to the average column now
+    (goto-char (point-min))
+    (while (not (looking-at "=="))
+      (forward-line))
+    (forward-line)
+    (let ((beg (point)))
+      (while (not (looking-at "--"))
+        (forward-line))
+      (sort-numeric-fields -1 beg (point))
+      (reverse-region beg (point)))))
 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))

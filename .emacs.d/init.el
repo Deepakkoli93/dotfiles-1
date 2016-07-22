@@ -213,7 +213,6 @@ I will rewrite it to mak it simpler"
   "Lookup a given WORD in the dictionary DICT or fallback to FALLBACK-FUNCTION.
 Currently I think the online dictionary is more useful so I have
 an invalid command name 'sdcv-invalid'. "
-  (message "%s" word)
   (if  (executable-find "sdcv-invalid")
       (popup-tip (shell-command-to-string
                   (format "sdcv -nu \"%s\" %s %s"
@@ -1034,7 +1033,10 @@ Taken from Chris Done's config"
 
 (mapc (lambda (h)
         (add-hook h 'enable-paredit-mode))
-      '(emacs-lisp-mode-hook lisp-mode-hook clojure-mode))
+      '(emacs-lisp-mode-hook lisp-mode-hook
+                             clojure-mode-hook
+                             cider-repl-mode-hook
+                             eshell-mode-hook))
 
 ;;; RUBY MODE
 ;;  ─────────────────────────────────────────────────────────────────

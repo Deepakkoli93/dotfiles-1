@@ -215,8 +215,8 @@ lowerVolume = changeVolume "decrease"
 
 -- change volume
 changeVolume :: String -> X ()
-changeVolume action = let doAction = spawn ("echo '^fg(blue) Volume: ^fg(violet)' " ++
-                                            "$(ponymix " ++ action ++ " 5)% | dzen2 -p 1")
+changeVolume action = let doAction = spawn ("notify-send -t 1000 Volume " ++
+                                             "$(ponymix " ++ action ++ " 5)%")
                       in
                         case action of
                           "increase" -> doAction
