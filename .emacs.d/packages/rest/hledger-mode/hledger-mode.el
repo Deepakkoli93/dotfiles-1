@@ -503,7 +503,12 @@ I make reports from 15th of the Month to 15th of the next month."
       (while (not (looking-at "--"))
         (forward-line))
       (sort-numeric-fields -1 beg (point))
-      (reverse-region beg (point)))))
+      (reverse-region beg (point)))
+    (goto-char (point-max))
+    (insert "\nExpanded Running Report\n=======================\n\n")
+    (hledger-jdo (format "balance expenses income --tree -META -b %s"
+                         beg-time-string)
+                 t)))
 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
