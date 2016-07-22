@@ -123,7 +123,7 @@
 
 ;; personal accounting
 (global-set-key (kbd "C-c e") 'hledger-jentry)
-(global-set-key (kbd "C-c j") 'hledger-jdo)
+(global-set-key (kbd "C-c j") 'hledger-run-command)
 
 ;; utilities
 (global-set-key (kbd "M-x") 'helm-M-x)

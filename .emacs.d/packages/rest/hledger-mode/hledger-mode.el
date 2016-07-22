@@ -258,7 +258,9 @@ If the buffer is not intended for editing, then `q` closes it.
         (local-set-key (kbd "C-c q")
                        (lambda ()
                          (interactive)
-                         (kill-buffer-and-window)))
+                         (if (>= (length (window-list)) 2)
+                             (kill-buffer-and-window)
+                           (kill-buffer))))
         (setq header-line-format " C-c q : Quit "))
       (local-set-key (kbd "C-c w")
                      (lambda ()
@@ -344,7 +346,9 @@ Show the results in the *Personal Finance* buffer.
 
 (defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance"
                                  "register" "incomestatement" "balancesheet"
-                                 "cashflow" "activity" "stats")
+                                 "cashflow" "activity" "stats"
+                                 "monthly-report"
+                                 "running-report")
   "Commands that can be passed to `hledger-jdo` function defined below.")
 
 (defun hledger-ask-and-save-buffer ()
@@ -403,10 +407,16 @@ Show the results in the *Personal Finance* buffer.
   (hledger-go-to-starting-line)
   (recenter))
 
+(defun hledger-run-command (command)
+  (interactive (list (completing-read "jdo> " hledger-jcompletions)))
+  (pcase command
+    (`"monthly-report" (hledger-monthly-report))
+    (`"running-report" (hledger-running-report))
+    (_ (hledger-jdo command))))
+
 (defun hledger-jdo (command &optional keep-bufferp)
   "Run a hledger command on the journal file.
 Returns the buffer with the info inserted."
-  (interactive (list (completing-read "jdo> " hledger-jcompletions)))
   (hledger-ask-and-save-buffer)
   (if (eq major-mode 'hledger-mode)
       (setq-local hledger-jfile (buffer-file-name)))
