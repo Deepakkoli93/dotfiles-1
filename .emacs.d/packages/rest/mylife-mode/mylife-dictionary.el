@@ -55,8 +55,9 @@ parsed value. `parser` parses the contents of the buffer from point "
 
 (defun mylife-pearson-parser ()
   "Parsers the current buffer from `point` to return a string."
-  (recode-region (point) (point-max) 'utf-8 'binary)
-  (let* ((json-response (json-read))
+  (let* ((text (buffer-substring-no-properties (point) (point-max)))
+         (decoded-text (decode-coding-string text 'utf-8))
+         (json-response (json-read-from-string decoded-text))
          (results (assoc-default 'results json-response)))
     (if (equal results [])
         "Couldn't find anything :("
