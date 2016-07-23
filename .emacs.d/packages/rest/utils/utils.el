@@ -64,6 +64,53 @@ Cleans up whitespace."
   (define-key map (kbd "k"))
   map)
 
+(defun utils-make-multipart-boundary ()
+  "Make the boundary for multipart/form-data
+.Creates some slightly unprobably gibberish."
+  (concat "x" (make-string 18 ?-) (format "%x" (random 99999999999))))
+
+(defun utils-make-multipart-url-data (boundary params)
+  "Construct a multipart/form-data body string with BOUNDARY and PARAMS."
+  (concat
+   (mapconcat (lambda (kv)
+                (let ((name (car kv))
+                      (value (cdr kv)))
+                  (concat (concat "--" boundary) "\r\n"
+                          "Content-Disposition: form-data; "
+                          "name=\"" name "\"\r\n\r\n"
+                          value "\r\n")))
+              params
+              "")
+   "--" boundary "--\r\n"))
+
+(defun utils-send-email-with-mailgun (url user-and-passwd from to subject text)
+  "Send email using Mailgun.
+This function emulates the curl command as available in the Mailgun Docs:
+curl -s --user USER-AND-PASSWD URL 
+ -F FROM='Excited User <excited@samples.mailgun.org>' \
+ -F TO='devs@mailgun.net' \
+ -F SUBJECT='Hello' \
+ -F TEXT='Testing some Mailgun awesomeness!'
+"
+  (let* ((multipart-boundary (utils-make-multipart-boundary))
+         (url-request-method "POST")
+         (url-request-extra-headers
+          `(("Content-Type" . ,(format
+                                "multipart/form-data; boundary=%s; charset=utf-8"
+                                multipart-boundary))
+            ("Authorization" . ,(concat
+                                 "Basic "
+                                 (base64-encode-string user-and-passwd)))))
+         (url-request-data
+          (utils-make-multipart-url-data multipart-boundary
+                                         `(("from" . ,from)
+                                           ("to" . ,to)
+                                           ("subject" . ,subject)
+                                           ("text" . ,text)))))
+    (url-retrieve url
+                  (lambda (status)
+                    (message "%s" status)))))
+
 ;;;###autoload 
 (define-minor-mode utils-easy-move-mode
   "A mode for bindings in a read only environment. Mimicks vim."

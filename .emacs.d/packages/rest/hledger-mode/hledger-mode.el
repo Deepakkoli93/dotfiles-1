@@ -32,12 +32,42 @@
 (defcustom hledger-jfile "~/miscellany/personal/finance/accounting.journal"
   "Location of the journal file."
   :group 'hledger
-  :type 'string)
+  :type 'file)
 
 (defcustom hledger-reports-file "~/miscellany/personal/finance/reports.org"
   "Location to the file where to store the monthly reports."
   :group 'hledger
+  :type 'file)
+
+(defcustom hledger-email-api-url "EMAIL_API_URL"
+  "Email API end-point."
+  :group 'hledger
   :type 'string)
+
+(defcustom hledger-email-api-password "EMAIL_API_PASSWD"
+  "Password for the Email API"
+  :group 'hledger
+  :type 'string)
+
+(defcustom hledger-email-api-user "EMAIL_API_USER"
+  "Username for Email API"
+  :group 'hledger
+  :type 'string)
+
+(defcustom hledger-email-api-sender "SENDER_EMAIL_ID"
+  "Email id for the sender of your reports."
+  :group 'hledger
+  :type 'string)
+
+(defcustom hledger-email-api-recipient "RECIPIENT_EMAIL_ID"
+  "Email id for the receiver of your reports, i.e. you!"
+  :group 'hledger
+  :type 'string)
+
+(defcustom hledger-state-file "~/.emacs.d/tmp/hledger.el"
+  "File to keep persistent state."
+  :group 'hledger
+  :type 'file)
 
 (defcustom hledger-comments-column 11
   "Column number where the comments start."
@@ -550,7 +580,25 @@ I make reports from 15th of the Month to 15th of the next month."
   (setq-local comment-start "; ")
   (setq-local comment-end "")
   (electric-indent-local-mode -1))
-    
+
+(defun hledger-generate-reports-text ()
+  "Generate the text for monthly and running reports."
+  "Emacs 💟 you! :)")
+
+(defun hledger-mail-reports ()
+  "Email reports to yourself every month.
+This requires utils.el which is available in utils/ alonside
+hledger-mode/ directory."
+  (require 'utils)
+  (let ((reports-text (hledger-generate-reports-text)))
+    (utils-send-email-with-mailgun hledger-email-api-url
+                                   (concat hledger-email-api-user ":"
+                                           hledger-email-api-password)
+                                   hledger-email-api-sender
+                                   hledger-email-api-recipient
+                                   "Monthly Financial Report"
+                                   reports-text)))
+
 ;;;###autoload
 (define-derived-mode hledger-mode prog-mode "HLedger" ()
   "Major mode for editing hleder mode files."
