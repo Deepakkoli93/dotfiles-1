@@ -73,26 +73,35 @@ Cleans up whitespace."
   "Construct a multipart/form-data body string with BOUNDARY and PARAMS."
   (concat
    (mapconcat (lambda (kv)
-                (let ((name (car kv))
-                      (value (cdr kv)))
+                (let* ((name (format "%s" (car kv)))
+                       (value (cdr kv))
+                       (encoded-value (encode-coding-string value 'utf-8)))
                   (concat (concat "--" boundary) "\r\n"
                           "Content-Disposition: form-data; "
                           "name=\"" name "\"\r\n\r\n"
-                          value "\r\n")))
+                          encoded-value "\r\n")))
               params
               "")
    "--" boundary "--\r\n"))
 
-(defun utils-send-email-with-mailgun (url user-and-passwd from to subject text)
-  "Send email using Mailgun.
+(defun utils-send-email-with-mailgun (url headers)
+ "Send email using Mailgun.
+
 This function emulates the curl command as available in the Mailgun Docs:
 curl -s --user USER-AND-PASSWD URL 
  -F FROM='Excited User <excited@samples.mailgun.org>' \
  -F TO='devs@mailgun.net' \
  -F SUBJECT='Hello' \
  -F TEXT='Testing some Mailgun awesomeness!'
+
+HEADERS is an assoc-list with the headers of the request.
+`((authorization . AUTHORIZATION)
+  (from . FROM)
+  (to   . TO)
+  (subject . SUBJECT)
+  (text . TEXT))
 "
-  (let* ((multipart-boundary (utils-make-multipart-boundary))
+(let* ((multipart-boundary (utils-make-multipart-boundary))
          (url-request-method "POST")
          (url-request-extra-headers
           `(("Content-Type" . ,(format
@@ -100,16 +109,72 @@ curl -s --user USER-AND-PASSWD URL
                                 multipart-boundary))
             ("Authorization" . ,(concat
                                  "Basic "
-                                 (base64-encode-string user-and-passwd)))))
+                                 (base64-encode-string
+                                  (assoc-default 'authorization headers))))))
          (url-request-data
           (utils-make-multipart-url-data multipart-boundary
-                                         `(("from" . ,from)
-                                           ("to" . ,to)
-                                           ("subject" . ,subject)
-                                           ("text" . ,text)))))
+                                         (assq-delete-all 'authorization headers))))
     (url-retrieve url
                   (lambda (status)
-                    (message "%s" status)))))
+                    (if status
+                        (message "Failed with: %s" status)
+                      (search-forward "\n\n")
+                      (message "%s" (assoc-default 'message (json-read))))
+                    (kill-buffer)))))
+
+(defun utils-send-text-email (url user-and-password from to subject text)
+  "Send an email with text body.  
+URL is the api-endpoint [Mailgun HTTP API endpoint].
+USER-AND-PASSWORD is in the format 'user:password' and is
+base64-encoded to make the Authorization header for simple
+authentication. The rest of the fields have their obvious
+objectives. "
+  (utils-send-email-with-mailgun url `((authorization . ,user-and-password)
+                                       (from . ,from)
+                                       (to . ,to)
+                                       (subject . ,subject)
+                                       (text . ,text))))
+
+(defun utils-send-html-email (url user-and-password from to subject html)
+  "Send an email with HTML body.
+See `utils-send-text-email'."
+  (utils-send-email-with-mailgun url `((authorization . ,user-and-password)
+                                       (from . ,from)
+                                       (to . ,to)
+                                       (subject . ,subject)
+                                       (html . ,html))))
+
+;; (defun utils-send-email-with-mailgun (url user-and-passwd from to subject text)
+;;   "Send email using Mailgun.
+;; This function emulates the curl command as available in the Mailgun Docs:
+;; curl -s --user USER-AND-PASSWD URL 
+;;  -F FROM='Excited User <excited@samples.mailgun.org>' \
+;;  -F TO='devs@mailgun.net' \
+;;  -F SUBJECT='Hello' \
+;;  -F TEXT='Testing some Mailgun awesomeness!'
+;; "
+;;   (let* ((multipart-boundary (utils-make-multipart-boundary))
+;;          (url-request-method "POST")
+;;          (url-request-extra-headers
+;;           `(("Content-Type" . ,(format
+;;                                 "multipart/form-data; boundary=%s; charset=utf-8"
+;;                                 multipart-boundary))
+;;             ("Authorization" . ,(concat
+;;                                  "Basic "
+;;                                  (base64-encode-string user-and-passwd)))))
+;;          (url-request-data
+;;           (utils-make-multipart-url-data multipart-boundary
+;;                                          `(("from" . ,from)
+;;                                            ("to" . ,to)
+;;                                            ("subject" . ,subject)
+;;                                            ("text" . ,text)))))
+;;     (url-retrieve url
+;;                   (lambda (status)
+;;                     (if status
+;;                         (message "Failed with: %s" status)
+;;                       (search-forward "\n\n")
+;;                       (message "%s" (assoc-default 'message (json-read))))
+;;                     (kill-buffer)))))
 
 ;;;###autoload 
 (define-minor-mode utils-easy-move-mode
