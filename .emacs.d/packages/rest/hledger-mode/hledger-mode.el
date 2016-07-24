@@ -70,10 +70,25 @@
   :group 'hledger
   :type 'string)
 
-(defcustom hledger-state-file "~/.emacs.d/tmp/hledger.el"
-  "File to keep persistent state."
+(defcustom hledger-email-reporting-day 15
+  "Day of the month for sending email reports.
+I am not checking the range. You are own your own. "
   :group 'hledger
-  :type 'file)
+  :type 'integer)
+
+(defcustom hledger-email-reporting-retry-interval 300
+  "Seconds to wait before retrying to send emails again."
+  :group 'hledger
+  :type 'integer)
+
+(defcustom hledger-email-next-reporting-time
+  (let* ((time (current-time))
+         (day (string-to-number (format-time-string "%d" time)))
+         (delta-time (days-to-time (- hledger-email-reporting-day
+                                      day))))
+    (time-add time delta-time))
+  "The next time beyond which we must update this variable.
+It is updated after an email has been sent to the user.")
 
 (defcustom hledger-comments-column 11
   "Column number where the comments start."
@@ -483,6 +498,16 @@ for the buffer contents. "
     (hledger-jdo jcmd)
     (delete-other-windows)))
 
+(defun hledger-compute-next-reporting-time ()
+    "Computes the time we must sent the email reports. "
+    (let* ((now hledger-email-next-reporting-time)
+           (next-month-time (time-add now (days-to-time 30)))
+           (next-month-day (string-to-number
+                            (format-time-string "%d" next-month-time)))
+           (delta (days-to-time (- 15 next-month-day)))
+           (next-time (time-add next-month-time delta)))
+      next-time))
+
 (defun hledger-monthly-report (&optional keep-bufferp bury-bufferp)
   "Build the monthly report.
 I make reports from 15th of the Month to 15th of the next month."
@@ -569,6 +594,77 @@ I make reports from 15th of the Month to 15th of the next month."
                  t
                  bury-bufferp)))
 
+(defun hledger-generate-reports-to-email ()
+  "Generate the text html for monthly and running reports.
+
+Returns a cons cell with (text . html).
+This requires htmlfontify.el"
+  (require 'htmlize)
+  (hledger-running-report nil t)
+  (hledger-monthly-report t t)
+  (deactivate-mark t)
+  (with-current-buffer hledger-reporting-buffer-name
+    ;; So that no line is highlighted. The buffer is in hledger-view-mode.
+    (hl-line-mode -1)
+    (let* ((text (buffer-substring-no-properties (point-min) (point-max)))
+           (htmlize-output-type 'inline-css)
+           (fontified-buffer  (htmlize-buffer))
+           (html (with-current-buffer fontified-buffer
+                   (buffer-substring-no-properties (point-min) (point-max)))))
+      (kill-buffer fontified-buffer)
+      `(,text . ,html))))
+
+(defun hledger-mail-reports ()
+  "Email reports to yourself every month.
+This requires utils.el which is available in utils/ alonside
+hledger-mode/ directory.
+
+Returns t if the operation was successful.
+"
+  (interactive)
+  (require 'utils)
+  (let* ((hledger-reporting-buffer-name "*Personal Finance Email*")
+         (text-html-pair (hledger-generate-reports-to-email))
+         (reports-text (car text-html-pair))
+         (reports-html (cdr text-html-pair))
+         (success (utils-send-email hledger-email-api-url
+                                    (concat hledger-email-api-user ":"
+                                            hledger-email-api-password)
+                                    hledger-email-api-sender
+                                    hledger-email-api-recipient
+                                    "Monthly Financial Report"
+                                    reports-text
+                                    reports-html)))
+    (kill-buffer hledger-reporting-buffer-name)
+    (message (if success
+                 "Hledger email reporting: Ok"
+               "Hledger email reporting: Failed"))
+    success))
+
+(defun hledger-mail-reports-run-async-task ()
+    "Async task for emailing the reports.
+This isn't meant to be useful for anybody other than myself. This is extermely
+inefficient."
+    (require 'async)
+    (async-start
+     `(lambda ()
+        (load-file "~/.emacs.d/init.el")
+        (hledger-mail-reports))
+     (lambda (success)
+       (if success
+           (progn
+             (customize-save-variable 'hledger-email-next-reporting-time
+                                      (hledger-compute-next-reporting-time))
+             (message "Hledger email reporting: Ok"))
+         (message "Hledger email reporting: Failed")
+         (run-with-timer hledger-email-reporting-retry-interval nil
+                         'hledger-mail-reports-run-async-task)))))
+
+(defun hledger-enable-reporting ()
+  "Report every month on `hledger-email-reporting-day'."
+  (when (time-less-p hledger-email-next-reporting-time (current-time))
+    (hledger-mail-reports-run-async-task)))
+
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
     (define-key map (kbd "RET")
@@ -609,46 +705,6 @@ I make reports from 15th of the Month to 15th of the next month."
   (setq-local comment-start "; ")
   (setq-local comment-end "")
   (electric-indent-local-mode -1))
-
-(defun hledger-generate-reports-to-email ()
-  "Generate the text html for monthly and running reports.
-
-Returns a cons cell with (text . html).
-This requires htmlfontify.el"
-  (require 'htmlize)
-  (hledger-running-report nil t)
-  (hledger-monthly-report t t)
-  (deactivate-mark t)
-  (with-current-buffer hledger-reporting-buffer-name
-    ;; So that no line is highlighted. The buffer is in hledger-view-mode.
-    (hl-line-mode -1)
-    (let* ((text (buffer-substring-no-properties (point-min) (point-max)))
-           (htmlize-output-type 'inline-css)
-           (fontified-buffer  (htmlize-buffer))
-           (html (with-current-buffer fontified-buffer
-                   (buffer-substring-no-properties (point-min) (point-max)))))
-      (kill-buffer fontified-buffer)
-      `(,text . ,html))))
-
-(defun hledger-mail-reports ()
-  "Email reports to yourself every month.
-This requires utils.el which is available in utils/ alonside
-hledger-mode/ directory."
-  (interactive)
-  (require 'utils)
-  (let* ((hledger-reporting-buffer-name "*Personal Finance Email*")
-         (text-html-pair (hledger-generate-reports-to-email))
-         (reports-text (car text-html-pair))
-         (reports-html (cdr text-html-pair)))
-    (utils-send-email hledger-email-api-url
-                           (concat hledger-email-api-user ":"
-                                   hledger-email-api-password)
-                           hledger-email-api-sender
-                           hledger-email-api-recipient
-                           "Monthly Financial Report"
-                           reports-text
-                           reports-html)
-    (kill-buffer hledger-reporting-buffer-name)))
 
 ;;;###autoload
 (define-derived-mode hledger-mode prog-mode "HLedger" ()

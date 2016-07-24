@@ -68,7 +68,7 @@
       (expand-file-name "~/miscellany/personal/finance/accounting.journal"))
 (when (boundp 'my-hledger-service-fetch-url)
   (setq hledger-service-fetch-url
-	my-hledger-service-fetch-url))
+        my-hledger-service-fetch-url))
 
 (defvar toggle-reading-mode nil
   "Buffer local variable to keep track of reading mode state.")
@@ -816,6 +816,8 @@ Taken from Chris Done's config"
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook (lambda ()
                                (flyspell-mode 1)))
+(hledger-enable-reporting)
+
 ;; mylife-mode
 (require 'mylife-mode)
 

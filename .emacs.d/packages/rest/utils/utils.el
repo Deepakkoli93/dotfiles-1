@@ -1,5 +1,7 @@
 ;;; -- A set of functions common to other modes written here
 
+(require 'url-http)
+
 (defun utils-go-to-starting-line ()
   "Function to go the first line that stars a new entry for anything. 
 Cleans up whitespace."
@@ -87,6 +89,9 @@ Cleans up whitespace."
 (defun utils-send-email-with-mailgun (url headers)
  "Send email using Mailgun.
 
+Returns a boolean value stating if the operation failed or succeeded. 
+t => success nil => failure
+
 This function emulates the curl command as available in the Mailgun Docs:
 curl -s --user USER-AND-PASSWD URL 
  -F FROM='Excited User <excited@samples.mailgun.org>' \
@@ -114,13 +119,12 @@ HEADERS is an assoc-list with the headers of the request.
          (url-request-data
           (utils-make-multipart-url-data multipart-boundary
                                          (assq-delete-all 'authorization headers))))
-    (url-retrieve url
-                  (lambda (status)
-                    (if status
-                        (message "Failed with: %s" status)
-                      (search-forward "\n\n")
-                      (message "%s" (assoc-default 'message (json-read))))
-                    (kill-buffer)))))
+  (let ((url-buffer (url-retrieve-synchronously url)))
+    (if (not url-buffer)
+        nil
+      (with-current-buffer url-buffer
+        (url-http-parse-response)
+        (= url-http-response-status 200))))))
 
 (defun utils-send-text-email (url user-and-password from to subject text)
   "Send an email with text body.  
