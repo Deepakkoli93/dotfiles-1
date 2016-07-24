@@ -618,7 +618,10 @@ This requires htmlfontify.el"
   (require 'htmlize)
   (hledger-running-report nil t)
   (hledger-monthly-report t t)
+  (deactivate-mark t)
   (with-current-buffer hledger-reporting-buffer-name
+    ;; So that no line is highlighted. The buffer is in hledger-view-mode.
+    (hl-line-mode -1)
     (let* ((text (buffer-substring-no-properties (point-min) (point-max)))
            (htmlize-output-type 'inline-css)
            (fontified-buffer  (htmlize-buffer))
