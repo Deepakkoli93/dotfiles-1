@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;;; hledger-mode.el -- A mode for writing journal entries for hledger
 
 ;;; Copyright (C) 2015-2016 Narendra Joshi [This is funny.]
@@ -38,6 +39,11 @@
   "Location to the file where to store the monthly reports."
   :group 'hledger
   :type 'file)
+
+(defcustom hledger-reporting-buffer-name "*Personal Finance*"
+  "Name of the buffer for showing or working with reports."
+  :group 'hledger
+  :type 'string)
 
 (defcustom hledger-email-api-url "EMAIL_API_URL"
   "Email API end-point."
@@ -268,10 +274,10 @@ do different stuff while interactively editing an entry."
 ;;; Utility functions
 
 (defun hledger-get-perfin-buffer (&optional keep-bufferp fetched-entriesp)
-  "Get/create the *Personal Finance* buffer.
+  "Get/create the `hledger-reporting-buffer-name' buffer.
 If the buffer is not intended for editing, then `q` closes it.
 `C-c y` copies the whole buffer to clipboard. "
-  (let ((jbuffer (get-buffer-create "*Personal Finance*")))
+  (let ((jbuffer (get-buffer-create hledger-reporting-buffer-name)))
     (with-current-buffer jbuffer
       (hledger-view-mode)
       (if fetched-entriesp
@@ -359,7 +365,7 @@ If the buffer is not intended for editing, then `q` closes it.
 
 (defun hledger-fetch-entries ()
   "Fetch journal entries from `hledger-service-url`.
-Show the results in the *Personal Finance* buffer. 
+Show the results in the `hledger-reporting-buffer-name' buffer. 
 **This is a workaround**.
 "
   (interactive)
@@ -439,15 +445,22 @@ Show the results in the *Personal Finance* buffer.
 
 (defun hledger-run-command (command)
   (interactive (list (completing-read "jdo> " hledger-jcompletions)))
+  (hledger-ask-and-save-buffer)
   (pcase command
     (`"monthly-report" (hledger-monthly-report))
     (`"running-report" (hledger-running-report))
     (_ (hledger-jdo command))))
 
-(defun hledger-jdo (command &optional keep-bufferp)
+(defun hledger-jdo (command &optional keep-bufferp bury-bufferp)
   "Run a hledger command on the journal file.
-Returns the buffer with the info inserted."
-  (hledger-ask-and-save-buffer)
+Returns the buffer with the info inserted.
+
+If KEEP-BUFFERP is non-nil, it won't erase the old contents. New
+info would be prepended to the old one.
+
+If BURY-BUFFERP is t, the `hledger-reporting-buffer-name' buffer would not be
+showm to the user, this is user for using this function in elisp only
+for the buffer contents. "
   (if (eq major-mode 'hledger-mode)
       (setq-local hledger-jfile (buffer-file-name)))
   (let ((jbuffer (hledger-get-perfin-buffer keep-bufferp))
@@ -457,7 +470,9 @@ Returns the buffer with the info inserted."
                            command)))
     (with-current-buffer jbuffer
       (call-process-shell-command jcommand nil t nil)
-      (pop-to-buffer jbuffer)
+      (if bury-bufferp
+          (bury-buffer jbuffer)
+        (pop-to-buffer jbuffer))
       (beginning-of-buffer))
     jbuffer))
       
@@ -468,7 +483,7 @@ Returns the buffer with the info inserted."
     (hledger-jdo jcmd)
     (delete-other-windows)))
 
-(defun hledger-monthly-report ()
+(defun hledger-monthly-report (&optional keep-bufferp bury-bufferp)
   "Build the monthly report.
 I make reports from 15th of the Month to 15th of the next month."
   (interactive)
@@ -484,9 +499,10 @@ I make reports from 15th of the Month to 15th of the next month."
          (end-time-string (format-time-string "%Y/%m/%d" end-time)))
     (hledger-jdo (format "balance expenses income --flat -b %s -e %s"
                          beg-time-string
-                         end-time-string))
-    ;; Now in the *Personal Finance* Buffer
-    (with-current-buffer (get-buffer "*Personal Finance*")
+                         end-time-string)
+                 keep-bufferp
+                 bury-bufferp)
+    (with-current-buffer (get-buffer hledger-reporting-buffer-name)
       (goto-char (point-min))
       (insert (format "Report: %s - %s\n====================\n"
                       (format-time-string "%B %Y" beg-time)
@@ -496,49 +512,62 @@ I make reports from 15th of the Month to 15th of the next month."
           (forward-line))
         (sort-numeric-fields 2 beg (point))
         (reverse-region beg (point)))
-      (goto-char (point-max))
+      (forward-line 2)
       (insert "\nExpenses [Top Level]\n====================\n"))
     (hledger-jdo (format "balance expenses --depth 2 --flat -b %s -e %s"
                          beg-time-string
                          end-time-string)
-                 t)
-    (with-current-buffer (get-buffer "*Personal Finance*")
+                 t
+                 bury-bufferp)
+    (with-current-buffer (get-buffer hledger-reporting-buffer-name)
       (goto-char (point-min))
       (while (not (looking-at "Expenses"))
-        (next-line))
-      (next-line 2)
+        (forward-line))
+      (forward-line 2)
+      ;; Sorting and add trailing newlines
       (let ((beg (point)))
         (while (not (looking-at "--"))
-          (next-line))
+          (forward-line))
         (sort-numeric-fields 2 beg (point))
+        (forward-line 2)
+        (insert "\n\n")
+        (forward-line -4)
         (reverse-region beg (point)))
       ;; Back to the start
-      (goto-char (point-min)))))
+      (goto-char (point-min))
+      (when bury-bufferp
+        (bury-buffer)))))
 
-(defun hledger-running-report ()
+(defun hledger-running-report (&optional keep-bufferp bury-bufferp)
   "Show the cashflow for the past 5 months."
   (interactive)
   (let* ((beg-time (time-subtract (current-time) (days-to-time (* 4 31))))
          (beg-time-string (format-time-string "%Y/%m/%d" beg-time)))
     (hledger-jdo (format "balance expenses income --depth 2 -META -b %s"
-                         beg-time-string))
-    (pop-to-buffer "*Personal Finance*")
-    (delete-other-windows)
+                         beg-time-string)
+                 keep-bufferp
+                 bury-bufferp)
+    (when (not bury-bufferp)
+      ;; This is because the running report is usually very wide.
+      (pop-to-buffer hledger-reporting-buffer-name)
+      (delete-other-windows))
     ;; Let's sort according to the average column now
-    (goto-char (point-min))
-    (while (not (looking-at "=="))
-      (forward-line))
-    (forward-line)
-    (let ((beg (point)))
-      (while (not (looking-at "--"))
+    (with-current-buffer hledger-reporting-buffer-name
+      (goto-char (point-min))
+      (while (not (looking-at "=="))
         (forward-line))
-      (sort-numeric-fields -1 beg (point))
-      (reverse-region beg (point)))
-    (goto-char (point-max))
-    (insert "\nExpanded Running Report\n=======================\n\n")
+      (forward-line)
+      (let ((beg (point)))
+        (while (not (looking-at "--"))
+          (forward-line))
+        (sort-numeric-fields -1 beg (point))
+        (reverse-region beg (point)))
+      (goto-char (point-max))
+      (insert "\nExpanded Running Report\n=======================\n\n"))
     (hledger-jdo (format "balance expenses income --tree -META -b %s"
                          beg-time-string)
-                 t)))
+                 t
+                 bury-bufferp)))
 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
@@ -581,23 +610,34 @@ I make reports from 15th of the Month to 15th of the next month."
   (setq-local comment-end "")
   (electric-indent-local-mode -1))
 
-(defun hledger-generate-reports-text ()
-  "Generate the text for monthly and running reports."
-  "Emacs 💟 you! :)")
+(defun hledger-generate-reports-to-email ()
+  "Generate the html for monthly and running reports.
+
+This requires htmlfontify.el"
+  (require 'htmlfontify)
+  (hledger-running-report nil t)
+  (hledger-monthly-report t t)
+  (with-current-buffer hledger-reporting-buffer-name
+    (let* ((text (buffer-substring (point-min) (point-max)))
+           (html (htmlfontify-string text)))
+      html)))
 
 (defun hledger-mail-reports ()
   "Email reports to yourself every month.
 This requires utils.el which is available in utils/ alonside
 hledger-mode/ directory."
+  (interactive)
   (require 'utils)
-  (let ((reports-text (hledger-generate-reports-text)))
-    (utils-send-email-with-mailgun hledger-email-api-url
-                                   (concat hledger-email-api-user ":"
-                                           hledger-email-api-password)
-                                   hledger-email-api-sender
-                                   hledger-email-api-recipient
-                                   "Monthly Financial Report"
-                                   reports-text)))
+  (let* ((hledger-reporting-buffer-name "*Personal Finance Email*")
+         (reports-html (hledger-generate-reports-to-email)))
+    (utils-send-html-email hledger-email-api-url
+                           (concat hledger-email-api-user ":"
+                                   hledger-email-api-password)
+                           hledger-email-api-sender
+                           hledger-email-api-recipient
+                           "Monthly Financial Report"
+                           reports-html)
+    (kill-buffer hledger-reporting-buffer-name)))
 
 ;;;###autoload
 (define-derived-mode hledger-mode prog-mode "HLedger" ()
@@ -621,3 +661,4 @@ highlighting in both kinds of buffers."
   (use-local-map (make-keymap)))
 
 (provide 'hledger-mode)
+

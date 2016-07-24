@@ -143,39 +143,6 @@ See `utils-send-text-email'."
                                        (to . ,to)
                                        (subject . ,subject)
                                        (html . ,html))))
-
-;; (defun utils-send-email-with-mailgun (url user-and-passwd from to subject text)
-;;   "Send email using Mailgun.
-;; This function emulates the curl command as available in the Mailgun Docs:
-;; curl -s --user USER-AND-PASSWD URL 
-;;  -F FROM='Excited User <excited@samples.mailgun.org>' \
-;;  -F TO='devs@mailgun.net' \
-;;  -F SUBJECT='Hello' \
-;;  -F TEXT='Testing some Mailgun awesomeness!'
-;; "
-;;   (let* ((multipart-boundary (utils-make-multipart-boundary))
-;;          (url-request-method "POST")
-;;          (url-request-extra-headers
-;;           `(("Content-Type" . ,(format
-;;                                 "multipart/form-data; boundary=%s; charset=utf-8"
-;;                                 multipart-boundary))
-;;             ("Authorization" . ,(concat
-;;                                  "Basic "
-;;                                  (base64-encode-string user-and-passwd)))))
-;;          (url-request-data
-;;           (utils-make-multipart-url-data multipart-boundary
-;;                                          `(("from" . ,from)
-;;                                            ("to" . ,to)
-;;                                            ("subject" . ,subject)
-;;                                            ("text" . ,text)))))
-;;     (url-retrieve url
-;;                   (lambda (status)
-;;                     (if status
-;;                         (message "Failed with: %s" status)
-;;                       (search-forward "\n\n")
-;;                       (message "%s" (assoc-default 'message (json-read))))
-;;                     (kill-buffer)))))
-
 ;;;###autoload 
 (define-minor-mode utils-easy-move-mode
   "A mode for bindings in a read only environment. Mimicks vim."
