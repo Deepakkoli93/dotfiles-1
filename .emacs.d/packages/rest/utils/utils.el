@@ -76,13 +76,13 @@ Cleans up whitespace."
                 (let* ((name (format "%s" (car kv)))
                        (value (cdr kv))
                        (encoded-value (encode-coding-string value 'utf-8)))
-                  (concat (concat "--" boundary) "\r\n"
+                  (concat (concat "--" boundary) "\n"
                           "Content-Disposition: form-data; "
-                          "name=\"" name "\"\r\n\r\n"
-                          encoded-value "\r\n")))
+                          "name=\"" name "\"\n\n"
+                          encoded-value "\n")))
               params
               "")
-   "--" boundary "--\r\n"))
+   "--" boundary "--\n"))
 
 (defun utils-send-email-with-mailgun (url headers)
  "Send email using Mailgun.
@@ -135,14 +135,16 @@ objectives. "
                                        (subject . ,subject)
                                        (text . ,text))))
 
-(defun utils-send-html-email (url user-and-password from to subject html)
-  "Send an email with HTML body.
+(defun utils-send-email (url user-and-password from to subject text html)
+  "Send an email with both HTML and Text parts.
 See `utils-send-text-email'."
   (utils-send-email-with-mailgun url `((authorization . ,user-and-password)
                                        (from . ,from)
                                        (to . ,to)
                                        (subject . ,subject)
+                                       (text . ,text)
                                        (html . ,html))))
+
 ;;;###autoload 
 (define-minor-mode utils-easy-move-mode
   "A mode for bindings in a read only environment. Mimicks vim."

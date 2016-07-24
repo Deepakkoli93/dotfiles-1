@@ -611,16 +611,21 @@ I make reports from 15th of the Month to 15th of the next month."
   (electric-indent-local-mode -1))
 
 (defun hledger-generate-reports-to-email ()
-  "Generate the html for monthly and running reports.
+  "Generate the text html for monthly and running reports.
 
+Returns a cons cell with (text . html).
 This requires htmlfontify.el"
-  (require 'htmlfontify)
+  (require 'htmlize)
   (hledger-running-report nil t)
   (hledger-monthly-report t t)
   (with-current-buffer hledger-reporting-buffer-name
-    (let* ((text (buffer-substring (point-min) (point-max)))
-           (html (htmlfontify-string text)))
-      html)))
+    (let* ((text (buffer-substring-no-properties (point-min) (point-max)))
+           (htmlize-output-type 'inline-css)
+           (fontified-buffer  (htmlize-buffer))
+           (html (with-current-buffer fontified-buffer
+                   (buffer-substring-no-properties (point-min) (point-max)))))
+      (kill-buffer fontified-buffer)
+      `(,text . ,html))))
 
 (defun hledger-mail-reports ()
   "Email reports to yourself every month.
@@ -629,13 +634,16 @@ hledger-mode/ directory."
   (interactive)
   (require 'utils)
   (let* ((hledger-reporting-buffer-name "*Personal Finance Email*")
-         (reports-html (hledger-generate-reports-to-email)))
-    (utils-send-html-email hledger-email-api-url
+         (text-html-pair (hledger-generate-reports-to-email))
+         (reports-text (car text-html-pair))
+         (reports-html (cdr text-html-pair)))
+    (utils-send-email hledger-email-api-url
                            (concat hledger-email-api-user ":"
                                    hledger-email-api-password)
                            hledger-email-api-sender
                            hledger-email-api-recipient
                            "Monthly Financial Report"
+                           reports-text
                            reports-html)
     (kill-buffer hledger-reporting-buffer-name)))
 
