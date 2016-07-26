@@ -131,7 +131,7 @@ current buffer with a timestamp. Use diary/calender/org-mode instead."
 "
                   誠実
                 Seijitsu
-               Sincerity
+                Sincerity
                     
 "
 

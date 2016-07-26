@@ -649,7 +649,7 @@ inefficient."
     (async-start
      `(lambda ()
         (load-file "~/.emacs.d/init.el")
-        (hledger-mail-reports))
+        (ignore-errors (hledger-mail-reports)))
      (lambda (success)
        (if success
            (progn

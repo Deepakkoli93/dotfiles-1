@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(company-global-modes (quote (hledger-mode java-mode)))
  '(global-company-mode t)
- '(hledger-email-next-reporting-time (quote (22449 44095 122538 843000)))
+ '(hledger-email-next-reporting-time (quote (22449 54707 88642 922000)))
  '(safe-local-variable-values
    (quote
     ((org-todo-keyword-faces

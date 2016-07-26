@@ -8,9 +8,9 @@
 ;;  ─────────────────────────────────────────────────────────────────
 (require 'package)
 (add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
+             '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/"))
+             '("melpa" . "https://melpa.milkbox.net/packages/"))
 (setq package-user-dir (expand-file-name "packages/elpa/"
                                          user-emacs-directory))
 ;; Add Customized packages to load-path
@@ -143,6 +143,7 @@
 (global-set-key (kbd "C-c u") 'enlarge-current-window)
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 (global-set-key (kbd "C-c i") 'go-back-to-intellij)
+(global-set-key (kbd "<print>") 'snap-it)
 
 ;;; UTILITY FUNCTION DEFINITIONS
 ;;  ─────────────────────────────────────────────────────────────────
