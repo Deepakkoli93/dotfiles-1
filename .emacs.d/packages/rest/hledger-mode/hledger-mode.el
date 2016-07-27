@@ -649,16 +649,19 @@ inefficient."
     (async-start
      `(lambda ()
         (load-file "~/.emacs.d/init.el")
-        (ignore-errors (hledger-mail-reports)))
+        (let ((epoch (current-time)))
+          ;; Seed waiting time. To make exponential back-off simpler.
+          (sleep-for hledger-email-reporting-retry-interval)
+          (while (not (ignore-errors (hledger-mail-reports)))
+            (sleep-for (* 2 (time-to-seconds (time-subtract (current-time)
+                                                            epoch)))))))
      (lambda (success)
        (if success
            (progn
              (customize-save-variable 'hledger-email-next-reporting-time
                                       (hledger-compute-next-reporting-time))
              (message "Hledger email reporting: Ok"))
-         (message "Hledger email reporting: Failed")
-         (run-with-timer hledger-email-reporting-retry-interval nil
-                         'hledger-mail-reports-run-async-task)))))
+         (message "Hledger email reporting: Failed")))))
 
 (defun hledger-enable-reporting ()
   "Report every month on `hledger-email-reporting-day'."

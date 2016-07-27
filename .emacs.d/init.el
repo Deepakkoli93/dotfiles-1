@@ -114,18 +114,18 @@
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c m") 'switch-to-minibuffer)
 
-;; org-mode
+;; Bindings for org-mode
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c r") 'recentf-open-files)
 (global-set-key (kbd "C-c k") 'kill-buffer-delete-window)
 
-;; personal accounting
+;; Personal Accounting
 (global-set-key (kbd "C-c e") 'hledger-jentry)
 (global-set-key (kbd "C-c j") 'hledger-run-command)
 
-;; utilities
+;; Utilities
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-g f") 'avy-goto-char-timer)
 (global-set-key (kbd "C-c w") 'switch-to-window)
@@ -144,6 +144,10 @@
 (global-set-key (kbd "C-c y") 'yank-to-x-clipboard)
 (global-set-key (kbd "C-c i") 'go-back-to-intellij)
 (global-set-key (kbd "<print>") 'snap-it)
+
+;; Mouse events
+(global-set-key [mouse-3] 'define-word-at-point)
+
 
 ;;; UTILITY FUNCTION DEFINITIONS
 ;;  ─────────────────────────────────────────────────────────────────
@@ -1094,7 +1098,10 @@ Taken from Chris Done's config"
    (setq default-directory (expand-file-name "~/"))
    (setq interprogram-paste-function 'x-selection-value)
    ;; for some reason, selection highlight isn't turned on by default
-   (transient-mark-mode t))
+   (transient-mark-mode t)
+   ;; gnu-tls
+   (setq gnutls-trustfiles (expand-file-name "cacert.pem"
+                                             temp-files-directory)))
   (`darwin
    ;; Modify the CMD key to be Meta key
    (setq mac-command-modifier 'meta)
