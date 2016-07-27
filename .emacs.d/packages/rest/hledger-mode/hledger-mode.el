@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 ;;; hledger-mode.el -- A mode for writing journal entries for hledger
 
-;;; Copyright (C) 2015-2016 Narendra Joshi [This is funny.]
+;;; Copyright (C) 2015-2016 Narendra Joshi 
 
 ;; Author: Narendra Joshi <narendraj9@gmail.com>
 ;; URL: 
@@ -598,7 +598,7 @@ I make reports from 15th of the Month to 15th of the next month."
   "Generate the text html for monthly and running reports.
 
 Returns a cons cell with (text . html).
-This requires htmlfontify.el"
+This requires htmlize.el"
   (require 'htmlize)
   (hledger-running-report nil t)
   (hledger-monthly-report t t)
@@ -651,10 +651,13 @@ inefficient."
         (load-file "~/.emacs.d/init.el")
         (let ((epoch (current-time)))
           ;; Seed waiting time. To make exponential back-off simpler.
+          ;; Sleeping times go like this: t(n) = 2 * Σ t(i) for all i < n
+          ;; and t(0) = `hledger-email-reporting-retry-interval'.
           (sleep-for hledger-email-reporting-retry-interval)
           (while (not (ignore-errors (hledger-mail-reports)))
             (sleep-for (* 2 (time-to-seconds (time-subtract (current-time)
-                                                            epoch)))))))
+                                                            epoch)))))
+          t))
      (lambda (success)
        (if success
            (progn

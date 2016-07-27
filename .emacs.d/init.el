@@ -1083,6 +1083,7 @@ Taken from Chris Done's config"
                             :foreground "papaya whip")
                            (set-face-attribute 'erc-input-face nil
                                                :foreground "burlywood")))
+
 ;;; EMACS-SERVER
 ;;  ─────────────────────────────────────────────────────────────────
 ;; start emacs-server only if it's not running already
@@ -1098,10 +1099,7 @@ Taken from Chris Done's config"
    (setq default-directory (expand-file-name "~/"))
    (setq interprogram-paste-function 'x-selection-value)
    ;; for some reason, selection highlight isn't turned on by default
-   (transient-mark-mode t)
-   ;; gnu-tls
-   (setq gnutls-trustfiles (expand-file-name "cacert.pem"
-                                             temp-files-directory)))
+   (transient-mark-mode t))
   (`darwin
    ;; Modify the CMD key to be Meta key
    (setq mac-command-modifier 'meta)
