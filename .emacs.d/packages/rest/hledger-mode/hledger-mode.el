@@ -610,6 +610,10 @@ This requires htmlize.el"
            (htmlize-output-type 'inline-css)
            (fontified-buffer  (htmlize-buffer))
            (html (with-current-buffer fontified-buffer
+                   ;; Make sure that chrome uses a vertical scroll bar
+                   (goto-char (point-min))
+                   (search-forward "<pre")
+                   (insert " style=\"white-space: pre !important; word-wrap: normal !important; overflow-x: scroll;\"")
                    (buffer-substring-no-properties (point-min) (point-max)))))
       (kill-buffer fontified-buffer)
       `(,text . ,html))))
@@ -632,7 +636,8 @@ Returns t if the operation was successful.
                                             hledger-email-api-password)
                                     hledger-email-api-sender
                                     hledger-email-api-recipient
-                                    "Monthly Financial Report"
+                                    (format "Monthly Financial Report [%s]"
+                                            (format-time-string "%B %Y"))
                                     reports-text
                                     reports-html)))
     (kill-buffer hledger-reporting-buffer-name)

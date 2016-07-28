@@ -10,7 +10,7 @@
   "Key for accessing the Pearson's dictionaries.")
 
 (defcustom mylife-pearson-results-limit
-  2
+  6
   "The number of results to fetch.")
 
 (defvar mylife-pearson-base-url
