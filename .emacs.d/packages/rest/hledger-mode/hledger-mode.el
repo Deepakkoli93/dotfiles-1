@@ -488,7 +488,7 @@ for the buffer contents. "
       (if bury-bufferp
           (bury-buffer jbuffer)
         (pop-to-buffer jbuffer))
-      (beginning-of-buffer))
+      (goto-char (point-min)))
     jbuffer))
       
 (defun hledger-jreg (pattern)
