@@ -54,6 +54,11 @@
                     temp-files-directory)
   "Backups everywhere isn't cool. Keep all of them in this directory.")
 
+(defvar desktops-directory
+  (expand-file-name "desktops/"
+                    temp-files-directory)
+  "Directory for storing emacs desktop session files.")
+
 (defvar personal-dictionary-file 
   (expand-file-name "~/miscellany/assets/personal-dict.en.pws")
   "File to keep words that I think should be a part of my dictionary")
@@ -88,9 +93,13 @@
     (scroll-bar-mode -1)
     (menu-bar-mode -1)
 
-    ;; Pretty window divier
+    ;; Pretty window divider
     (set-face-background 'vertical-border "peru")
     (set-face-foreground 'vertical-border (face-background 'vertical-border))
+
+    ;; Maximize emacs on startup
+    (if (window-system)
+        (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
     ;; Window margins | 2 pixels on each side
     (fringe-mode 2)
@@ -197,7 +206,7 @@ I will rewrite it to mak it simpler"
              (reading-pane-width 80)
              (margin-width (round (/ (- width reading-pane-width) 2.0))))
         (setq left-margin-width margin-width
-              right-margin-width left-margin-width)
+              right-margin-width 0)
         (visual-line-mode)
         (fill-region (point-min) (point-max))
         (utils-easy-move-mode)
@@ -387,9 +396,6 @@ a file."
   (interactive)
   (when (active-minibuffer-window)
     (select-window (active-minibuffer-window))))
-
-(defconst iso-time-format "%FT%T%z"
-  "Full ISO 8601 time format")
 
 (defun read-date (&optional format)
   "Get date from the user and return it in the format FORMAT. 
@@ -617,6 +623,7 @@ Taken from Chris Done's config"
 ;; Make directories if not available already
 (make-directory temp-files-directory t)
 (make-directory backups-directory t)
+(make-directory desktops-directory t)
 
 ;; Keep all state in ~/.emacs.d/tmp/
 (setq ac-comphist-file (expand-file-name "ac-comphist.dat" temp-files-directory)
@@ -625,6 +632,7 @@ Taken from Chris Done's config"
       url-configuration-directory (expand-file-name "url/" temp-files-directory)
       server-auth-dir (expand-file-name "server/"          temp-files-directory)
       recentf-save-file (expand-file-name "recentf"        temp-files-directory)
+      desktop-path `(,desktops-directory)
       ido-save-directory-list-file (expand-file-name "ido.last"
                                                      temp-files-directory))
 
@@ -642,6 +650,10 @@ Taken from Chris Done's config"
 (if (file-exists-p custom-file)
     (load custom-file))
 
+;; Restore previous emacs session if available [no prompting]
+(setq desktop-save t)
+(desktop-save-mode)
+
 ;; I think I will mostly want the pointer to go to the end with M-r
 ;; And then I would do a M-l to re-center it. Since both of them use
 ;; `recenter-positions'. I am using advices.
@@ -651,7 +663,7 @@ Taken from Chris Done's config"
                       (let ((recenter-positions '(middle top bottom)))
                         (apply f args))))
 
-;; get quick emacs key binding suggestions
+;; Get quick emacs key binding suggestions
 (require 'guide-key)
 (setq guide-key/guide-key-sequence t)
 (guide-key-mode 1) 
@@ -659,7 +671,7 @@ Taken from Chris Done's config"
 ;; avy
 (require 'avy)
 
-;; ido
+;; IDO
 ;; show completions vertically
 (setq ido-decorations (quote
                        ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]"
@@ -678,7 +690,7 @@ Taken from Chris Done's config"
 (setq ad-redefinition-action 'accept)
 (helm-mode 1)
 
-;; line numbers for rows
+;; Line numbers for rows
 (global-linum-mode 0)
 (setq linum-format "%2d│")
 (set-face-attribute 'linum nil
@@ -687,27 +699,19 @@ Taken from Chris Done's config"
 
 ;; tramp-mode
 (setq tramp-default-method "ssh")
-;; make backups for tramp files in their original locations
+;; Make backups for tramp files in their original locations
 (add-to-list 'backup-directory-alist
              (cons tramp-file-name-regexp nil))
 
-;; spell-checking
+;; Spell-checking
 (dolist (hook '(markdown-mode-hook latex-mode-hook org-mode-hook))
   (add-hook hook (lambda ()
                    (flyspell-mode 1))))
 (setq ispell-personal-dictionary personal-dictionary-file)
                                  
-
-;; easy-move bindings in man-mode as well
+;; man-mode
 (add-hook 'Man-mode-hook 'utils-easy-move-mode)
-;; width of man pages
 (setenv "MANWIDTH" "80")
-;; Maximize emacs on startup
-(if (window-system)
-    (add-to-list 'default-frame-alist '(fullscreen . maximized)))
-
-;; cmake-mode
-(require 'cmake-mode)
 
 ;; whitespace-mode | For the 80-column rule
 (require 'whitespace)
@@ -720,7 +724,6 @@ Taken from Chris Done's config"
 (setq yas-snippet-dirs (expand-file-name "snippets/" user-emacs-directory))
 (yas-global-mode 1)
 
-;; Auto-complete stuff
 ;; company-mode
 (when (and (boundp 'use-companyp)
            use-companyp)
@@ -771,14 +774,14 @@ Taken from Chris Done's config"
  uniquify-buffer-name-style 'post-forward
  uniquify-separator " • ")
 
-;; recent files menu | remote files mess things up
+;; Recent files menu | remote files mess things up
 (add-hook 'recentf-dialog-mode-hook 'utils-easy-move-mode)
 (setq recentf-auto-cleanup 'never)
 (setq recentf-keep '(file-remote-p file-readable-p))
 (setq recentf-max-saved-items 100)
 (recentf-mode 1)
 
-;; save all backup files in a fixed directory
+;; Save all backup files in a fixed directory
 (setq auto-save-list-file-prefix
       (concat backups-directory "autosaves-"))
 (setq backup-directory-alist
@@ -798,10 +801,14 @@ Taken from Chris Done's config"
 (if (file-exists-p abbrev-file-name)
     (quietly-read-abbrev-file))
 
-;; Encoding
+;; Encoding and fallback font
 (prefer-coding-system 'utf-8)
+(when (find-font (font-spec :name "Symbola"))
+  (set-fontset-font "fontset-default" nil
+                    (font-spec :name "Symbola" :size 15)
+                    nil 'append))
 
-;; general settings
+;; General settings
 (show-paren-mode 1)
 (setq show-paren-style 'parenthesis)
 (setq show-paren-delay 0)
@@ -809,7 +816,7 @@ Taken from Chris Done's config"
 (setq column-number-mode t)
 (setq-default tab-width 4)
 
-;; miscellany (maybe)
+;; Miscellany (maybe)
 (setq-default indent-tabs-mode nil)
 (setq x-select-enable-clipboard t)
 (setq inhibit-splash-screen t)
@@ -817,14 +824,15 @@ Taken from Chris Done's config"
 ;; Enable disabled commands
 (put 'narrow-to-region 'disabled nil)
 
-;; personal finance
+;; mylife-mode
+(require 'mylife-mode)
+
+;; Personal Finance
+;; ―――――――――――――――――――――――――――――――――――― 
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook (lambda ()
                                (flyspell-mode 1)))
 (hledger-enable-reporting)
-
-;; mylife-mode
-(require 'mylife-mode)
 
 ;;; ESHELL
 ;;  ─────────────────────────────────────────────────────────────────
@@ -1120,10 +1128,11 @@ Taken from Chris Done's config"
                       :weight 'normal
                       :height 98
                       :width 'normal)
-  (set-fontset-font "fontset-default" nil
-                    (font-spec :name "Symbola" :size 15)
-                    nil 'append)
-  (setq browse-url-browser-function 'browse-url-chromium))
+  (setq browse-url-browser-function 'browse-url-chromium)
+  ;; PDF-tools
+  (require 'pdf-view)
+  (pdf-tools-install)
+  (add-hook 'pdf-view-mode-hook 'utils-easy-move-mode))
 
 ;;; The Abiogenesis
 ;; ─────────────────────────────────────────────────────────────────
@@ -1133,15 +1142,15 @@ Taken from Chris Done's config"
                                       (mylife-get-auroville-quality)))
 
 ;; Show emacs startup time after init
-(add-hook 'after-init-hook
+(add-hook 'emacs-startup-hook
           `(lambda ()
             "Show the emacs load time on startup in the echo area."
-            (with-current-buffer "*scratch*"
-              (make-old-content-read-only))
             (message (format "Finished loading %s in %.2f seconds."
                              ,load-file-name
                              (time-to-seconds (time-subtract (current-time)
-                                                             emacs-start-time))))))
+                                                             emacs-start-time))))
+            (pop-to-buffer "*scratch*")
+            (delete-other-windows)))
 ;; Keep the startup time in the echo area. 
 (defun display-startup-echo-area-message ()
   "Does nothing. Says nothing. Displays nothing. That's so it."
