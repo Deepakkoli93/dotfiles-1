@@ -654,6 +654,46 @@ Taken from Chris Done's config"
 (setq desktop-save t)
 (desktop-save-mode)
 
+;; Encoding and fallback font
+(prefer-coding-system 'utf-8)
+(when (find-font (font-spec :name "Symbola"))
+  (set-fontset-font "fontset-default" nil
+                    (font-spec :name "Symbola" :size 15)
+                    nil 'append))
+
+;; Recent files menu | remote files mess things up
+(add-hook 'recentf-dialog-mode-hook 'utils-easy-move-mode)
+(setq recentf-auto-cleanup 'never)
+(setq recentf-keep '(file-remote-p file-readable-p))
+(setq recentf-max-saved-items 100)
+(recentf-mode 1)
+
+;; Save all backup files in a fixed directory
+(setq auto-save-list-file-prefix
+      (concat backups-directory "autosaves-"))
+(setq backup-directory-alist
+      `((".*" . ,backups-directory)
+        backup-by-copying t
+        version-control t
+        delete-old-versions t
+        kept-new-versions 5
+        kept-old-versions 5))
+(setq auto-save-file-name-transforms
+      `((".*" ,backups-directory t)))
+
+;; General settings
+(show-paren-mode 1)
+(setq show-paren-style 'parenthesis)
+(setq show-paren-delay 0)
+
+(setq column-number-mode t)
+(setq-default tab-width 4)
+
+;; Miscellany (maybe)
+(setq-default indent-tabs-mode nil)
+(setq x-select-enable-clipboard t)
+(setq inhibit-splash-screen t)
+
 ;; I think I will mostly want the pointer to go to the end with M-r
 ;; And then I would do a M-l to re-center it. Since both of them use
 ;; `recenter-positions'. I am using advices.
@@ -671,25 +711,6 @@ Taken from Chris Done's config"
 ;; avy
 (require 'avy)
 
-;; IDO
-;; show completions vertically
-(setq ido-decorations (quote
-                       ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]"
-                        " [Matched]" " [Not readable]" " [Too big]"
-                        " [Confirm]")))
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(setq ido-auto-merge-work-directories-length -1)
-;; Ignore listing irc buffers and helm session buffers.
-(setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*" "\\*helm.*"))
-(ido-mode t)
-
-;; An alternative to ido. Maybe addictive but is it good?
-(require 'helm-config)
-;; To ignore warnings about redefinitions
-(setq ad-redefinition-action 'accept)
-(helm-mode 1)
-
 ;; Line numbers for rows
 (global-linum-mode 0)
 (setq linum-format "%2d│")
@@ -697,36 +718,37 @@ Taken from Chris Done's config"
                     :background "black"
                     :foreground "steel blue")
 
-;; tramp-mode
-(setq tramp-default-method "ssh")
-;; Make backups for tramp files in their original locations
-(add-to-list 'backup-directory-alist
-             (cons tramp-file-name-regexp nil))
-
 ;; Spell-checking
 (dolist (hook '(markdown-mode-hook latex-mode-hook org-mode-hook))
   (add-hook hook (lambda ()
                    (flyspell-mode 1))))
 (setq ispell-personal-dictionary personal-dictionary-file)
                                  
-;; man-mode
-(add-hook 'Man-mode-hook 'utils-easy-move-mode)
-(setenv "MANWIDTH" "80")
+;; Unique buffer names
+(require 'uniquify)
+(setq
+ uniquify-buffer-name-style 'post-forward
+ uniquify-separator " • ")
 
-;; whitespace-mode | For the 80-column rule
-(require 'whitespace)
-(setq whitespace-style '(face lines-tail))
-(setq whitespace-global-modes '(not erc-mode eshell-mode org-agenda-mode Info-mode))
-(global-whitespace-mode 1)
+;; abbrev-mode
+(setq save-abbrevs nil)
+(setq-default abbrev-mode t)
+(setq abbrev-file-name abbrev-file)
+(if (file-exists-p abbrev-file-name)
+    (quietly-read-abbrev-file))
 
-;; yasnippet
-(require 'yasnippet)
-(setq yas-snippet-dirs (expand-file-name "snippets/" user-emacs-directory))
-(yas-global-mode 1)
+;; Enable disabled commands
+(put 'narrow-to-region 'disabled nil)
 
-;; company-mode
-(when (and (boundp 'use-companyp)
-           use-companyp)
+;; mylife-mode
+(require 'mylife-mode)
+
+;;; Completion at Point
+;; ――――――――――――――――――――――――――――――――――――  
+(cond
+ ;; company-mode
+ ((and (boundp 'use-companyp)
+       use-companyp)
   (require 'company)
   (setq company-global-modes '(hledger-mode java-mode))
   (setq company-idle-delay 0.3)
@@ -736,9 +758,9 @@ Taken from Chris Done's config"
   (define-key company-active-map (kbd "C-n") 'company-select-next-or-abort)
   (define-key company-active-map (kbd "C-p") 'company-select-previous-or-abort))
 
-;; auto-complete
-(when (and (boundp 'use-auto-completep)
-           use-auto-completep)
+ ;; auto-complete
+ ((and (boundp 'use-auto-completep)
+       use-auto-completep)
   (require 'auto-complete)
   (require 'auto-complete-config)
   (ac-config-default)
@@ -767,65 +789,34 @@ Taken from Chris Done's config"
   (define-key ac-menu-map "\C-n" 'ac-next)
   (define-key ac-menu-map "\C-p" 'ac-previous)
   (define-key ac-menu-map (kbd "TAB") 'ac-complete))
+ 
+ ;; no-mode
+ (t (message "No completion enabled.")))
 
-;; Unique buffer names
-(require 'uniquify)
-(setq
- uniquify-buffer-name-style 'post-forward
- uniquify-separator " • ")
+;; yasnippet
+(require 'yasnippet)
+(setq yas-snippet-dirs (expand-file-name "snippets/" user-emacs-directory))
+(yas-global-mode 1)
 
-;; Recent files menu | remote files mess things up
-(add-hook 'recentf-dialog-mode-hook 'utils-easy-move-mode)
-(setq recentf-auto-cleanup 'never)
-(setq recentf-keep '(file-remote-p file-readable-p))
-(setq recentf-max-saved-items 100)
-(recentf-mode 1)
+;; IDO
+;; show completions vertically
+(setq ido-decorations (quote
+                       ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]"
+                        " [Matched]" " [Not readable]" " [Too big]"
+                        " [Confirm]")))
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(setq ido-auto-merge-work-directories-length -1)
+;; Ignore listing irc buffers and helm session buffers.
+(setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*" "\\*helm.*"))
+(ido-mode t)
 
-;; Save all backup files in a fixed directory
-(setq auto-save-list-file-prefix
-      (concat backups-directory "autosaves-"))
-(setq backup-directory-alist
-      `((".*" . ,backups-directory)
-        backup-by-copying t
-        version-control t
-        delete-old-versions t
-        kept-new-versions 5
-        kept-old-versions 5))
-(setq auto-save-file-name-transforms
-      `((".*" ,backups-directory t)))
+;; helm
+(require 'helm-config)
+;; To ignore warnings about redefinitions
+(setq ad-redefinition-action 'accept)
+(helm-mode 1)
 
-;; abbrev-mode
-(setq save-abbrevs nil)
-(setq-default abbrev-mode t)
-(setq abbrev-file-name abbrev-file)
-(if (file-exists-p abbrev-file-name)
-    (quietly-read-abbrev-file))
-
-;; Encoding and fallback font
-(prefer-coding-system 'utf-8)
-(when (find-font (font-spec :name "Symbola"))
-  (set-fontset-font "fontset-default" nil
-                    (font-spec :name "Symbola" :size 15)
-                    nil 'append))
-
-;; General settings
-(show-paren-mode 1)
-(setq show-paren-style 'parenthesis)
-(setq show-paren-delay 0)
-
-(setq column-number-mode t)
-(setq-default tab-width 4)
-
-;; Miscellany (maybe)
-(setq-default indent-tabs-mode nil)
-(setq x-select-enable-clipboard t)
-(setq inhibit-splash-screen t)
-
-;; Enable disabled commands
-(put 'narrow-to-region 'disabled nil)
-
-;; mylife-mode
-(require 'mylife-mode)
 
 ;; Personal Finance
 ;; ―――――――――――――――――――――――――――――――――――― 
@@ -864,7 +855,6 @@ Taken from Chris Done's config"
 
 ;;; HASKELL-MODE
 ;;  ─────────────────────────────────────────────────────────────────
-;; (load "haskell-mode-autoloads")
 (add-hook 'haskell-mode-hook 'haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 ;; Disable electric-indent-mode
@@ -1053,6 +1043,19 @@ Taken from Chris Done's config"
                              cider-repl-mode-hook
                              eshell-mode-hook))
 
+;;; MAN-MODE
+;;  ─────────────────────────────────────────────────────────────────
+(add-hook 'Man-mode-hook 'utils-easy-move-mode)
+(setenv "MANWIDTH" "80")
+
+;;; WHITESPACE-MODE
+;;  ─────────────────────────────────────────────────────────────────
+;; For the 80-column rule
+(require 'whitespace)
+(setq whitespace-style '(face lines-tail))
+(setq whitespace-global-modes '(not erc-mode eshell-mode org-agenda-mode Info-mode))
+(global-whitespace-mode 1)
+
 ;;; RUBY MODE
 ;;  ─────────────────────────────────────────────────────────────────
 (autoload 'inf-ruby "inf-ruby" "Run on inferior Ruby process" t)
@@ -1066,6 +1069,13 @@ Taken from Chris Done's config"
 ;;; MAGIT
 ;;  ─────────────────────────────────────────────────────────────────
 (setq magit-auto-revert-mode nil)
+
+;; TRAMP-MODE
+;;  ─────────────────────────────────────────────────────────────────
+(setq tramp-default-method "ssh")
+;; Make backups for tramp files in their original locations
+(add-to-list 'backup-directory-alist
+             (cons tramp-file-name-regexp nil))
 
 ;;; ERC
 ;;  ─────────────────────────────────────────────────────────────────
@@ -1150,6 +1160,7 @@ Taken from Chris Done's config"
                              (time-to-seconds (time-subtract (current-time)
                                                              emacs-start-time))))
             (pop-to-buffer "*scratch*")
+            (make-old-content-read-only)
             (delete-other-windows)))
 ;; Keep the startup time in the echo area. 
 (defun display-startup-echo-area-message ()

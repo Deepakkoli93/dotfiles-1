@@ -1,5 +1,9 @@
 ;;; -- A set of functions common to other modes written here
-
+;;
+;; Author: Narendra Joshi
+;; 
+;;
+;;; Code:
 (require 'url-http)
 
 (defun utils-go-to-starting-line ()
@@ -148,6 +152,17 @@ See `utils-send-text-email'."
                                        (subject . ,subject)
                                        (text . ,text)
                                        (html . ,html))))
+
+(defun utils-shell-command-to-buffer (beg end)
+  "Insert output of shell commands in region at point."
+  (interactive "r")
+  (let ((output (shell-command-to-string (buffer-substring-no-properties beg end)))
+        (_ (forward-line))
+        (start (point)))
+    (insert "Output: \n")
+    (insert output)
+    (insert "\n")
+    (comment-region start (point))))
 
 ;;;###autoload 
 (define-minor-mode utils-easy-move-mode

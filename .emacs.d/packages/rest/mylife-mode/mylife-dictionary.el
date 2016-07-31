@@ -49,8 +49,8 @@ parsed value. `parser` parses the contents of the buffer from point "
                           (if status
                               (message "%s" status)
                             (search-forward "\n\n")
-                            (,action (,parser) ,query-buffer ,query-point)
-                            (kill-buffer)))))
+                            (,action (,parser) ,query-buffer ,query-point))
+                          (kill-buffer))))
     (url-retrieve url url-callback)))
 
 (defun mylife-pearson-parser ()
@@ -71,8 +71,11 @@ parsed value. `parser` parses the contents of the buffer from point "
          (senses (mapconcat 'mylife-pearson-parser-sense
                               (assoc-default 'senses r)
                               "\n")))
-    (format "%s: %s\n%s"
-            part-of-speech headword senses)))
+    (format "%s: %s %s\n%s"
+            part-of-speech
+            headword
+            (mylife-pearson-parser-string-or-empty "(%s)" ipa)
+            senses)))
 
 (defun mylife-pearson-parser-string-or-empty (f s)
   "If s is non-empty use f as argument to `format' else return empty string"
