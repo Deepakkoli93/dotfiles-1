@@ -147,13 +147,17 @@ inefficient."
     (require 'async)
     (async-start
      `(lambda ()
+        (message "Started the new emacs process.")
         (load-file "~/.emacs.d/init.el")
         (let ((epoch (current-time)))
           ;; Seed waiting time. To make exponential back-off simpler.
           ;; Sleeping times go like this: t(n) = 2 * Σ t(i) for all i < n
           ;; and t(0) = `hledger-email-reporting-retry-interval'.
+          (message "Sleeping for %d minutes"
+                   (/ hledger-email-reporting-retry-interval 60))
           (sleep-for hledger-email-reporting-retry-interval)
           (while (not (ignore-errors (hledger-mail-reports)))
+            (message "Hledger email reporting: Failed.")
             (sleep-for (* 2 (time-to-seconds (time-subtract (current-time)
                                                             epoch)))))
           t))
@@ -168,8 +172,8 @@ inefficient."
 ;;;###autoload
 (defun hledger-enable-reporting ()
   "Report every month on `hledger-email-reporting-day'."
-  (when (time-less-p hledger-email-next-reporting-time (current-time)))
-  (hledger-mail-reports-run-async-task))
+  (when (time-less-p hledger-email-next-reporting-time (current-time))
+    (hledger-mail-reports-run-async-task)))
 
 (provide 'hledger-mail)
 ;;; hledger-mail.el ends here
