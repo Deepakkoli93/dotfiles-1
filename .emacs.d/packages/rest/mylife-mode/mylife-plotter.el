@@ -30,8 +30,9 @@
   :group 'my-life
   :type 'string)
 
-(defun )
-
+(defun mylife-gnu-plot-region (beg end)
+  "Plot the columns in region BEG to END."
+  (ignore))
 
 (provide 'mylife-plotter)
 ;;; mylife-plotter.el ends here

@@ -73,6 +73,7 @@ Both OBSERVABLE and VALUE are strings."
          (completing-read "Value (Default ✔): "
                           '("✔" "❌"))))
   (with-current-buffer (mylife--get-logbuffer)
+    (goto-char (point-min))
     (unless (search-forward (mylife--make-observable-string observable) nil t)
       (goto-char (point-max))
       (insert (mylife--make-observable-string observable)))
