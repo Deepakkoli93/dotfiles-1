@@ -851,7 +851,7 @@ Taken from Chris Done's config"
 (add-hook 'eshell-mode-hook '(lambda ()
                                (add-to-list 'eshell-visual-commands "vim")
                                (add-to-list 'eshell-visual-subcommands
-                                            '("git" "commit" "log" "diff"))))
+                                            '("git" "commit" "log" "diff" "grep"))))
 ;;; WRITING
 ;;  ─────────────────────────────────────────────────────────────────
 (setq fill-column 79)
@@ -895,8 +895,8 @@ Taken from Chris Done's config"
 
 ;; org-capture
 (setq org-capture-templates
-      `(("i" "Scheduled TODO" entry (file+headline "main.org" "Tasks")
-         "* TODO %?\n  SCHEDULED: %^t"
+      `(("i" "TODO" entry (file+headline "main.org" "Tasks")
+         "* TODO %?"
          :kill-buffer t)
           ("j" "Journal" entry (file+datetree "journal.org")
            ,(concat "* %? %^g           \n\n"
