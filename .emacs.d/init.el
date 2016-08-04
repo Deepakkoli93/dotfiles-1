@@ -650,6 +650,9 @@ Taken from Chris Done's config"
 (if (file-exists-p custom-file)
     (load custom-file))
 
+;; Prefer newer lisp files.
+(setq load-prefer-new t)
+
 ;; Restore previous emacs session if available [no prompting]
 (setq desktop-save t)
 (desktop-save-mode)

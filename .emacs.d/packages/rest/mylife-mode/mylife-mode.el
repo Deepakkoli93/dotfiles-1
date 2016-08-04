@@ -3,7 +3,6 @@
 ;;; Copyright (C) 2015-2016 Narendra Joshi [This is funny.]
 
 ;; Author: Narendra Joshi <narendraj9@gmail.com>
-;; URL: 
 ;; Version: 0.1
 ;; Keywords: life
 ;; Package-Requires: ((cl-lib "0.2"))
@@ -23,6 +22,7 @@
 (require 'mylife-relationships)
 (require 'mylife-quotes)
 (require 'mylife-dictionary)
+(require 'mylife-logger)
 
 (defgroup mylife nil
   "Customization group for mylife-mode.")
@@ -109,13 +109,6 @@
     (delete-other-windows)
     (goto-char (point-min))))
 
-(defun mylife-log-now (desc)
-  "Log something about the current time. Inserts desc into the
-current buffer with a timestamp. Use diary/calender/org-mode instead."
-  (interactive "sDescription: ")
-  (insert (format "\n%s  ::  %s"
-           (format-time-string "%F %R")
-           desc)))
 
 (defun mylife-mode-init ()
   "Function that does initial setup in the major-mode function."

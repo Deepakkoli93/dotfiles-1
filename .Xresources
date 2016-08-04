@@ -60,6 +60,10 @@ URxvt.keysym.M-C-v:      perl:clipboard:paste_escaped
 URxvt.clipboard.copycmd:   /usr/bin/env xclip -i -selection clipboard
 URxvt.clipboard.pastecmd:  /usr/bin/env xclip -o -selection clipboard
 
+! Do not scroll while we are back in the buffer
+URxvt*scrollTtyOutput:      false
+URxvt*scrollWithBuffer:     true
+URxvt*scrollTtyKeypress:    true
 
 ! URxvt*geometry:                       geometry
 ! URxvt*chdir:                          string
