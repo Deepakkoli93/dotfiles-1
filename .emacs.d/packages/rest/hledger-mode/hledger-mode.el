@@ -36,9 +36,12 @@
   :type 'hook
   :group 'hledger)
 
+(defvar hledger-accounts-cache nil
+  "List of accounts cached for ac and company modes.")
+
 (defvar ac-source-hledger-source
   `((init . hledger-get-accounts)
-    (candidates . ,(hledger-get-accounts)))
+    (candidates . hledger-accounts-cache))
   "A source for completing account names in a hledger buffer.")
 
 (defun company-hledger (command &optional arg &rest ignored)
@@ -52,7 +55,7 @@
      (remove-if-not
       (lambda (c)
         (string-prefix-p arg c))
-      hledger-source-cache))))
+      hledger-accounts-cache))))
 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
@@ -92,7 +95,8 @@
   (setq-local ac-sources '(ac-source-hledger-source))
   (setq-local comment-start "; ")
   (setq-local comment-end "")
-  (electric-indent-local-mode -1))
+  (electric-indent-local-mode -1)
+  (setq hledger-accounts-cache (hledger-get-accounts)))
 
 ;;;###autoload
 (define-derived-mode hledger-mode prog-mode "HLedger" ()
