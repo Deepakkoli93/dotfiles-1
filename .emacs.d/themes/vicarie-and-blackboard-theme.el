@@ -74,9 +74,6 @@
  '(company-tooltip ((t (:background "#cccccc" :foreground "black"))))
  '(company-tooltip-selection ((t (:background "sandy brown"))))
 
- ;; hl-line-mode
- '(hl-line ((t (:background "Royalblue1" :foreground "white"))))
- 
  ;; helm
  '(helm-candidate-number ((t (:background "goldenrod" :foreground "black"))))
  '(helm-header-line-left-margin ((t (:background "chocolate" :foreground "black"))))

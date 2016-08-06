@@ -84,35 +84,12 @@ If the buffer is not intended for editing, then `q` closes it.
     (with-current-buffer jbuffer
       (if fetched-entriesp
           (progn
-            ;; Fetched entries kept in hledger-mode
             (hledger-mode)
-            (local-set-key (kbd "C-c i")
-                           (lambda ()
-                             "Insert buffer contents into `hledger-jfile`"
-                             (interactive)
-                             (let ((entries (buffer-string)))
-                               (call-interactively 'hledger-jentry)
-                               (insert entries)
-                               (format "Fetched entries append to journal buffer"))))
-            (setq header-line-format " C-c i : Insert into journal "))
-        ;; Reporting buffers are kept in hledger-view-mode
+            ;; Hard-coding bindings. I have anonymous functions.
+            (setq header-line-format "C-c i : Append to journal"))
         (hledger-view-mode)
-        (local-set-key (kbd "C-c q")
-                       (lambda ()
-                         (interactive)
-                         (if (>= (length (window-list)) 2)
-                             (kill-buffer-and-window)
-                           (kill-buffer))))
-        (setq header-line-format " C-c q : Quit "))
-      (local-set-key (kbd "C-c w")
-                     (lambda ()
-                       "Copy buffer contents to clipboard"
-                       (interactive)
-                       (clipboard-kill-ring-save (point-min) (point-max))
-                       (message "Buffer copied to clipboard")))
-      (setq header-line-format (concat
-                                header-line-format
-                                " C-c w : Copy to clipboard "))
+        ;; Hard-coding bindings. Need to have named functions and use `where-is'.
+        (setq header-line-format "C-c q : Quit | C-c w : Copy to clipboard "))
       (or keep-bufferp (erase-buffer)))
     jbuffer))
 
@@ -146,12 +123,10 @@ If the buffer is not intended for editing, then `q` closes it.
 
 (defun hledger-get-accounts ()
   "Returns list of account names"
-  (when (eq major-mode 'hledger-mode)
-    (setq-local hledger-jfile (buffer-file-name)))
-  (let*
-      ((accounts-string (shell-command-to-string
-                         (concat "hledger -f" hledger-jfile " accounts")))
-       (accounts-list (split-string accounts-string)))
+  (let* ((hledger-jfile (buffer-file-name))
+         (accounts-string (shell-command-to-string
+                           (concat "hledger -f" hledger-jfile " accounts")))
+         (accounts-list (split-string accounts-string)))
     accounts-list))
 
 (defun hledger-jdo (command &optional keep-bufferp bury-bufferp)

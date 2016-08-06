@@ -59,6 +59,13 @@
 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
+    (define-key map (kbd "C-c i")
+      (lambda ()
+        (interactive)
+        (let ((entries (buffer-string)))
+          (hledger-jentry)
+          (insert entries)
+          (format "Fetched entries appended."))))
     (define-key map (kbd "RET")
       (lambda ()
         (interactive)
@@ -67,6 +74,23 @@
       (lambda ()
         (interactive)
         (backward-delete-char-untabify tab-width)))
+    map))
+
+(defvar hledger-view-mode-map
+  (let ((map (make-keymap)))
+    (define-key map (kbd "C-c q")
+      (lambda ()
+        "Quit"
+        (interactive)
+        (if (>= (length (window-list)) 2)
+            (kill-buffer-and-window)
+          (kill-buffer))))
+    (define-key map (kbd "C-c w")
+      (lambda ()
+        "Copy to clipboard"
+        (interactive)
+        (clipboard-kill-ring-save (point-min) (point-max))
+        (message "Buffer copied to clipboard")))
     map))
 
 (defconst hledger-font-lock-keywords-1
@@ -113,11 +137,10 @@ viewing reports and the journal file. I require the same kind of syntax
 highlighting in both kinds of buffers."
   :syntax-table hledger-mode-syntax-table
   (interactive)
-  (hledger-mode-init)
+  (setq-local font-lock-defaults hledger-font-lock-defaults)
   ;; Highlight current line for better readability
   (hl-line-mode 1)
-  ;; A freshly preprared keymap
-  (use-local-map (make-keymap)))
+  (use-local-map hledger-view-mode-map))
 
 (provide 'hledger-mode)
 
