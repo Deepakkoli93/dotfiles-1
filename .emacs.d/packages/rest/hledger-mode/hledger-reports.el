@@ -141,7 +141,8 @@ If the buffer is not intended for editing, then `q` closes it.
      (pop-to-buffer hledger-reporting-buffer-name)
      (delete-other-windows))
     (_ (hledger-jdo command)))
-  (view-mode 1))
+  (with-current-buffer hledger-reporting-buffer-name
+    (view-mode 1)))
 
 (defun hledger-get-accounts ()
   "Returns list of account names"
