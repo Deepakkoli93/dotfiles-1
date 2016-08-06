@@ -1078,7 +1078,6 @@ supreme achievement of man and his highest vocation.”
 One way is to make it so simple that there are obviously no
 deficiencies, and the other way is make it so complicated that there
 are no obvious deficiencies. The first method is far more difficult.”
-
                                                         - Tony Hoare  
 
 “We should forget about small efficiencies, say about 97% of the time:

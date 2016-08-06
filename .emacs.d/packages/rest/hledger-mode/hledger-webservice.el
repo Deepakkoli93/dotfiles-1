@@ -55,7 +55,6 @@
 
 (defun hledger-fetch-entries-insert (entries)
   "Insert entries into a journal buffer."
-  (interactive)
   (let ((result ""))
     (dolist (entry (reverse entries))
       (let ((description (cdr (assoc 'description entry)))

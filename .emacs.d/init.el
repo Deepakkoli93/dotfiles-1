@@ -415,7 +415,7 @@
 (require 'org)
 (require 'org-habit)
 
-(setq org-hide-heading-stars t)
+(setq org-hide-leading-stars t)
 (setq org-agenda-files `(,org-directory))
 ;; state logging for org-habit (! => with timestamp) (@ => timestamp + note)
 (setq org-todo-keywords

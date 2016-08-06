@@ -27,6 +27,7 @@
 ;;; Code:
 
 (require 'hledger-core)
+(require 'hledger-reports)
 (require 'utils) 
 
 (defcustom hledger-reporting-buffer-name "*Personal Finance*"
@@ -95,8 +96,7 @@ It is updated after an email has been sent to the user.")
 Returns a cons cell with (text . html).
 This requires htmlize.el"
   (require 'htmlize)
-  (hledger-running-report nil t)
-  (hledger-monthly-report t t)
+  (hledger-overall-report)
   (deactivate-mark t)
   (with-current-buffer hledger-reporting-buffer-name
     ;; So that no line is highlighted. The buffer is in hledger-view-mode.

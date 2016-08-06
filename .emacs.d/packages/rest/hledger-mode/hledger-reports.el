@@ -25,12 +25,14 @@
 
 ;;; Code:
 
+(require 'hledger-core)
 
 (defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance"
                                  "register" "incomestatement" "balancesheet"
                                  "cashflow" "activity" "stats"
                                  "monthly-report"
-                                 "running-report")
+                                 "running-report"
+                                 "overall-report")
   "Commands that can be passed to `hledger-jdo` function defined below.")
 
 (defun hledger-ask-and-save-buffer ()
@@ -80,9 +82,10 @@ If the buffer is not intended for editing, then `q` closes it.
 `C-c y` copies the whole buffer to clipboard. "
   (let ((jbuffer (get-buffer-create hledger-reporting-buffer-name)))
     (with-current-buffer jbuffer
-      (hledger-view-mode)
       (if fetched-entriesp
           (progn
+            ;; Fetched entries kept in hledger-mode
+            (hledger-mode)
             (local-set-key (kbd "C-c i")
                            (lambda ()
                              "Insert buffer contents into `hledger-jfile`"
@@ -92,6 +95,8 @@ If the buffer is not intended for editing, then `q` closes it.
                                (insert entries)
                                (format "Fetched entries append to journal buffer"))))
             (setq header-line-format " C-c i : Insert into journal "))
+        ;; Reporting buffers are kept in hledger-view-mode
+        (hledger-view-mode)
         (local-set-key (kbd "C-c q")
                        (lambda ()
                          (interactive)
@@ -132,7 +137,11 @@ If the buffer is not intended for editing, then `q` closes it.
   (pcase command
     (`"monthly-report" (hledger-monthly-report))
     (`"running-report" (hledger-running-report))
-    (_ (hledger-jdo command))))
+    (`"overall-report" (hledger-overall-report)
+     (pop-to-buffer hledger-reporting-buffer-name)
+     (delete-other-windows))
+    (_ (hledger-jdo command)))
+  (view-mode 1))
 
 (defun hledger-get-accounts ()
   "Returns list of account names"
@@ -262,6 +271,11 @@ I make reports from 15th of the Month to 15th of the next month."
                  t
                  bury-bufferp)))
 
+(defun hledger-overall-report ()
+  "A combination of all the relevant reports."
+  (interactive)
+  (hledger-running-report nil t)
+  (hledger-monthly-report t t))
 
 (provide 'hledger-reports)
 ;;; hledger-reports.el ends here
