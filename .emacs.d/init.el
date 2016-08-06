@@ -678,7 +678,7 @@ Taken from Chris Done's config"
 
 ;; PDF-tools
 (require 'pdf-view)
-(ignore-errors (pdf-tools-install))
+(ignore-errors (pdf-tools-install t))
 (add-hook 'pdf-view-mode-hook 'utils-easy-move-mode)
 
 ;; Recent files menu | remote files mess things up
