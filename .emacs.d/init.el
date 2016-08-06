@@ -13,7 +13,7 @@
              '("melpa" . "https://melpa.milkbox.net/packages/"))
 (setq package-user-dir (expand-file-name "packages/elpa/"
                                          user-emacs-directory))
-;; Add Customized packages to load-path
+;; Add my packages to load-path
 (let ((default-directory (expand-file-name "packages/rest/"
                                            user-emacs-directory)))
   (normal-top-level-add-to-load-path '("hledger-mode"
@@ -678,7 +678,8 @@ Taken from Chris Done's config"
 
 ;; PDF-tools
 (require 'pdf-view)
-(ignore-errors (pdf-tools-install t))
+(unless (ignore-errors (pdf-tools-install) t)
+  (message "Warning: pdf-tools failed to install."))
 (add-hook 'pdf-view-mode-hook 'utils-easy-move-mode)
 
 ;; Recent files menu | remote files mess things up
