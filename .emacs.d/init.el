@@ -657,12 +657,29 @@ Taken from Chris Done's config"
 (setq desktop-save t)
 (desktop-save-mode)
 
-;; Encoding and fallback font
+;; Encoding and default font settings
 (prefer-coding-system 'utf-8)
 (when (find-font (font-spec :name "Symbola"))
   (set-fontset-font "fontset-default" nil
                     (font-spec :name "Symbola" :size 15)
                     nil 'append))
+(when (find-font (font-spec :name "Monaco"))
+    (set-face-attribute 'default nil
+                      :family "Monaco"
+                      :foundry "apple"
+                      :slant 'normal
+                      :weight 'normal
+                      :height 98
+                      :width 'normal))
+
+;; Make chromium the default browser if it is installed
+(when (executable-find "chromium")
+  (setq browse-url-browser-function 'browse-url-chromium))
+
+;; PDF-tools
+(require 'pdf-view)
+(ignore-errors (pdf-tools-install))
+(add-hook 'pdf-view-mode-hook 'utils-easy-move-mode)
 
 ;; Recent files menu | remote files mess things up
 (add-hook 'recentf-dialog-mode-hook 'utils-easy-move-mode)
@@ -1129,23 +1146,6 @@ Taken from Chris Done's config"
   (`gnu/linux
    ;; Feels like home! We can ignore the worries of the world.
    (ignore "everything" "I" "say.")))
-
-;;; My personal island
-;;; ─────────────────────────────────────────────────────────────────
-;; Settings relevant only my Linux desktop at home
-(when (member user-login-name '("nj" "narendraj9"))
-  (set-face-attribute 'default nil
-                      :family "Monaco"
-                      :foundry "apple"
-                      :slant 'normal
-                      :weight 'normal
-                      :height 98
-                      :width 'normal)
-  (setq browse-url-browser-function 'browse-url-chromium)
-  ;; PDF-tools
-  (require 'pdf-view)
-  (pdf-tools-install)
-  (add-hook 'pdf-view-mode-hook 'utils-easy-move-mode))
 
 ;;; The Abiogenesis
 ;; ─────────────────────────────────────────────────────────────────

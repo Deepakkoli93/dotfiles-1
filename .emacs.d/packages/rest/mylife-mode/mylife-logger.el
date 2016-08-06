@@ -44,6 +44,9 @@
 (defvar mylife--observable-string-prefix "⁍ "
   "Prefix before an observable string in the log.")
 
+(defvar mylife--observables nil
+  "List of all the existing observables.")
+
 (defun mylife--get-logbuffer ()
   "Internal function for getting the buffer to add a log entry."
   (unless (file-exists-p mylife-logger-logfile)
@@ -58,10 +61,13 @@
 
 (defun mylife--get-all-observables ()
   "Return all observables recorded so far."
-  (with-current-buffer (mylife--get-logbuffer)
-    (goto-char (point-min))
-    (loop while (search-forward mylife--observable-string-prefix nil t)
-          collect (buffer-substring-no-properties (point) (line-end-position)))))
+  (unless mylife--observables
+    (with-current-buffer (mylife--get-logbuffer)
+      (goto-char (point-min))
+      (setq mylife--observables
+            (loop while (search-forward mylife--observable-string-prefix nil t)
+                  collect (buffer-substring-no-properties (point) (line-end-position))))))
+  mylife--observables)
 
 (defun mylife-log-it (observable value)
   "Log OBSERVABLE at current time with an optional VALUE.
@@ -83,6 +89,11 @@ Both OBSERVABLE and VALUE are strings."
                       value)))
     (save-buffer)
     (kill-buffer)))
+
+(defun mylife-show-it (observable)
+  "Show a timeline for OBSERVABLE."
+  (interactive (list (completing-read "Observable: "(mylife--get-all-observables))))
+  (message "To be implemented."))
 
 (provide 'mylife-logger)
 ;;; mylife-logger.el ends here
