@@ -21,10 +21,10 @@
 (require 'json)
 
 (require 'hledger-core)
+(require 'hledger-helpers)
 (require 'hledger-reports)
 (require 'hledger-mail)
 (require 'hledger-webservice)
-
 
 (add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
 
@@ -59,38 +59,15 @@
 
 (defvar hledger-mode-map
   (let ((map (make-keymap)))
-    (define-key map (kbd "C-c i")
-      (lambda ()
-        (interactive)
-        (let ((entries (buffer-string)))
-          (hledger-jentry)
-          (insert entries)
-          (format "Fetched entries appended."))))
-    (define-key map (kbd "RET")
-      (lambda ()
-        (interactive)
-        (newline-and-indent)))
-    (define-key map (kbd "<backtab>")
-      (lambda ()
-        (interactive)
-        (backward-delete-char-untabify tab-width)))
+    (define-key map (kbd "C-c i") 'hledger-append-clipboard-to-journal)
+    (define-key map (kbd "RET")  'hledger-ret-command)
+    (define-key map (kbd "<backtab>") 'hledger-backtab-command)
     map))
 
 (defvar hledger-view-mode-map
   (let ((map (make-keymap)))
-    (define-key map (kbd "C-c q")
-      (lambda ()
-        "Quit"
-        (interactive)
-        (if (>= (length (window-list)) 2)
-            (kill-buffer-and-window)
-          (kill-buffer))))
-    (define-key map (kbd "C-c w")
-      (lambda ()
-        "Copy to clipboard"
-        (interactive)
-        (clipboard-kill-ring-save (point-min) (point-max))
-        (message "Buffer copied to clipboard")))
+    (define-key map (kbd "C-c q") 'hledger-kill-reporting-window)
+    (define-key map (kbd "C-c w") 'hledger-copy-to-clipboard)
     map))
 
 (defconst hledger-font-lock-keywords-1
@@ -124,7 +101,7 @@
 
 ;;;###autoload
 (define-derived-mode hledger-mode prog-mode "HLedger" ()
-  "Major mode for editing hleder mode files."
+  "Major mode for editing journal files."
   :syntax-table hledger-mode-syntax-table
   (interactive)
   (hledger-mode-init))
