@@ -169,10 +169,6 @@
 ;; Prefer newer lisp files.
 (setq load-prefer-new t)
 
-;; Restore previous emacs session if available [no prompting]
-(setq desktop-save t)
-(desktop-save-mode)
-
 ;; Encoding and default font settings
 (prefer-coding-system 'utf-8)
 (when (find-font (font-spec :name "Symbola"))
