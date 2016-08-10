@@ -655,6 +655,8 @@
   (`darwin
    ;; Modify the CMD key to be Meta key
    (setq mac-command-modifier 'meta)
+   ;; This is very stupid of Apple keyboards
+   (setq mac-right-option-modifier 'ctrl)
    (when (< emacs-major-version 25)
      (setq visible-bell nil)))
   (`gnu/linux
