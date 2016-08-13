@@ -24,6 +24,11 @@
 
 ;;; VARIABLES
 ;;  ─────────────────────────────────────────────────────────────────
+(defvar choose-config-type
+  nil
+  "Choose the config type and decide. 
+Set it in custom.el if you want to use such a thing.")
+
 (defvar use-auto-completep
   nil
   "Boolean that decides whether auto-complete is configured and used.")
@@ -165,6 +170,13 @@
 ;; Load  custom.el
 (if (file-exists-p custom-file)
     (load custom-file))
+
+;; Decide on the config type
+(when (and choose-config-type
+         (not (boundp 'config-type)))
+  (customize-save-variable 'config-type
+                           (completing-read "Config: "
+                                            (list "home" "work") nil t)))
 
 ;; Prefer newer lisp files.
 (setq load-prefer-new t)
@@ -685,3 +697,8 @@
 (defun display-startup-echo-area-message ()
   "Does nothing. Says nothing. Displays nothing. That's so it."
   (ignore))
+
+;; Overwriting for different setups
+(pcase config-type
+  (`"home" (ignore))
+  (`"work" (ignore)))
