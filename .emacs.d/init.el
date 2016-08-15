@@ -24,15 +24,6 @@
 
 ;;; VARIABLES
 ;;  ─────────────────────────────────────────────────────────────────
-(defvar choose-config-type
-  nil
-  "Choose the config type and decide. 
-Set it in custom.el if you want to use such a thing.")
-
-(defvar config-type
-  'home
-  "Default config type.")
-
 (defvar use-auto-completep
   nil
   "Boolean that decides whether auto-complete is configured and used.")
@@ -174,12 +165,6 @@ Set it in custom.el if you want to use such a thing.")
 ;; Load  custom.el
 (if (file-exists-p custom-file)
     (load custom-file))
-
-;; Decide on the config type
-(when choose-config-type
-  (customize-save-variable 'config-type
-                           (intern (completing-read "Config: "
-                                                    (list "home" "work") nil t))))
 
 ;; Prefer newer lisp files.
 (setq load-prefer-new t)
@@ -371,8 +356,7 @@ Set it in custom.el if you want to use such a thing.")
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook (lambda ()
                                (flyspell-mode 1)))
-(if (equal config-type 'home)
-    (hledger-enable-reporting))
+(hledger-enable-reporting)
 
 ;;; ESHELL
 ;;  ─────────────────────────────────────────────────────────────────
@@ -673,6 +657,8 @@ Set it in custom.el if you want to use such a thing.")
    (setq mac-command-modifier 'meta)
    ;; This is very stupid of Apple keyboards
    (setq mac-right-option-modifier 'ctrl)
+   ;; I don't need a fn
+   (setq mac-function-modifier 'ctrl)
    (when (< emacs-major-version 25)
      (setq visible-bell nil)))
   (`gnu/linux
@@ -702,8 +688,3 @@ Set it in custom.el if you want to use such a thing.")
   "Does nothing. Says nothing. Displays nothing. That's so it."
   (ignore))
 
-;; Overwriting for different setups
-(if (boundp 'config-type)
-    (pcase config-type
-      (`home (ignore))
-      (`work (ignore))))
