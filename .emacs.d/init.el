@@ -29,6 +29,10 @@
   "Choose the config type and decide. 
 Set it in custom.el if you want to use such a thing.")
 
+(defvar config-type
+  'home
+  "Default config type.")
+
 (defvar use-auto-completep
   nil
   "Boolean that decides whether auto-complete is configured and used.")
@@ -172,11 +176,10 @@ Set it in custom.el if you want to use such a thing.")
     (load custom-file))
 
 ;; Decide on the config type
-(when (and choose-config-type
-         (not (boundp 'config-type)))
+(when choose-config-type
   (customize-save-variable 'config-type
-                           (completing-read "Config: "
-                                            (list "home" "work") nil t)))
+                           (intern (completing-read "Config: "
+                                                    (list "home" "work") nil t))))
 
 ;; Prefer newer lisp files.
 (setq load-prefer-new t)
@@ -368,7 +371,7 @@ Set it in custom.el if you want to use such a thing.")
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook (lambda ()
                                (flyspell-mode 1)))
-(hledger-enable-reporting)
+;(hledger-enable-reporting)
 
 ;;; ESHELL
 ;;  ─────────────────────────────────────────────────────────────────
@@ -699,6 +702,7 @@ Set it in custom.el if you want to use such a thing.")
   (ignore))
 
 ;; Overwriting for different setups
-(pcase config-type
-  (`"home" (ignore))
-  (`"work" (ignore)))
+(if (boundp 'config-type)
+    (pcase config-type
+      (`home (ignore))
+      (`work (ignore))))

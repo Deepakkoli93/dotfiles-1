@@ -66,7 +66,7 @@ I am not checking the range. You are own your own. "
   :group 'hledger
   :type 'integer)
 
-(defcustom hledger-email-reporting-retry-interval 300
+(defcustom hledger-email-reporting-retry-interval 2
   "Seconds to wait before retrying to send emails again."
   :group 'hledger
   :type 'integer)
@@ -148,18 +148,26 @@ inefficient."
     (async-start
      `(lambda ()
         (message "Started the new emacs process.")
-        (load-file "~/.emacs.d/init.el")
+        (setq load-path (quote ,load-path))
+        (message "%s" load-path)
+        (message "--> Loading hledger-mode.")
+        (require 'hledger-mode)
+        ;; This requires secrets.
+        (load ,secrets-file)
         (let ((epoch (current-time)))
           ;; Seed waiting time. To make exponential back-off simpler.
           ;; Sleeping times go like this: t(n) = 2 * Σ t(i) for all i < n
           ;; and t(0) = `hledger-email-reporting-retry-interval'.
-          (message "Sleeping for %d minutes"
-                   (/ hledger-email-reporting-retry-interval 60))
+          (message "--> Sleeping for %.0f seconds"
+                   hledger-email-reporting-retry-interval)
           (sleep-for hledger-email-reporting-retry-interval)
           (while (not (ignore-errors (hledger-mail-reports)))
-            (message "Hledger email reporting: Failed.")
-            (sleep-for (* 2 (time-to-seconds (time-subtract (current-time)
-                                                            epoch)))))
+            (message "--> Hledger email reporting: Failed.")
+            (let ((waiting-time (* 2 (time-to-seconds
+                                      (time-subtract (current-time)
+                                                     epoch)))))
+              (message "--> Sleeping for %.0f seconds" waiting-time)
+              (sleep-for waiting-time)))
           t))
      (lambda (success)
        (if success
