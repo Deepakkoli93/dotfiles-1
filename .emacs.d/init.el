@@ -371,7 +371,8 @@ Set it in custom.el if you want to use such a thing.")
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook (lambda ()
                                (flyspell-mode 1)))
-;(hledger-enable-reporting)
+(if (equal config-type 'home)
+    (hledger-enable-reporting))
 
 ;;; ESHELL
 ;;  ─────────────────────────────────────────────────────────────────
