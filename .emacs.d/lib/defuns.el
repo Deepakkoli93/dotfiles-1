@@ -50,11 +50,10 @@
     (add-hook 'after-init-hook (lambda ()
                                  (interactive)
                                  (load-theme 'vicarie-and-blackboard t)))
-    
-    ;; Powerline
-    (require 'powerline)
-    (require 'powerline-vermilion-theme)
-    (if (window-system) (powerline-vermilion-theme))))
+    ;; mode-line
+    (setq sml/theme 'dark)
+    (setq sml/no-confirm-load-theme t)
+    (sml/setup)))
 
 (defun switch-to-window (direction)
   "Switch to another window with vim like keys."
