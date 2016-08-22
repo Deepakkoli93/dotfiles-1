@@ -28,32 +28,35 @@
 (defun set-appearance ()
   (interactive)
   "Set up the appearance of emacs."
-  (progn
-    ;; Make the window simpler.
-    (tool-bar-mode -1)
-    (scroll-bar-mode -1)
-    (menu-bar-mode -1)
+  ;; Make the window simpler.
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (menu-bar-mode -1)
 
-    ;; Pretty window divider
-    (set-face-background 'vertical-border "peru")
-    (set-face-foreground 'vertical-border (face-background 'vertical-border))
+  ;; And the cursor thinner
+  (setq-default cursor-type '(bar . 3))
+  (set-cursor-color "LemonChiffon")
+  
+  ;; Pretty window divider
+  (set-face-background 'vertical-border "peru")
+  (set-face-foreground 'vertical-border (face-background 'vertical-border))
 
-    ;; Maximize emacs on startup
-    (if (window-system)
-        (add-to-list 'default-frame-alist '(fullscreen . maximized)))
+  ;; Maximize emacs on startup
+  (if (window-system)
+      (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
-    ;; Window margins | 2 pixels on each side
-    (fringe-mode 2)
-    (set-face-attribute 'fringe nil :background "#2E2920" :foreground "#2E2920")
+  ;; Window margins | 2 pixels on each side
+  (fringe-mode 2)
+  (set-face-attribute 'fringe nil :background "#2E2920" :foreground "#2E2920")
 
-    ;; Load my custom theme { Some of the lines above may be redundant }
-    (add-hook 'after-init-hook (lambda ()
-                                 (interactive)
-                                 (load-theme 'vicarie-and-blackboard t)))
-    ;; mode-line
-    (setq sml/theme 'dark)
-    (setq sml/no-confirm-load-theme t)
-    (sml/setup)))
+  ;; Load my custom theme { Some of the lines above may be redundant }
+  (add-hook 'after-init-hook (lambda ()
+                               (interactive)
+                               (load-theme 'vicarie-and-blackboard t)))
+  ;; mode-line
+  (setq sml/theme 'dark)
+  (setq sml/no-confirm-load-theme t)
+  (sml/setup))
 
 (defun switch-to-window (direction)
   "Switch to another window with vim like keys."
