@@ -151,23 +151,25 @@ inefficient."
         (setq load-path (quote ,load-path))
         (message "--> Loading hledger-mode.")
         (require 'hledger-mode)
-        ;; This requires secrets.
-        (load ,secrets-file)
-        (let ((epoch (current-time)))
-          ;; Seed waiting time. To make exponential back-off simpler.
-          ;; Sleeping times go like this: t(n) = 2 * Σ t(i) for all i < n
-          ;; and t(0) = `hledger-email-reporting-retry-interval'.
-          (message "--> Sleeping for %.0f seconds"
-                   hledger-email-reporting-retry-interval)
-          (sleep-for hledger-email-reporting-retry-interval)
-          (while (not (ignore-errors (hledger-mail-reports)))
-            (message "--> Hledger email reporting: Failed.")
-            (let ((waiting-time (* 2 (time-to-seconds
-                                      (time-subtract (current-time)
-                                                     epoch)))))
-              (message "--> Sleeping for %.0f seconds" waiting-time)
-              (sleep-for waiting-time)))
-          t))
+        ;; This requires secrets. So, we don't do anything if there is
+        ;; no secrets file.
+        (when (file-exists-p ,secrets-file)
+          (load ,secrets-file)
+          (let ((epoch (current-time)))
+            ;; Seed waiting time. To make exponential back-off simpler.
+            ;; Sleeping times go like this: t(n) = 2 * Σ t(i) for all i < n
+            ;; and t(0) = `hledger-email-reporting-retry-interval'.
+            (message "--> Sleeping for %.0f seconds"
+                     hledger-email-reporting-retry-interval)
+            (sleep-for hledger-email-reporting-retry-interval)
+            (while (not (ignore-errors (hledger-mail-reports)))
+              (message "--> Hledger email reporting: Failed.")
+              (let ((waiting-time (* 2 (time-to-seconds
+                                        (time-subtract (current-time)
+                                                       epoch)))))
+                (message "--> Sleeping for %.0f seconds" waiting-time)
+                (sleep-for waiting-time)))
+            t)))
      (lambda (success)
        (if success
            (progn
