@@ -35,6 +35,33 @@
                                  "overall-report")
   "Commands that can be passed to `hledger-jdo` function defined below.")
 
+(defun format-time (time)
+  "Format time in \"%Y-%m-%d\" "
+  (format-time-string "%Y-%m-%d" time))
+
+(defun nth-of-mth-month (n m)
+  "Returns the nth of the mth month. Current month is the zeroth."
+  (let* ((time (time-add (current-time)
+                         (days-to-time (* 30 m))))
+         (day (string-to-number (format-time-string "%d" time)))
+         (delta-time (days-to-time (- n
+                                      day))))
+    (time-add time delta-time)))
+
+(defun nth-of-this-month (n)
+  "Returns the time value for the nth day of the current month"
+  (nth-of-mth-month n 0))
+
+(defun nth-of-prev-month (n)
+  "Returns the nth day's time for the previous month."
+  (nth-of-mth-month n -1))
+
+(defun hledger-shell-command-to-string (command-string)
+  (shell-command-to-string (concat "hledger -f "
+                                   (shell-quote-argument hledger-jfile)
+                                   " "
+                                   command-string)))
+
 (defun hledger-ask-and-save-buffer ()
   "Ask for saving modified buffer before any reporting commands."
   (if (and (eq major-mode 'hledger-mode)
@@ -85,10 +112,10 @@ If the buffer is not intended for editing, then `q` closes it.
       (if fetched-entriesp
           (progn
             (hledger-mode)
-            ;; Hard-coding bindings. I have anonymous functions.
+                                   ;; Hard-coding bindings. I have anonymous functions.
             (setq header-line-format "C-c i : Append to journal"))
         (hledger-view-mode)
-        ;; Hard-coding bindings. Need to have named functions and use `where-is'.
+                                   ;; Hard-coding bindings. Need to have named functions and use `where-is'.
         (setq header-line-format "C-c q : Quit | C-c w : Copy to clipboard "))
       (or keep-bufferp (erase-buffer)))
     jbuffer))
@@ -202,7 +229,7 @@ I make reports from 15th of the Month to 15th of the next month."
       (while (not (looking-at "Expenses"))
         (forward-line))
       (forward-line 2)
-      ;; Sorting and add trailing newlines
+                                   ;; Sorting and add trailing newlines
       (let ((beg (point)))
         (while (not (looking-at "--"))
           (forward-line))
@@ -211,13 +238,13 @@ I make reports from 15th of the Month to 15th of the next month."
         (insert "\n\n")
         (forward-line -4)
         (reverse-region beg (point)))
-      ;; Back to the start
+                                   ;; Back to the start
       (goto-char (point-min))
       (when bury-bufferp
         (bury-buffer)))))
 
 (defun hledger-running-report (&optional keep-bufferp bury-bufferp)
-  "Show the cashflow for the past 5 months."
+  "Show the balance report for the past 5 months."
   (interactive)
   (let* ((beg-time (time-subtract (current-time) (days-to-time (* 4 31))))
          (beg-time-string (format-time-string "%Y/%m/%d" beg-time)))
@@ -226,10 +253,10 @@ I make reports from 15th of the Month to 15th of the next month."
                  keep-bufferp
                  bury-bufferp)
     (when (not bury-bufferp)
-      ;; This is because the running report is usually very wide.
+                                   ;; This is because the running report is usually very wide.
       (pop-to-buffer hledger-reporting-buffer-name)
       (delete-other-windows))
-    ;; Let's sort according to the average column now
+                                   ;; Let's sort according to the average column now
     (with-current-buffer hledger-reporting-buffer-name
       (goto-char (point-min))
       (while (not (looking-at "=="))
@@ -247,11 +274,68 @@ I make reports from 15th of the Month to 15th of the next month."
                  t
                  bury-bufferp)))
 
+(defun hledger-generate-ratios ()
+  "Computes various personal finance ratios:
+
+Computes the emergency fund ratio for the current month.
+EFR = (Current liquid assets)/(Monthly nondiscretionary expenses)
+
+I consider expenses on housing, eating and family to be
+non-discretionary. Shoot for keeping it 6. Too high isn't
+efficient. Too low isn't safe.
+
+Computes the current ratio which gives you an estimate of how your current
+asset vs liability situation is. Current ratio = assets / liabilities
+
+Debt ratio = liabilities / assets
+
+Returns a plist of the ratios.
+
+Note: Currently this is extermely inefficient. It spawns hledger
+three times.
+
+"
+  (interactive)
+  (let* ((assets-report-output
+          (hledger-shell-command-to-string
+           "balance assets:bank assets:wallet --depth 1"))
+         (assets (string-to-number (nth 1 (split-string assets-report-output))))
+         (expenses-report-output
+          (hledger-shell-command-to-string
+           (concat "balance expenses:housing expenses:eating expenses:family "
+                   " --depth 1 "
+                   " --begin " (format-time (nth-of-mth-month 15 -12))
+                   " --end " (format-time (nth-of-this-month 15))
+                   )))
+         (expenses (/ (string-to-number (nth 1 (split-string expenses-report-output)))
+                      12))
+         (liabilities-report-output
+          (hledger-shell-command-to-string (concat "balance liabilities --depth 1")))
+         (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output))))))
+    (list 'efr (/ assets expenses)      ;; Emergency fund ratio
+          'cr  (/ assets liabilities)   ;; Current ratio
+          'dr (/ liabilities assets)))) ;; Debt ratio
+
+(defun current-ratio ()
+  "Computes the ratio of our current liabilities to our current assets.")
+
 (defun hledger-overall-report ()
   "A combination of all the relevant reports."
   (interactive)
   (hledger-running-report nil t)
-  (hledger-monthly-report t t))
+  (hledger-monthly-report t t)
+  (with-current-buffer (hledger-get-perfin-buffer t)
+    (let* ((ratios (hledger-generate-ratios))
+           (efr (plist-get ratios 'efr))
+           (cr (plist-get ratios 'cr))
+           (dr (plist-get ratios 'dr)))
+      (goto-char (point-min))
+      (forward-line 2)
+      (insert (format (concat "\nEmergency Fund Ratio: %.2f"
+                              "\nCurrent Ratio: %.2f"
+                              "\nDebt Ratio: %.2f"
+                              "\n\n")
+                      efr cr dr)))))
 
 (provide 'hledger-reports)
 ;;; hledger-reports.el ends here

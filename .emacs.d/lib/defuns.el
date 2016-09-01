@@ -34,7 +34,6 @@
   (menu-bar-mode -1)
 
   ;; And the cursor thinner
-  (setq-default cursor-type '(bar . 3))
   (set-cursor-color "LemonChiffon")
   
   ;; Pretty window divider
