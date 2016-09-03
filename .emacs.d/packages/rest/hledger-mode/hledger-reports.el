@@ -35,6 +35,24 @@
                                  "overall-report")
   "Commands that can be passed to `hledger-jdo` function defined below.")
 
+(defcustom hledger-ratios-liquid-asset-accounts
+  "assets:bank assets:wallet"
+  "Account names [separated by spaces] that contain your liquid assets"
+  :group 'hledger
+  :type 'string)
+
+(defcustom hledger-ratios-nondiscritionary-expense-accounts
+  "expenses:housing expenses:eating expenses:family"
+  "Account names [separated by spaces] that contain non-disctrionary expenses"
+  :group 'hledger
+  :type 'string)
+
+(defcustom hledger-ratios-debt-accounts
+  "liabilities"
+  "Account names [separated by spaces] that are liabilities."
+  :group 'hledger
+  :type 'string)
+
 (defun format-time (time)
   "Format time in \"%Y-%m-%d\" "
   (format-time-string "%Y-%m-%d" time))
@@ -297,12 +315,15 @@ three times.
 "
   (interactive)
   (let* ((assets-report-output
-          (hledger-shell-command-to-string
-           "balance assets:bank assets:wallet --depth 1"))
+          (hledger-shell-command-to-string (concat 
+                                            " balance "
+                                            hledger-ratios-liquid-asset-accounts
+                                            " --depth 1")))
          (assets (string-to-number (nth 1 (split-string assets-report-output))))
          (expenses-report-output
           (hledger-shell-command-to-string
-           (concat "balance expenses:housing expenses:eating expenses:family "
+           (concat " balance "
+                   hledger-ratios-nondiscritionary-expense-accounts
                    " --depth 1 "
                    " --begin " (format-time (nth-of-mth-month 15 -12))
                    " --end " (format-time (nth-of-this-month 15))
@@ -310,11 +331,13 @@ three times.
          (expenses (/ (string-to-number (nth 1 (split-string expenses-report-output)))
                       12))
          (liabilities-report-output
-          (hledger-shell-command-to-string (concat "balance liabilities --depth 1")))
+          (hledger-shell-command-to-string (concat " balance "
+                                                   " --depth 1 "
+                                                   hledger-ratios-debt-accounts)))
          (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output))))))
-    (list 'efr (/ assets expenses)      ;; Emergency fund ratio
-          'cr  (/ assets liabilities)   ;; Current ratio
-          'dr (/ liabilities assets)))) ;; Debt ratio
+    (list 'efr (/ assets (* expenses 1.0))      ;; Emergency fund ratio
+          'cr  (/ assets (* liabilities 1.0))   ;; Current ratio
+          'dr (/ liabilities (* assets 1.0))))) ;; Debt ratio
 
 (defun current-ratio ()
   "Computes the ratio of our current liabilities to our current assets.")
@@ -335,7 +358,8 @@ three times.
                               "\nCurrent Ratio: %.2f"
                               "\nDebt Ratio: %.2f"
                               "\n\n")
-                      efr cr dr)))))
+                      efr cr dr)))
+    (goto-char (point-min))))
 
 (provide 'hledger-reports)
 ;;; hledger-reports.el ends here
