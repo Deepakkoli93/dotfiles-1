@@ -68,6 +68,8 @@
   (let ((map (make-keymap)))
     (define-key map (kbd "C-c q") 'hledger-kill-reporting-window)
     (define-key map (kbd "C-c w") 'hledger-copy-to-clipboard)
+    (define-key map (kbd "C-c <") 'hledger-prev-report)
+    (define-key map (kbd "C-c >") 'hledger-next-report)
     map))
 
 (defconst hledger-font-lock-keywords-1

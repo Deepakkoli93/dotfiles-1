@@ -56,15 +56,5 @@
     (insert entries)
     (format "Fetched entries appended.")))
 
-(defun hledger-previous-report ()
-  "Re-generates the current report in the buffer for a previous
-  time interval or instant."
-  (ignore))
-
-(defun hledger-next-report ()
-    "Regenerates the current report in the buffer for a next time
-    interval or instant."
-    (ignore))
-
 (provide 'hledger-helpers)
 ;;; hledger-helpers.el ends here

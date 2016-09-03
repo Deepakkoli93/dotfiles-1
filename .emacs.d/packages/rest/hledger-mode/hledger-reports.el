@@ -53,6 +53,12 @@
   :group 'hledger
   :type 'string)
 
+(defvar hledger-last-run-command nil
+  "Last run hledger-command.")
+
+(defvar hledger-last-run-month 0
+  "Last month on which a command was run.")
+
 (defun hledger-format-time (time)
   "Format time in \"%Y-%m-%d\" "
   (format-time-string "%Y-%m-%d" time))
@@ -124,7 +130,8 @@
 (defun hledger-get-perfin-buffer (&optional keep-bufferp fetched-entriesp)
   "Get/create the `hledger-reporting-buffer-name' buffer.
 If the buffer is not intended for editing, then `q` closes it.
-`C-c y` copies the whole buffer to clipboard. "
+`C-c y` copies the whole buffer to clipboard. 
+FIXME: Query emacs for the keys for the functions."
   (let ((jbuffer (get-buffer-create hledger-reporting-buffer-name)))
     (with-current-buffer jbuffer
       (if fetched-entriesp
@@ -132,7 +139,10 @@ If the buffer is not intended for editing, then `q` closes it.
             (hledger-mode)
             (setq header-line-format "C-c i : Append to journal"))
         (hledger-view-mode)
-        (setq header-line-format "C-c q : Quit | C-c w : Copy to clipboard "))
+        (setq header-line-format (concat "C-c q : Quit | "
+                                         "C-c w : Copy to clipboard | "
+                                         "C-c < : Back  | "
+                                         "C-c > : Forward")))
       (or keep-bufferp (erase-buffer)))
     jbuffer))
 
@@ -152,6 +162,7 @@ If the buffer is not intended for editing, then `q` closes it.
   (recenter))
 
 (defun hledger-run-command (command)
+  "Runs an hledger command."
   (interactive (list (completing-read "jdo> " hledger-jcompletions)))
   (hledger-ask-and-save-buffer)
   (pcase command
@@ -161,6 +172,7 @@ If the buffer is not intended for editing, then `q` closes it.
      (pop-to-buffer hledger-reporting-buffer-name)
      (delete-other-windows))
     (_ (hledger-jdo command)))
+  (setq hledger-last-run-command command)
   (with-current-buffer hledger-reporting-buffer-name
     (view-mode 1)))
 
@@ -187,8 +199,8 @@ for the buffer contents. "
   (let ((jbuffer (hledger-get-perfin-buffer keep-bufferp))
         (jcommand (concat "hledger -f " 
                           (shell-quote-argument hledger-jfile)
-                           " " 
-                           command)))
+                          " " 
+                          command)))
     (with-current-buffer jbuffer
       (call-process-shell-command jcommand nil t nil)
       (if bury-bufferp
@@ -196,7 +208,7 @@ for the buffer contents. "
         (pop-to-buffer jbuffer))
       (goto-char (point-min)))
     jbuffer))
-      
+
 (defun hledger-jreg (pattern)
   "Run hledger register command."
   (interactive "spattern> ")
@@ -245,7 +257,7 @@ I make reports from 15th of the Month to 15th of the next month."
       (while (not (looking-at "Expenses"))
         (forward-line))
       (forward-line 2)
-                                   ;; Sorting and add trailing newlines
+      ;; Sorting and add trailing newlines
       (let ((beg (point)))
         (while (not (looking-at "--"))
           (forward-line))
@@ -254,7 +266,7 @@ I make reports from 15th of the Month to 15th of the next month."
         (insert "\n\n")
         (forward-line -4)
         (reverse-region beg (point)))
-                                   ;; Back to the start
+      ;; Back to the start
       (goto-char (point-min))
       (when bury-bufferp
         (bury-buffer)))))
@@ -263,16 +275,18 @@ I make reports from 15th of the Month to 15th of the next month."
   "Show the balance report for the past 5 months."
   (interactive)
   (let* ((beg-time (time-subtract (current-time) (days-to-time (* 4 31))))
-         (beg-time-string (hledger-format-time beg-time)))
-    (hledger-jdo (format "balance expenses income --depth 2 -META -b %s"
-                         beg-time-string)
+         (beg-time-string (hledger-format-time beg-time))
+         (end-time-string (hledger-format-time (current-time))))
+    (hledger-jdo (format "balance expenses income --depth 2 -META -b %s -e %s"
+                         beg-time-string
+                         end-time-string)
                  keep-bufferp
                  bury-bufferp)
     (when (not bury-bufferp)
-                                   ;; This is because the running report is usually very wide.
+      ;; This is because the running report is usually very wide.
       (pop-to-buffer hledger-reporting-buffer-name)
       (delete-other-windows))
-                                   ;; Let's sort according to the average column now
+    ;; Let's sort according to the average column now
     (with-current-buffer hledger-reporting-buffer-name
       (goto-char (point-min))
       (while (not (looking-at "=="))
@@ -285,8 +299,9 @@ I make reports from 15th of the Month to 15th of the next month."
         (reverse-region beg (point)))
       (goto-char (point-max))
       (insert "\nExpanded Running Report\n=======================\n\n"))
-    (hledger-jdo (format "balance expenses income --tree -META -b %s"
-                         beg-time-string)
+    (hledger-jdo (format "balance expenses income --tree -META -b %s -e %s"
+                         beg-time-string
+                         end-time-string)
                  t
                  bury-bufferp)))
 
@@ -316,6 +331,7 @@ three times.
           (hledger-shell-command-to-string (concat 
                                             " balance "
                                             hledger-ratios-liquid-asset-accounts
+                                            " --end " (hledger-format-time (current-time))
                                             " --depth 1")))
          (assets (string-to-number (nth 1 (split-string assets-report-output))))
          (expenses-report-output
@@ -333,15 +349,13 @@ three times.
                       12))
          (liabilities-report-output
           (hledger-shell-command-to-string (concat " balance "
+                                                   " --end " (hledger-format-time (current-time))
                                                    " --depth 1 "
                                                    hledger-ratios-debt-accounts)))
          (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output))))))
     (list 'efr (/ assets (* expenses 1.0))      ;; Emergency fund ratio
           'cr  (/ assets (* liabilities 1.0))   ;; Current ratio
           'dr (/ liabilities (* assets 1.0))))) ;; Debt ratio
-
-(defun current-ratio ()
-  "Computes the ratio of our current liabilities to our current assets.")
 
 (defun hledger-overall-report ()
   "A combination of all the relevant reports."
@@ -361,6 +375,32 @@ three times.
                               "\n\n")
                       efr cr dr)))
     (goto-char (point-min))))
+
+(defun hledger-run-command-for-month (m command)
+  "Runs an hledger COMMAND for Mth month.
+This is the reason dynamic scoping is cool sometimes."
+  (letf (((symbol-function 'current-time)
+          (let ((time (hledger-nth-of-mth-month
+                       (string-to-number (format-time-string "%d" (current-time)))
+                       m)))
+            `(lambda () ',time))))
+    (hledger-run-command command)))
+
+(defun hledger-prev-report ()
+  "Takes your current report back in time.
+To be called once you have run a report that sets `hledger-last-run-command'."
+  (interactive)
+  (setq hledger-last-run-month (1- hledger-last-run-month))
+  (hledger-run-command-for-month hledger-last-run-month
+                                 hledger-last-run-command))
+
+(defun hledger-next-report ()
+  "Takes your report forward in time.
+See `hledger-prev-report'."
+  (interactive)
+  (setq hledger-last-run-month (1+ hledger-last-run-month))
+  (hledger-run-command-for-month hledger-last-run-month
+                                 hledger-last-run-command))
 
 (provide 'hledger-reports)
 ;;; hledger-reports.el ends here
