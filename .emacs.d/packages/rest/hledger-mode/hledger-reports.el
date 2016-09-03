@@ -172,7 +172,10 @@ FIXME: Query emacs for the keys for the functions."
      (pop-to-buffer hledger-reporting-buffer-name)
      (delete-other-windows))
     (_ (hledger-jdo command)))
+  ;; Help other functions keep track of history. 
   (setq hledger-last-run-command command)
+  (when (called-interactively-p 'interactive)
+    (setq hledger-last-run-month 0))
   (with-current-buffer hledger-reporting-buffer-name
     (view-mode 1)))
 
