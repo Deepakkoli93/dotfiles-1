@@ -60,7 +60,7 @@
   :group 'hledger
   :type 'string)
 
-(defcustom hledger-email-reporting-day 15
+(defcustom hledger-reporting-day 15
   "Day of the month for sending email reports.
 I am not checking the range. You are own your own. "
   :group 'hledger
@@ -74,7 +74,7 @@ I am not checking the range. You are own your own. "
 (defcustom hledger-email-next-reporting-time
   (let* ((time (current-time))
          (day (string-to-number (format-time-string "%d" time)))
-         (delta-time (days-to-time (- hledger-email-reporting-day
+         (delta-time (days-to-time (- hledger-reporting-day
                                       day))))
     (time-add time delta-time))
   "The next time beyond which we must update this variable.
@@ -180,7 +180,7 @@ inefficient."
 
 ;;;###autoload
 (defun hledger-enable-reporting ()
-  "Report every month on `hledger-email-reporting-day'."
+  "Report every month on `hledger-reporting-day'."
   (when (time-less-p hledger-email-next-reporting-time (current-time))
     (hledger-mail-reports-run-async-task)))
 

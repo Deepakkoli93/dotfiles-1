@@ -188,10 +188,11 @@
   (setq browse-url-browser-function 'browse-url-chromium))
 
 ;; PDF-tools
-(require 'pdf-view)
-(unless (ignore-errors (pdf-tools-install) t)
-  (message "Warning: pdf-tools failed to install."))
-(add-hook 'pdf-view-mode-hook 'utils-easy-move-mode)
+(add-hook 'pdf-view-mode-hook (lambda ()
+                                (require 'pdf-view)
+                                (unless (ignore-errors (pdf-tools-install) t)
+                                  (message "Warning: pdf-tools failed to install.")
+                                  (utils-easy-move-mode))))
 
 ;; Recent files menu | remote files mess things up
 (add-hook 'recentf-dialog-mode-hook 'utils-easy-move-mode)

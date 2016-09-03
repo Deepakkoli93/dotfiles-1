@@ -53,11 +53,11 @@
   :group 'hledger
   :type 'string)
 
-(defun format-time (time)
+(defun hledger-format-time (time)
   "Format time in \"%Y-%m-%d\" "
   (format-time-string "%Y-%m-%d" time))
 
-(defun nth-of-mth-month (n m)
+(defun hledger-nth-of-mth-month (n m)
   "Returns the nth of the mth month. Current month is the zeroth."
   (let* ((time (time-add (current-time)
                          (days-to-time (* 30 m))))
@@ -66,13 +66,13 @@
                                       day))))
     (time-add time delta-time)))
 
-(defun nth-of-this-month (n)
+(defun hledger-nth-of-this-month (n)
   "Returns the time value for the nth day of the current month"
-  (nth-of-mth-month n 0))
+  (hledger-nth-of-mth-month n 0))
 
-(defun nth-of-prev-month (n)
+(defun hledger-nth-of-prev-month (n)
   "Returns the nth day's time for the previous month."
-  (nth-of-mth-month n -1))
+  (hledger-nth-of-mth-month n -1))
 
 (defun hledger-shell-command-to-string (command-string)
   (shell-command-to-string (concat "hledger -f "
@@ -130,10 +130,8 @@ If the buffer is not intended for editing, then `q` closes it.
       (if fetched-entriesp
           (progn
             (hledger-mode)
-                                   ;; Hard-coding bindings. I have anonymous functions.
             (setq header-line-format "C-c i : Append to journal"))
         (hledger-view-mode)
-                                   ;; Hard-coding bindings. Need to have named functions and use `where-is'.
         (setq header-line-format "C-c q : Quit | C-c w : Copy to clipboard "))
       (or keep-bufferp (erase-buffer)))
     jbuffer))
@@ -218,8 +216,8 @@ I make reports from 15th of the Month to 15th of the next month."
                                                              previous-time)))
          (beg-time (time-add previous-time (days-to-time
                                             (- 15 previous-day))))
-         (beg-time-string (format-time-string "%Y/%m/%d" beg-time))
-         (end-time-string (format-time-string "%Y/%m/%d" end-time)))
+         (beg-time-string (hledger-format-time beg-time))
+         (end-time-string (hledger-format-time end-time)))
     (hledger-jdo (format "balance expenses income --flat -b %s -e %s"
                          beg-time-string
                          end-time-string)
@@ -265,7 +263,7 @@ I make reports from 15th of the Month to 15th of the next month."
   "Show the balance report for the past 5 months."
   (interactive)
   (let* ((beg-time (time-subtract (current-time) (days-to-time (* 4 31))))
-         (beg-time-string (format-time-string "%Y/%m/%d" beg-time)))
+         (beg-time-string (hledger-format-time beg-time)))
     (hledger-jdo (format "balance expenses income --depth 2 -META -b %s"
                          beg-time-string)
                  keep-bufferp
@@ -325,8 +323,11 @@ three times.
            (concat " balance "
                    hledger-ratios-nondiscritionary-expense-accounts
                    " --depth 1 "
-                   " --begin " (format-time (nth-of-mth-month 15 -12))
-                   " --end " (format-time (nth-of-this-month 15))
+                   " --begin " (hledger-format-time (hledger-nth-of-mth-month
+                                                     hledger-reporting-day
+                                                     -12))
+                   " --end " (hledger-format-time (hledger-nth-of-this-month
+                                                   hledger-reporting-day))
                    )))
          (expenses (/ (string-to-number (nth 1 (split-string expenses-report-output)))
                       12))
