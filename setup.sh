@@ -78,8 +78,9 @@ function setup-dotfiles() {
     ln -sb ~/dotfiles/.stardict .
 
     ## X server
-    ln -sb dotfiles/.xinitrc .
+    ln -sb ~/dotfiles/.xinitrc .
     ln -sb ~/dotfiles/.Xresources .
+    ln -sb ~/dotfiles/.Xmodmap .
 
     ## xmonad
     ln -sb dotfiles/.xmonad .

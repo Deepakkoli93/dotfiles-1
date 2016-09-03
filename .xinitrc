@@ -16,6 +16,9 @@ start-pulseaudio-x11
 # disable bell
 xset -b
 
+# apply keybinding changes
+xmodmap ~/.Xmodmap
+
 # start power monitor 
 ${POWER_INFO_BIN} &
 
