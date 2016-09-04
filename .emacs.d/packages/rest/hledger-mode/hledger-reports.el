@@ -413,5 +413,12 @@ See `hledger-prev-report'."
   (hledger-run-command-for-month hledger-last-run-month
                                  hledger-last-run-command))
 
+(defun hledger-present-report ()
+  "Resets time for the current report.
+See `hledger-prev-report'."
+  (interactive)
+  (setq hledger-last-run-month 0)
+  (hledger-run-command-for-month hledger-last-run-month
+                                 hledger-last-run-command))
 (provide 'hledger-reports)
 ;;; hledger-reports.el ends here
