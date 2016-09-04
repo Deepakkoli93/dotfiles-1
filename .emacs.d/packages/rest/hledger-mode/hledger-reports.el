@@ -63,6 +63,10 @@
   "Format time in \"%Y-%m-%d\" "
   (format-time-string "%Y-%m-%d" time))
 
+(defun hledger-friendlier-time (time)
+  "Format for the user to understand: %e %B %Y"
+  (format-time-string "%e %B %Y" time))
+
 (defun hledger-nth-of-mth-month (n m)
   "Returns the nth of the mth month. Current month is the zeroth."
   (let* ((time (time-add (current-time)
@@ -136,13 +140,8 @@ FIXME: Query emacs for the keys for the functions."
     (with-current-buffer jbuffer
       (if fetched-entriesp
           (progn
-            (hledger-mode)
-            (setq header-line-format "C-c i : Append to journal"))
-        (hledger-view-mode)
-        (setq header-line-format (concat "C-c q : Quit | "
-                                         "C-c w : Copy to clipboard | "
-                                         "C-c < : Back  | "
-                                         "C-c > : Forward")))
+            (hledger-mode))
+        (hledger-view-mode))
       (or keep-bufferp (erase-buffer)))
     jbuffer))
 
@@ -202,14 +201,18 @@ for the buffer contents. "
   (let ((jbuffer (hledger-get-perfin-buffer keep-bufferp))
         (jcommand (concat "hledger -f " 
                           (shell-quote-argument hledger-jfile)
-                          " " 
-                          command)))
+                          " "
+                          command
+                          " --end " (hledger-format-time (current-time)))))
     (with-current-buffer jbuffer
       (call-process-shell-command jcommand nil t nil)
       (if bury-bufferp
           (bury-buffer jbuffer)
         (pop-to-buffer jbuffer))
-      (goto-char (point-min)))
+      (goto-char (point-min))
+      (setq header-line-format
+            (format "Generated On: %s"
+                    (hledger-friendlier-time (current-time)))))
     jbuffer))
 
 (defun hledger-jreg (pattern)
@@ -240,9 +243,14 @@ I make reports from 15th of the Month to 15th of the next month."
                  bury-bufferp)
     (with-current-buffer (get-buffer hledger-reporting-buffer-name)
       (goto-char (point-min))
-      (insert (format "Report: %s - %s\n====================\n"
-                      (format-time-string "%B %Y" beg-time)
-                      (format-time-string "%B %Y" end-time)))
+      (let* ((header-dates (format "%s - %s"
+                                   (format-time-string "%e %b %Y" beg-time)
+                                   (format-time-string "%e %b %Y" end-time)))
+             (header-title "Report : ")
+             (header-filler (make-string (+ (length header-dates)
+                                            (length header-title))
+                                         ?=)))
+        (insert (format "%s %s\n%s=\n\n" header-title header-dates header-filler)))
       (let ((beg (point)))
         (while (not (looking-at "--"))
           (forward-line))
