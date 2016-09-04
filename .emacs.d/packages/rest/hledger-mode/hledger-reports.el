@@ -108,9 +108,9 @@
 (defun hledger-go-to-starting-line ()
   "Function to go the first line that stars a new entry. Cleans up whitespace."
   (goto-char (point-max))
-  (beginning-of-line)                   
-  (while (looking-at hledger-empty-regex) 
-    (forward-line -1))                    
+  (beginning-of-line)
+  (while (looking-at hledger-empty-regex)
+    (forward-line -1))
   (end-of-line)
   (let ((times-yet-to-move (forward-line 2)))
     (dotimes (i times-yet-to-move)
@@ -134,13 +134,13 @@
 
 (defun hledger-clear-undo-list ()
   "Empty `buffer-undo-list`."
-  (buffer-disable-undo)     
-  (buffer-enable-undo))     
+  (buffer-disable-undo)
+  (buffer-enable-undo))
 
 (defun hledger-get-perfin-buffer (&optional keep-bufferp fetched-entriesp)
   "Get/create the `hledger-reporting-buffer-name' buffer.
 If the buffer is not intended for editing, then `q` closes it.
-`C-c y` copies the whole buffer to clipboard. 
+`C-c y` copies the whole buffer to clipboard.
 FIXME: Query emacs for the keys for the functions."
   (let ((jbuffer (get-buffer-create hledger-reporting-buffer-name)))
     (with-current-buffer jbuffer
@@ -177,7 +177,7 @@ FIXME: Query emacs for the keys for the functions."
      (pop-to-buffer hledger-reporting-buffer-name)
      (delete-other-windows))
     (_ (hledger-jdo command)))
-  ;; Help other functions keep track of history. 
+  ;; Help other functions keep track of history.
   (setq hledger-last-run-command command)
   (when (called-interactively-p 'interactive)
     (setq hledger-last-run-month 0))
@@ -205,7 +205,7 @@ for the buffer contents. "
   (if (eq major-mode 'hledger-mode)
       (setq-local hledger-jfile (buffer-file-name)))
   (let ((jbuffer (hledger-get-perfin-buffer keep-bufferp))
-        (jcommand (concat "hledger -f " 
+        (jcommand (concat "hledger -f "
                           (shell-quote-argument hledger-jfile)
                           " "
                           command
@@ -349,7 +349,7 @@ three times.
 "
   (interactive)
   (let* ((assets-report-output
-          (hledger-shell-command-to-string (concat 
+          (hledger-shell-command-to-string (concat
                                             " balance "
                                             hledger-ratios-liquid-asset-accounts
                                             " --end " (hledger-end-date (current-time))
@@ -374,7 +374,10 @@ three times.
                                                    " --depth 1 "
                                                    hledger-ratios-debt-accounts)))
          (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output))))))
-    (list 'efr (/ assets (* expenses 1.0))      ;; Emergency fund ratio
+    (list 'avg-expenses (* expenses 1.0)        ;; Average expenses
+                                                ;; over the past one
+                                                ;; year
+          'efr (/ assets (* expenses 1.0))      ;; Emergency fund ratio
           'cr  (/ assets (* liabilities 1.0))   ;; Current ratio
           'dr (/ liabilities (* assets 1.0))))) ;; Debt ratio
 
@@ -387,14 +390,23 @@ three times.
     (let* ((ratios (hledger-generate-ratios))
            (efr (plist-get ratios 'efr))
            (cr (plist-get ratios 'cr))
-           (dr (plist-get ratios 'dr)))
+           (dr (plist-get ratios 'dr))
+           (avg-expenses (plist-get ratios 'avg-expenses)))
       (goto-char (point-min))
       (forward-line 2)
-      (insert (format (concat "\nEmergency Fund Ratio: %.2f"
-                              "\nCurrent Ratio: %.2f"
-                              "\nDebt Ratio: %.2f"
-                              "\n\n")
-                      efr cr dr)))
+      (insert (format "
+╔══════════════════════════════════════╦═══════════════════════════════════════╗ 
+
+   Emergency Fund Ratio: %-16.2fAverage Expenses: ₹ %.2f/month           
+   Current Ratio: %-23.2fAverage Cashflow: ₹ %.2f/month        
+   Debt Ratio: %.2f                        
+
+╚══════════════════════════════════════╩═══════════════════════════════════════╝
+                                                               
+"                                                             
+                      efr avg-expenses
+                      cr  0
+                      dr)))                             
     (goto-char (point-min))))
 
 (defun hledger-run-command-for-month (m command)
