@@ -63,6 +63,12 @@
   "Format time in \"%Y-%m-%d\" "
   (format-time-string "%Y-%m-%d" time))
 
+(defun hledger-end-date (time)
+  "Format time so that it can be used as an inclusive --end date."
+  (let ((next-day (time-add time
+                            (days-to-time 1))))
+    (hledger-format-time next-day)))
+
 (defun hledger-friendlier-time (time)
   "Format for the user to understand: %e %B %Y"
   (format-time-string "%e %B %Y" time))
@@ -203,7 +209,7 @@ for the buffer contents. "
                           (shell-quote-argument hledger-jfile)
                           " "
                           command
-                          " --end " (hledger-format-time (current-time)))))
+                          " --end " (hledger-end-date (current-time)))))
     (with-current-buffer jbuffer
       (call-process-shell-command jcommand nil t nil)
       (if bury-bufferp
@@ -346,7 +352,7 @@ three times.
           (hledger-shell-command-to-string (concat 
                                             " balance "
                                             hledger-ratios-liquid-asset-accounts
-                                            " --end " (hledger-format-time (current-time))
+                                            " --end " (hledger-end-date (current-time))
                                             " --depth 1")))
          (assets (string-to-number (nth 1 (split-string assets-report-output))))
          (expenses-report-output
@@ -357,14 +363,14 @@ three times.
                    " --begin " (hledger-format-time (hledger-nth-of-mth-month
                                                      hledger-reporting-day
                                                      -12))
-                   " --end " (hledger-format-time (hledger-nth-of-this-month
+                   " --end " (hledger-end-date (hledger-nth-of-this-month
                                                    hledger-reporting-day))
                    )))
          (expenses (/ (string-to-number (nth 1 (split-string expenses-report-output)))
                       12))
          (liabilities-report-output
           (hledger-shell-command-to-string (concat " balance "
-                                                   " --end " (hledger-format-time (current-time))
+                                                   " --end " (hledger-end-date (current-time))
                                                    " --depth 1 "
                                                    hledger-ratios-debt-accounts)))
          (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output))))))
