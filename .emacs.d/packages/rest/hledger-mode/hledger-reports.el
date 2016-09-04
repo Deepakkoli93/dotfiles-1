@@ -246,11 +246,11 @@ for the buffer contents. "
 This is subject to change based on what things I am budgeting on. 
 See `hledger-daily-report-accounts'."
   (interactive)
-  (with-current-buffer
-      (hledger-jdo (format "balance %s --begin %s --end %s"
-                           (shell-quote-argument hledger-daily-report-accounts)
-                           (hledger-format-time (current-time))
-                           (hledger-end-date (current-time))))
+  (with-current-buffer (hledger-get-perfin-buffer)
+    (hledger-jdo (format "balance %s --begin %s --end %s"
+                         (shell-quote-argument hledger-daily-report-accounts)
+                         (hledger-format-time (current-time))
+                         (hledger-end-date (current-time))))
     (goto-char (point-min))
     (insert (concat "Today you spent:\n"
                     "===============\n"))
@@ -265,9 +265,10 @@ complete incomestatement isn't much useful for me. "
          (end-time (hledger-nth-of-this-month hledger-reporting-day))
          (beg-time-string (hledger-format-time beg-time))
          (end-time-string (hledger-format-time end-time)))
-    (with-current-buffer (hledger-jdo (format "incomestatement --flat -b %s -e %s --depth 2"
-                                              beg-time-string
-                                              end-time-string))
+    (with-current-buffer (hledger-get-perfin-buffer)
+      (hledger-jdo (format "incomestatement --flat -b %s -e %s --depth 2"
+                           beg-time-string
+                           end-time-string))
       (goto-char (point-min))
       (insert (hledger-generate-report-header beg-time end-time)))))
 
@@ -285,7 +286,7 @@ To configure this, see `hledger-reporting-day'."
                          end-time-string)
                  keep-bufferp
                  bury-bufferp)
-    (with-current-buffer (get-buffer hledger-reporting-buffer-name)
+    (with-current-buffer (hledger-get-perfin-buffer t)
       (goto-char (point-min))
       (insert (hledger-generate-report-header beg-time end-time))
       (insert "Cashflow\n========\n")
@@ -301,7 +302,7 @@ To configure this, see `hledger-reporting-day'."
                          end-time-string)
                  t
                  bury-bufferp)
-    (with-current-buffer (get-buffer hledger-reporting-buffer-name)
+    (with-current-buffer (hledger-get-perfin-buffer t)
       (goto-char (point-min))
       (while (not (looking-at "Expenses"))
         (forward-line))
@@ -333,10 +334,10 @@ To configure this, see `hledger-reporting-day'."
                  bury-bufferp)
     (when (not bury-bufferp)
       ;; This is because the running report is usually very wide.
-      (pop-to-buffer hledger-reporting-buffer-name)
+      (pop-to-buffer (hledger-get-perfin-buffer t))
       (delete-other-windows))
     ;; Let's sort according to the average column now
-    (with-current-buffer hledger-reporting-buffer-name
+    (with-current-buffer (hledger-get-perfin-buffer t)
       (goto-char (point-min))
       (while (not (looking-at "=="))
         (forward-line))
@@ -506,7 +507,7 @@ See `hledger-prev-report'."
 
 (defun hledger-make-reporting-buffer-read-only ()
   "Make the `hledger-reporting-buffer-name' read-only."
-  (with-current-buffer hledger-reporting-buffer-name
+  (with-current-buffer (hledger-get-perfin-buffer t)
     (set-text-properties (point-min)
                          (point-max)
                          '(read-only t front-sticky t))))

@@ -66,16 +66,16 @@
 
 (defvar hledger-view-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "q") 'hledger-kill-reporting-window)
-    (define-key map (kbd "w") 'hledger-copy-to-clipboard)
-    (define-key map (kbd "<") 'hledger-prev-report)
-    (define-key map (kbd ">") 'hledger-next-report)
-    (define-key map (kbd ".") 'hledger-present-report)
-    (define-key map (kbd "d") (hledger-as-command "daily"))
-    (define-key map (kbd "m") (hledger-as-command "monthly"))
-    (define-key map (kbd "o") (hledger-as-command "overall"))
-    (define-key map (kbd "b") (hledger-as-command "balancesheet"))
-    (define-key map (kbd "i") (hledger-as-command "incomestatement"))
+    (define-key map (kbd "C-c q") 'hledger-kill-reporting-window)
+    (define-key map (kbd "C-c w") 'hledger-copy-to-clipboard)
+    (define-key map (kbd "C-c <") 'hledger-prev-report)
+    (define-key map (kbd "C-c >") 'hledger-next-report)
+    (define-key map (kbd "C-c .") 'hledger-present-report)
+    (define-key map (kbd "C-c d") (hledger-as-command "daily"))
+    (define-key map (kbd "C-c m") (hledger-as-command "monthly"))
+    (define-key map (kbd "C-c o") (hledger-as-command "overall"))
+    (define-key map (kbd "C-c b") (hledger-as-command "balancesheet"))
+    (define-key map (kbd "C-c i") (hledger-as-command "incomestatement"))
     map))
 
 (defconst hledger-font-lock-keywords-1

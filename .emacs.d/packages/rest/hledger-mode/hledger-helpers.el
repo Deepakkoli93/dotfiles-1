@@ -58,7 +58,8 @@
 
 (defmacro hledger-as-command (command)
   "Wrapper macro for interactive key bindings."
-  `(lambda () (interactive) (hledger-run-command ,command)))
+  `(lambda () (interactive)
+     (hledger-run-command ,command)))
 
 (provide 'hledger-helpers)
 ;;; hledger-helpers.el ends here
