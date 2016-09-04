@@ -194,9 +194,7 @@ FIXME: Query emacs for the keys for the functions."
   ;; Help other functions keep track of history.
   (setq hledger-last-run-command command)
   (when (called-interactively-p 'interactive)
-    (setq hledger-last-run-time 0))
-  (with-current-buffer hledger-reporting-buffer-name
-    (view-mode 1)))
+    (setq hledger-last-run-time 0)))
 
 (defun hledger-get-accounts ()
   "Returns list of account names"
@@ -254,8 +252,8 @@ See `hledger-daily-report-accounts'."
                            (hledger-format-time (current-time))
                            (hledger-end-date (current-time))))
     (goto-char (point-min))
-    (insert (concat "Today you spent:\n")
-            "===============\n")
+    (insert (concat "Today you spent:\n"
+                    "===============\n"))
     (goto-char (point-min))))
 
 (defun hledger-monthly-incomestatement ()
@@ -504,6 +502,14 @@ See `hledger-prev-report'."
     (`"daily" (hledger-run-command-for-day hledger-last-run-time
                                            hledger-last-run-command))
     (_ (hledger-run-command-for-month hledger-last-run-time
-                                    hledger-last-run-command))))
+                                      hledger-last-run-command))))
+
+(defun hledger-make-reporting-buffer-read-only ()
+  "Make the `hledger-reporting-buffer-name' read-only."
+  (with-current-buffer hledger-reporting-buffer-name
+    (set-text-properties (point-min)
+                         (point-max)
+                         '(read-only t front-sticky t))))
+
 (provide 'hledger-reports)
 ;;; hledger-reports.el ends here

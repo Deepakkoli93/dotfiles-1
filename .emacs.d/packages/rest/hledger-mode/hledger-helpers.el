@@ -56,5 +56,9 @@
     (insert entries)
     (format "Fetched entries appended.")))
 
+(defmacro hledger-as-command (command)
+  "Wrapper macro for interactive key bindings."
+  `(lambda () (interactive) (hledger-run-command ,command)))
+
 (provide 'hledger-helpers)
 ;;; hledger-helpers.el ends here
