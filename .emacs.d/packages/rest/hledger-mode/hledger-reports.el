@@ -27,13 +27,20 @@
 
 (require 'hledger-core)
 
-(defconst hledger-jcompletions '("print" "accounts" "balancesheet" "balance"
-                                 "register" "incomestatement" "balancesheet"
-                                 "cashflow" "activity" "stats"
-                                 "monthly-report"
-                                 "running-report"
-                                 "overall-report")
+(defconst hledger-jcompletions '("balancesheet"
+                                 "daily"
+                                 "incomestatement"
+                                 "monthly"
+                                 "overall"
+                                 "print" "accounts" "balancesheet" "balance"
+                                 "register")
   "Commands that can be passed to `hledger-jdo` function defined below.")
+
+(defcustom hledger-daily-report-accounts
+  "expenses"
+  "Accounts for the daily report."
+  :group 'hledger
+  :type 'string)
 
 (defcustom hledger-ratios-liquid-asset-accounts
   "assets:bank assets:wallet"
@@ -56,7 +63,7 @@
 (defvar hledger-last-run-command nil
   "Last run hledger-command.")
 
-(defvar hledger-last-run-month 0
+(defvar hledger-last-run-time 0
   "Last month on which a command was run.")
 
 (defun hledger-format-time (time)
@@ -171,16 +178,16 @@ FIXME: Query emacs for the keys for the functions."
   (interactive (list (completing-read "jdo> " hledger-jcompletions)))
   (hledger-ask-and-save-buffer)
   (pcase command
-    (`"monthly-report" (hledger-monthly-report))
-    (`"running-report" (hledger-running-report))
-    (`"overall-report" (hledger-overall-report)
+    (`"daily" (hledger-daily-report))
+    (`"monthly" (hledger-monthly-report))
+    (`"overall" (hledger-overall-report)
      (pop-to-buffer hledger-reporting-buffer-name)
      (delete-other-windows))
     (_ (hledger-jdo command)))
   ;; Help other functions keep track of history.
   (setq hledger-last-run-command command)
   (when (called-interactively-p 'interactive)
-    (setq hledger-last-run-month 0))
+    (setq hledger-last-run-time 0))
   (with-current-buffer hledger-reporting-buffer-name
     (view-mode 1)))
 
@@ -227,6 +234,22 @@ for the buffer contents. "
   (let ((jcmd (concat "register -w 150 " pattern)))
     (hledger-jdo jcmd)
     (delete-other-windows)))
+
+(defun hledger-daily-report ()
+  "Report for today's expenses.
+This is subject to change based on what things I am budgeting on.
+Now, I have gotten to the point that I don't think about keeping
+this general."
+  (interactive)
+  (with-current-buffer
+      (hledger-jdo (format "balance %s --begin %s --end %s"
+                           (shell-quote-argument hledger-daily-report-accounts)
+                           (hledger-format-time (current-time))
+                           (hledger-end-date (current-time))))
+    (goto-char (point-min))
+    (insert (concat "Today you spent:\n")
+            "===============\n")
+    (goto-char (point-min))))
 
 (defun hledger-monthly-report (&optional keep-bufferp bury-bufferp)
   "Build the monthly report.
@@ -395,13 +418,13 @@ three times.
       (goto-char (point-min))
       (forward-line 2)
       (insert (format "
-╔══════════════════════════════════════╦═══════════════════════════════════════╗ 
+╔══════════════════════════════════════╦══════════════════════════════════════════╗ 
 
-   Emergency Fund Ratio: %-16.2fAverage Expenses: ₹ %.2f/month           
-   Current Ratio: %-23.2fAverage Cashflow: ₹ %.2f/month        
+   Emergency Fund Ratio: %-18.2fAverage Expenses: ₹ %.0f/month           
+   Current Ratio: %-25.2fAverage Cashflow: ₹ %.0f/month        
    Debt Ratio: %.2f                        
 
-╚══════════════════════════════════════╩═══════════════════════════════════════╝
+╚══════════════════════════════════════╩══════════════════════════════════════════╝
                                                                
 "                                                             
                       efr avg-expenses
@@ -419,28 +442,46 @@ This is the reason dynamic scoping is cool sometimes."
             `(lambda () ',time))))
     (hledger-run-command command)))
 
+(defun hledger-run-command-for-day (m command)
+  "Runs an hledger COMMAND for Mth day relative to today."
+  (letf (((symbol-function 'current-time)
+          (let ((time (time-add
+                       (current-time)
+                       (days-to-time m))))
+            `(lambda () ',time))))
+    (hledger-run-command command)))
+
 (defun hledger-prev-report ()
   "Takes your current report back in time.
 To be called once you have run a report that sets `hledger-last-run-command'."
   (interactive)
-  (setq hledger-last-run-month (1- hledger-last-run-month))
-  (hledger-run-command-for-month hledger-last-run-month
-                                 hledger-last-run-command))
+  (setq hledger-last-run-time (1- hledger-last-run-time))
+  (pcase hledger-last-run-command
+    (`"daily" (hledger-run-command-for-day hledger-last-run-time
+                                           hledger-last-run-command))
+    (_ (hledger-run-command-for-month hledger-last-run-time
+                                    hledger-last-run-command))))
 
 (defun hledger-next-report ()
   "Takes your report forward in time.
 See `hledger-prev-report'."
   (interactive)
-  (setq hledger-last-run-month (1+ hledger-last-run-month))
-  (hledger-run-command-for-month hledger-last-run-month
-                                 hledger-last-run-command))
+  (setq hledger-last-run-time (1+ hledger-last-run-time))
+  (pcase hledger-last-run-command
+    (`"daily" (hledger-run-command-for-day hledger-last-run-time
+                                           hledger-last-run-command))
+    (_ (hledger-run-command-for-month hledger-last-run-time
+                                      hledger-last-run-command))))
 
 (defun hledger-present-report ()
   "Resets time for the current report.
 See `hledger-prev-report'."
   (interactive)
-  (setq hledger-last-run-month 0)
-  (hledger-run-command-for-month hledger-last-run-month
-                                 hledger-last-run-command))
+  (setq hledger-last-run-time 0)
+  (pcase hledger-last-run-command
+    (`"daily" (hledger-run-command-for-day hledger-last-run-time
+                                           hledger-last-run-command))
+    (_ (hledger-run-command-for-month hledger-last-run-time
+                                    hledger-last-run-command))))
 (provide 'hledger-reports)
 ;;; hledger-reports.el ends here
