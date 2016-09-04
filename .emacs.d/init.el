@@ -8,9 +8,7 @@
 ;;  ─────────────────────────────────────────────────────────────────
 (require 'package)
 (add-to-list 'package-archives
-             '("marmalade" . "https://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://melpa-stable.milkbox.net/packages/"))
+             '("melpa" . "https://melpa.milkbox.net/packages/"))
 (setq package-user-dir (expand-file-name "packages/elpa/"
                                          user-emacs-directory))
 ;; Add my packages to load-path

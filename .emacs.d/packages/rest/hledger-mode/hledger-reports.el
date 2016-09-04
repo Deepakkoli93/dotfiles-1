@@ -250,14 +250,18 @@ I make reports from 15th of the Month to 15th of the next month."
              (header-filler (make-string (+ (length header-dates)
                                             (length header-title))
                                          ?=)))
-        (insert (format "%s %s\n%s=\n\n" header-title header-dates header-filler)))
+        (insert (concat (format "%s %s\n%s=\n\n"
+                                header-title
+                                header-dates
+                                header-filler)
+                        "Cashflow\n========\n")))
       (let ((beg (point)))
         (while (not (looking-at "--"))
           (forward-line))
         (sort-numeric-fields 2 beg (point))
         (reverse-region beg (point)))
       (forward-line 2)
-      (insert "\nExpenses [Top Level]\n====================\n"))
+      (insert "\nExpenses\n========\n"))
     (hledger-jdo (format "balance expenses --depth 2 --flat -b %s -e %s"
                          beg-time-string
                          end-time-string)

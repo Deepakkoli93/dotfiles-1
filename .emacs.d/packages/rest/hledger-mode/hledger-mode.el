@@ -65,7 +65,7 @@
     map))
 
 (defvar hledger-view-mode-map
-  (let ((map (make-keymap)))
+  (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c q") 'hledger-kill-reporting-window)
     (define-key map (kbd "C-c w") 'hledger-copy-to-clipboard)
     (define-key map (kbd "C-c <") 'hledger-prev-report)
