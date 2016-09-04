@@ -60,6 +60,12 @@
   :group 'hledger
   :type 'string)
 
+(defcustom hledger-report-header-face
+  '(:foreground "Cornsilk" :height 1.1)
+  "Face for the header with date ranges in the the reports."
+  :group 'hledger
+  :type 'face)
+
 (defvar hledger-last-run-command nil
   "Last run hledger-command.")
 
@@ -178,6 +184,7 @@ FIXME: Query emacs for the keys for the functions."
   (interactive (list (completing-read "jdo> " hledger-jcompletions)))
   (hledger-ask-and-save-buffer)
   (pcase command
+    (`"incomestatement" (hledger-monthly-incomestatement))
     (`"daily" (hledger-daily-report))
     (`"monthly" (hledger-monthly-report))
     (`"overall" (hledger-overall-report)
@@ -224,8 +231,9 @@ for the buffer contents. "
         (pop-to-buffer jbuffer))
       (goto-char (point-min))
       (setq header-line-format
-            (format "Generated On: %s"
-                    (hledger-friendlier-time (current-time)))))
+            (format "Generated on: %s | %s"
+                    (hledger-friendlier-time (current-time))
+                    (format-time-string "%A" (current-time)))))
     jbuffer))
 
 (defun hledger-jreg (pattern)
@@ -237,9 +245,8 @@ for the buffer contents. "
 
 (defun hledger-daily-report ()
   "Report for today's expenses.
-This is subject to change based on what things I am budgeting on.
-Now, I have gotten to the point that I don't think about keeping
-this general."
+This is subject to change based on what things I am budgeting on. 
+See `hledger-daily-report-accounts'."
   (interactive)
   (with-current-buffer
       (hledger-jdo (format "balance %s --begin %s --end %s"
@@ -251,18 +258,28 @@ this general."
             "===============\n")
     (goto-char (point-min))))
 
+(defun hledger-monthly-incomestatement ()
+  "Incomestatement report but monthly.  You can have move back
+and forth in time in the personal finance buffer. I feel that the
+complete incomestatement isn't much useful for me. "
+  (interactive)
+  (let* ((beg-time (hledger-nth-of-prev-month hledger-reporting-day))
+         (end-time (hledger-nth-of-this-month hledger-reporting-day))
+         (beg-time-string (hledger-format-time beg-time))
+         (end-time-string (hledger-format-time end-time)))
+    (with-current-buffer (hledger-jdo (format "incomestatement --flat -b %s -e %s --depth 2"
+                                              beg-time-string
+                                              end-time-string))
+      (goto-char (point-min))
+      (insert (hledger-generate-report-header beg-time end-time)))))
+
 (defun hledger-monthly-report (&optional keep-bufferp bury-bufferp)
   "Build the monthly report.
-I make reports from 15th of the Month to 15th of the next month."
+I make reports from 15th of the Month to 15th of the next month.
+To configure this, see `hledger-reporting-day'."
   (interactive)
-  (let* ((now (current-time))
-         (day (string-to-number (format-time-string "%d" now)))
-         (end-time (time-add now (days-to-time (- 15 day))))
-         (previous-time (time-subtract end-time (days-to-time 31)))
-         (previous-day (string-to-number (format-time-string "%d"
-                                                             previous-time)))
-         (beg-time (time-add previous-time (days-to-time
-                                            (- 15 previous-day))))
+  (let* ((beg-time (hledger-nth-of-prev-month hledger-reporting-day))
+         (end-time (hledger-nth-of-this-month hledger-reporting-day))
          (beg-time-string (hledger-format-time beg-time))
          (end-time-string (hledger-format-time end-time)))
     (hledger-jdo (format "balance expenses income --flat -b %s -e %s"
@@ -272,18 +289,8 @@ I make reports from 15th of the Month to 15th of the next month."
                  bury-bufferp)
     (with-current-buffer (get-buffer hledger-reporting-buffer-name)
       (goto-char (point-min))
-      (let* ((header-dates (format "%s - %s"
-                                   (format-time-string "%e %b %Y" beg-time)
-                                   (format-time-string "%e %b %Y" end-time)))
-             (header-title "Report : ")
-             (header-filler (make-string (+ (length header-dates)
-                                            (length header-title))
-                                         ?=)))
-        (insert (concat (format "%s %s\n%s=\n\n"
-                                header-title
-                                header-dates
-                                header-filler)
-                        "Cashflow\n========\n")))
+      (insert (hledger-generate-report-header beg-time end-time))
+      (insert "Cashflow\n========\n")
       (let ((beg (point)))
         (while (not (looking-at "--"))
           (forward-line))
@@ -372,12 +379,11 @@ three times.
 "
   (interactive)
   (let* ((assets-report-output
-          (hledger-shell-command-to-string (concat
-                                            " balance "
-                                            hledger-ratios-liquid-asset-accounts
-                                            " --end " (hledger-end-date (current-time))
-                                            " --depth 1")))
-         (assets (string-to-number (nth 1 (split-string assets-report-output))))
+          (hledger-shell-command-to-string
+           (concat " balance "
+                   hledger-ratios-liquid-asset-accounts
+                   " --end " (hledger-end-date (current-time))
+                   " --depth 1")))
          (expenses-report-output
           (hledger-shell-command-to-string
            (concat " balance "
@@ -387,15 +393,16 @@ three times.
                                                      hledger-reporting-day
                                                      -12))
                    " --end " (hledger-end-date (hledger-nth-of-this-month
-                                                   hledger-reporting-day))
-                   )))
+                                                   hledger-reporting-day)))))
+         (liabilities-report-output
+          (hledger-shell-command-to-string
+           (concat " balance "
+                   " --end " (hledger-end-date (current-time))
+                   " --depth 1 "
+                   hledger-ratios-debt-accounts)))
+         (assets (string-to-number (nth 1 (split-string assets-report-output))))
          (expenses (/ (string-to-number (nth 1 (split-string expenses-report-output)))
                       12))
-         (liabilities-report-output
-          (hledger-shell-command-to-string (concat " balance "
-                                                   " --end " (hledger-end-date (current-time))
-                                                   " --depth 1 "
-                                                   hledger-ratios-debt-accounts)))
          (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output))))))
     (list 'avg-expenses (* expenses 1.0)        ;; Average expenses
                                                 ;; over the past one
@@ -450,6 +457,21 @@ This is the reason dynamic scoping is cool sometimes."
                        (days-to-time m))))
             `(lambda () ',time))))
     (hledger-run-command command)))
+
+(defun hledger-generate-report-header (beg-time end-time)
+  "Generates report header with dates."
+  (let* ((header-dates (format "%s - %s"
+                               (format-time-string "%e %b %Y" beg-time)
+                               (format-time-string "%e %b %Y" end-time)))
+         (header-title "Report : ")
+         (header-filler (make-string (+ (length header-dates)
+                                        (length header-title))
+                                     ?=)))
+    (propertize (format "%s %s\n%s=\n\n"
+                        header-title
+                        header-dates
+                        header-filler)
+                'font-lock-face hledger-report-header-face)))
 
 (defun hledger-prev-report ()
   "Takes your current report back in time.
