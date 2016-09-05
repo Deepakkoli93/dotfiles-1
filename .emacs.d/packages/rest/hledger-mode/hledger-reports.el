@@ -42,6 +42,18 @@
   :group 'hledger
   :type 'string)
 
+(defcustom hledger-ratios-assets-accounts
+  "assets"
+  "Account names for total assets."
+  :group 'hledger
+  :type 'string)
+
+(defcustom hledger-ratios-income-accounts
+  "income"
+  "Account names for total income so far."
+  :group 'hledger
+  :type 'string)
+
 (defcustom hledger-ratios-liquid-asset-accounts
   "assets:bank assets:wallet"
   "Account names [separated by spaces] that contain your liquid assets"
@@ -229,7 +241,6 @@ for the buffer contents. "
           (bury-buffer jbuffer)
         (pop-to-buffer jbuffer))
       (goto-char (point-min))
-      (end-of-line)
       (setq header-line-format
             (format "Generated on: %s | %s"
                     (hledger-friendlier-time (current-time))
@@ -379,38 +390,59 @@ three times.
 
 "
   (interactive)
-  (let* ((assets-report-output
+  (let* ((date-now (hledger-end-date (current-time)))
+         (reporting-date-an-year-ago (hledger-format-time (hledger-nth-of-mth-month
+                                                           hledger-reporting-day
+                                                           -12)))
+         (reporting-date-now (hledger-end-date (hledger-nth-of-this-month
+                                                   hledger-reporting-day)))
+         (liquid-assets-report-output
           (hledger-shell-command-to-string
            (concat " balance "
                    hledger-ratios-liquid-asset-accounts
-                   " --end " (hledger-end-date (current-time))
+                   " --end " date-now
                    " --depth 1")))
+         (liabilities-report-output
+          (hledger-shell-command-to-string
+           (concat " balance "
+                   " --end " date-now
+                   " --depth 1 "
+                   hledger-ratios-debt-accounts)))
+         (total-assets-output
+          (hledger-shell-command-to-string
+           (concat " balance "
+                   " --begin " reporting-date-an-year-ago
+                   " --end " reporting-date-now
+                   " --depth 1 "
+                   hledger-ratios-assets-accounts)))
+         (total-income-output
+          (hledger-shell-command-to-string
+           (concat " balance "
+                   " --begin " reporting-date-an-year-ago
+                   " --end " reporting-date-now
+                   " --depth 1 "
+                   hledger-ratios-income-accounts)))
          (expenses-report-output
           (hledger-shell-command-to-string
            (concat " balance "
                    hledger-ratios-nondiscritionary-expense-accounts
                    " --depth 1 "
-                   " --begin " (hledger-format-time (hledger-nth-of-mth-month
-                                                     hledger-reporting-day
-                                                     -12))
-                   " --end " (hledger-end-date (hledger-nth-of-this-month
-                                                   hledger-reporting-day)))))
-         (liabilities-report-output
-          (hledger-shell-command-to-string
-           (concat " balance "
-                   " --end " (hledger-end-date (current-time))
-                   " --depth 1 "
-                   hledger-ratios-debt-accounts)))
-         (assets (string-to-number (nth 1 (split-string assets-report-output))))
-         (expenses (/ (string-to-number (nth 1 (split-string expenses-report-output)))
-                      12))
-         (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output))))))
-    (list 'avg-expenses (* expenses 1.0)        ;; Average expenses
-                                                ;; over the past one
-                                                ;; year
-          'efr (/ assets (* expenses 1.0))      ;; Emergency fund ratio
-          'cr  (/ assets (* liabilities 1.0))   ;; Current ratio
-          'dr (/ liabilities (* assets 1.0))))) ;; Debt ratio
+                   " --begin " reporting-date-an-year-ago
+                   " --end " reporting-date-now)))
+         (total-assets (string-to-number (nth 1 (split-string total-assets-output))))
+         (total-income (string-to-number (nth 1 (split-string total-income-output))))
+         (total-expenses (string-to-number (nth 1 (split-string expenses-report-output))))
+         (liquid-assets (string-to-number (nth 1 (split-string liquid-assets-report-output))))
+         (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output)))))
+         (monthly-expenses (/ total-expenses 12))
+         (monthly-income (/ total-income 12))
+         (monthly-savings (/ total-assets 12)))
+    (list 'avg-expenses (* monthly-expenses 1.0)          ;; Average expenses
+          'efr (/ liquid-assets (* monthly-expenses 1.0)) ;; Emergency-fund-ratio
+          'cr  (/ liquid-assets (* liabilities 1.0))      ;; Current ratio
+          'sr  (* -1 (/ monthly-savings monthly-income))  ;; Savings ratio
+          'dr (/ liabilities (* liquid-assets 1.0)))))    ;; Debt ratio
+
 
 (defun hledger-overall-report ()
   "A combination of all the relevant reports."
@@ -422,6 +454,7 @@ three times.
            (efr (plist-get ratios 'efr))
            (cr (plist-get ratios 'cr))
            (dr (plist-get ratios 'dr))
+           (sr (plist-get ratios 'sr))
            (avg-expenses (plist-get ratios 'avg-expenses)))
       (goto-char (point-min))
       (forward-line 2)
@@ -429,14 +462,14 @@ three times.
 ╔══════════════════════════════════════╦══════════════════════════════════════════╗ 
 
    Emergency Fund Ratio: %-18.2fAverage Expenses: ₹ %.0f/month           
-   Current Ratio: %-25.2fAverage Cashflow: ₹ %.0f/month        
+   Current Ratio: %-25.2fSavings Ratio: %.2f
    Debt Ratio: %.2f                        
 
 ╚══════════════════════════════════════╩══════════════════════════════════════════╝
                                                                
 "                                                             
                       efr avg-expenses
-                      cr  0
+                      cr  sr
                       dr)))                             
     (goto-char (point-min))))
 

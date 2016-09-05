@@ -213,7 +213,7 @@ and `forward-paragraph' because I tend to use then together always."
     "Evaluate and print the last sexp on the same line."
   (interactive)
   (vicarie/eval-last-sexp-and-do (lambda (value)
-                                   (insert (format " [= %s ] " value)))))
+                                   (insert (format " (= %s ) " value)))))
 
 (defun vicarie/eval-replace-last-sexp ()
   "Evaluate and replace last sexp with its value. "
