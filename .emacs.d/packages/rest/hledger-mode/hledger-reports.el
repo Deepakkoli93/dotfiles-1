@@ -436,11 +436,12 @@ three times.
          (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output)))))
          (monthly-expenses (/ total-expenses 12))
          (monthly-income (/ total-income 12))
-         (monthly-savings (/ total-assets 12)))
-    (list 'avg-expenses (* monthly-expenses 1.0)          ;; Average expenses
+         (monthly-savings (/ total-assets -12.0)))
+    (list 'avg-income (* monthly-income -1.0)             ;; Monthly income
+          'avg-expenses (* monthly-expenses 1.0)          ;; Average expenses
           'efr (/ liquid-assets (* monthly-expenses 1.0)) ;; Emergency-fund-ratio
           'cr  (/ liquid-assets (* liabilities 1.0))      ;; Current ratio
-          'sr  (* -1 (/ monthly-savings monthly-income))  ;; Savings ratio
+          'sr  (/ monthly-savings monthly-income)         ;; Savings ratio
           'dr (/ liabilities (* liquid-assets 1.0)))))    ;; Debt ratio
 
 
@@ -455,22 +456,23 @@ three times.
            (cr (plist-get ratios 'cr))
            (dr (plist-get ratios 'dr))
            (sr (plist-get ratios 'sr))
+           (avg-income (plist-get ratios 'avg-income))
            (avg-expenses (plist-get ratios 'avg-expenses)))
       (goto-char (point-min))
       (forward-line 2)
       (insert (format "
 ╔══════════════════════════════════════╦══════════════════════════════════════════╗ 
 
-   Emergency Fund Ratio: %-18.2fAverage Expenses: ₹ %.0f/month           
-   Current Ratio: %-25.2fSavings Ratio: %.2f
-   Debt Ratio: %.2f                        
+   Emergency Fund Ratio: %-18.2fSavings Ratio: %.2f
+   Current Ratio: %-25.2fAverage Income: ₹ %.0f/month                        
+   Debt Ratio: %-28.2fAverage Expenses: ₹ %.0f/month           
 
 ╚══════════════════════════════════════╩══════════════════════════════════════════╝
                                                                
 "                                                             
-                      efr avg-expenses
-                      cr  sr
-                      dr)))                             
+                      efr sr
+                      cr  avg-income
+                      dr  avg-expenses)))                             
     (goto-char (point-min))))
 
 (defun hledger-run-command-for-month (m command)
