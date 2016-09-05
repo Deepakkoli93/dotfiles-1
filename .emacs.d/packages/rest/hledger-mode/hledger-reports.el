@@ -229,6 +229,7 @@ for the buffer contents. "
           (bury-buffer jbuffer)
         (pop-to-buffer jbuffer))
       (goto-char (point-min))
+      (end-of-line)
       (setq header-line-format
             (format "Generated on: %s | %s"
                     (hledger-friendlier-time (current-time))
