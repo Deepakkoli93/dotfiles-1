@@ -183,14 +183,15 @@ FIXME: Query emacs for the keys for the functions."
   "Runs an hledger command."
   (interactive (list (completing-read "jdo> " hledger-jcompletions)))
   (hledger-ask-and-save-buffer)
-  (pcase command
-    (`"incomestatement" (hledger-monthly-incomestatement))
-    (`"daily" (hledger-daily-report))
-    (`"monthly" (hledger-monthly-report))
-    (`"overall" (hledger-overall-report)
-     (pop-to-buffer hledger-reporting-buffer-name)
-     (delete-other-windows))
-    (_ (hledger-jdo command)))
+  (let ((inhibit-read-only t))
+    (pcase command
+      (`"incomestatement" (hledger-monthly-incomestatement))
+      (`"daily" (hledger-daily-report))
+      (`"monthly" (hledger-monthly-report))
+      (`"overall" (hledger-overall-report)
+       (pop-to-buffer hledger-reporting-buffer-name)
+       (delete-other-windows))
+      (_ (hledger-jdo command))))
   ;; Help other functions keep track of history.
   (setq hledger-last-run-command command)
   (when (called-interactively-p 'interactive)

@@ -125,6 +125,8 @@ highlighting in both kinds of buffers."
   (setq-local font-lock-defaults hledger-font-lock-defaults)
   ;; Highlight current line for better readability
   (hl-line-mode 1)
+  ;; It makes sense to have view-mode here.
+  (view-mode 1)
   (use-local-map hledger-view-mode-map))
 
 (provide 'hledger-mode)
