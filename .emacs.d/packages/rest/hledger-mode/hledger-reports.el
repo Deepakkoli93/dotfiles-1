@@ -283,6 +283,23 @@ complete incomestatement isn't much useful for me. "
                            beg-time-string
                            end-time-string))
       (goto-char (point-min))
+      ;; Sort revenues
+      (search-forward "Revenues:")
+      (forward-line)
+      (let ((beg (point)))
+        (while (not (looking-at "--"))
+          (forward-line))
+        (sort-numeric-fields 2 beg (point))
+        (reverse-region beg (point)))
+      ;; Same thing again. Need to abstract this sorting stuff. 
+      (search-forward "Expenses:")
+      (forward-line)
+      (let ((beg (point)))
+        (while (not (looking-at "--"))
+          (forward-line))
+        (sort-numeric-fields 2 beg (point))
+        (reverse-region beg (point)))
+      (goto-char (point-min))
       (insert (hledger-generate-report-header beg-time end-time)))))
 
 (defun hledger-monthly-report (&optional keep-bufferp bury-bufferp)
