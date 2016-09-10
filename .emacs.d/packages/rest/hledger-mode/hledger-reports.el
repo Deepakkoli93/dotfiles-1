@@ -284,21 +284,21 @@ complete incomestatement isn't much useful for me. "
                            end-time-string))
       (goto-char (point-min))
       ;; Sort revenues
-      (search-forward "Revenues:")
-      (forward-line)
-      (let ((beg (point)))
-        (while (not (looking-at "--"))
-          (forward-line))
-        (sort-numeric-fields 2 beg (point))
-        (reverse-region beg (point)))
+      (when (search-forward "Revenues:")
+        (forward-line)
+        (let ((beg (point)))
+          (while (not (looking-at "--"))
+            (forward-line))
+          (sort-numeric-fields 2 beg (point))
+          (reverse-region beg (point))))
       ;; Same thing again. Need to abstract this sorting stuff. 
-      (search-forward "Expenses:")
-      (forward-line)
-      (let ((beg (point)))
-        (while (not (looking-at "--"))
-          (forward-line))
-        (sort-numeric-fields 2 beg (point))
-        (reverse-region beg (point)))
+      (when (search-forward "Expenses:")
+        (forward-line)
+        (let ((beg (point)))
+          (while (not (looking-at "--"))
+            (forward-line))
+          (sort-numeric-fields 2 beg (point))
+          (reverse-region beg (point))))
       (goto-char (point-min))
       (insert (hledger-generate-report-header beg-time end-time)))))
 
@@ -465,19 +465,20 @@ three times.
 (defun hledger-overall-report ()
   "A combination of all the relevant reports."
   (interactive)
-  (hledger-running-report nil t)
-  (hledger-monthly-report t t)
-  (with-current-buffer (hledger-get-perfin-buffer t)
-    (let* ((ratios (hledger-generate-ratios))
-           (efr (plist-get ratios 'efr))
-           (cr (plist-get ratios 'cr))
-           (dr (plist-get ratios 'dr))
-           (sr (plist-get ratios 'sr))
-           (avg-income (plist-get ratios 'avg-income))
-           (avg-expenses (plist-get ratios 'avg-expenses)))
-      (goto-char (point-min))
-      (forward-line 2)
-      (insert (format "
+  (let ((inhibit-read-only t))
+    (hledger-running-report nil t)
+    (hledger-monthly-report t t)
+    (with-current-buffer (hledger-get-perfin-buffer t)
+      (let* ((ratios (hledger-generate-ratios))
+             (efr (plist-get ratios 'efr))
+             (cr (plist-get ratios 'cr))
+             (dr (plist-get ratios 'dr))
+             (sr (plist-get ratios 'sr))
+             (avg-income (plist-get ratios 'avg-income))
+             (avg-expenses (plist-get ratios 'avg-expenses)))
+        (goto-char (point-min))
+        (forward-line 2)
+        (insert (format "
 ╔══════════════════════════════════════╦══════════════════════════════════════════╗ 
 
    Emergency Fund Ratio: %-18.2fSavings Ratio: %.2f
@@ -487,10 +488,10 @@ three times.
 ╚══════════════════════════════════════╩══════════════════════════════════════════╝
                                                                
 "                                                             
-                      efr sr
-                      cr  avg-income
-                      dr  avg-expenses)))                             
-    (goto-char (point-min))))
+                        efr sr
+                        cr  avg-income
+                        dr  avg-expenses)))                             
+      (goto-char (point-min)))))
 
 (defun hledger-run-command-for-month (m command)
   "Runs an hledger COMMAND for Mth month.
