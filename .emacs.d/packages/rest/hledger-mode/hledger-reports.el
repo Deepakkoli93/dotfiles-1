@@ -115,11 +115,20 @@
   "Returns the nth day's time for the previous month."
   (hledger-nth-of-mth-month n -1))
 
-(defun hledger-shell-command-to-string (command-string)
-  (shell-command-to-string (concat "hledger -f "
-                                   (shell-quote-argument hledger-jfile)
-                                   " "
-                                   command-string)))
+(defun hledger-command-thunk (command-string)
+  "Function for creating futures that compute hledger reports"
+  (async-start
+   `(lambda ()
+      (message "--> Running hledger command : %s" ,command-string)
+      (shell-command-to-string
+       (format "%s -f %s %s"
+               ,hledger-bin
+               (shell-quote-argument ,hledger-jfile)
+               ,command-string)))))
+
+(defun hledger-@ (thunk)
+  "Waits on a future until its value is returned"
+  (async-get thunk))
 
 (defun hledger-ask-and-save-buffer ()
   "Ask for saving modified buffer before any reporting commands."
@@ -213,7 +222,10 @@ FIXME: Query emacs for the keys for the functions."
   "Returns list of account names"
   (let* ((hledger-jfile (buffer-file-name))
          (accounts-string (shell-command-to-string
-                           (concat "hledger -f" hledger-jfile " accounts")))
+                           (concat hledger-bin
+                                   " -f "
+                                   hledger-jfile
+                                   " accounts")))
          (accounts-list (split-string accounts-string)))
     accounts-list))
 
@@ -230,7 +242,8 @@ for the buffer contents. "
   (if (eq major-mode 'hledger-mode)
       (setq-local hledger-jfile (buffer-file-name)))
   (let ((jbuffer (hledger-get-perfin-buffer keep-bufferp))
-        (jcommand (concat "hledger -f "
+        (jcommand (concat hledger-bin
+                          " -f "
                           (shell-quote-argument hledger-jfile)
                           " "
                           command
@@ -416,44 +429,54 @@ three times.
                                                            -12)))
          (reporting-date-now (hledger-end-date (hledger-nth-of-this-month
                                                    hledger-reporting-day)))
-         (liquid-assets-report-output
-          (hledger-shell-command-to-string
+         (liquid-assets-report-thunk
+          (hledger-command-thunk
            (concat " balance "
                    hledger-ratios-liquid-asset-accounts
                    " --end " date-now
                    " --depth 1")))
-         (liabilities-report-output
-          (hledger-shell-command-to-string
+         (liabilities-report-thunk
+          (hledger-command-thunk
            (concat " balance "
                    " --end " date-now
                    " --depth 1 "
                    hledger-ratios-debt-accounts)))
-         (total-assets-output
-          (hledger-shell-command-to-string
+         (total-assets-thunk
+          (hledger-command-thunk
            (concat " balance "
                    " --begin " reporting-date-an-year-ago
                    " --end " reporting-date-now
                    " --depth 1 "
                    hledger-ratios-assets-accounts)))
-         (total-income-output
-          (hledger-shell-command-to-string
+         (total-income-thunk
+          (hledger-command-thunk
            (concat " balance "
                    " --begin " reporting-date-an-year-ago
                    " --end " reporting-date-now
                    " --depth 1 "
                    hledger-ratios-income-accounts)))
-         (expenses-report-output
-          (hledger-shell-command-to-string
+         (expenses-report-thunk
+          (hledger-command-thunk
            (concat " balance "
                    hledger-ratios-nondiscritionary-expense-accounts
                    " --depth 1 "
                    " --begin " reporting-date-an-year-ago
                    " --end " reporting-date-now)))
-         (total-assets (string-to-number (nth 1 (split-string total-assets-output))))
-         (total-income (string-to-number (nth 1 (split-string total-income-output))))
-         (total-expenses (string-to-number (nth 1 (split-string expenses-report-output))))
-         (liquid-assets (string-to-number (nth 1 (split-string liquid-assets-report-output))))
-         (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output)))))
+         (total-assets (string-to-number
+                        (nth 1 (split-string
+                                (hledger-@ total-assets-thunk)))))
+         (total-income (string-to-number
+                        (nth 1 (split-string
+                                (hledger-@ total-income-thunk)))))
+         (total-expenses (string-to-number
+                          (nth 1 (split-string
+                                  (hledger-@ expenses-report-thunk)))))
+         (liquid-assets (string-to-number
+                         (nth 1 (split-string
+                                 (hledger-@ liquid-assets-report-thunk)))))
+         (liabilities (- (string-to-number
+                          (nth 1 (split-string
+                                  (hledger-@ liabilities-report-thunk))))))
          (monthly-expenses (/ total-expenses 12))
          (monthly-income (/ total-income 12))
          (monthly-savings (/ total-assets -12.0)))

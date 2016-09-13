@@ -34,6 +34,11 @@
   :group 'hledger
   :type 'string)
 
+(defcustom hledger-bin "hledger"
+  "Name of the binary to be used for creating reports."
+  :group 'hledger
+  :type 'string)
+
 (defcustom hledger-comments-column 11
   "Column number where the comments start."
   :group 'hledger
