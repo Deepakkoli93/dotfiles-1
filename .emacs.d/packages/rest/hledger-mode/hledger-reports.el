@@ -60,7 +60,7 @@
   :group 'hledger
   :type 'string)
 
-(defcustom hledger-ratios-nondiscritionary-expense-accounts
+(defcustom hledger-ratios-essential-expense-accounts
   "expenses:housing expenses:eating expenses:family"
   "Account names [separated by spaces] that contain non-disctrionary expenses"
   :group 'hledger
@@ -388,11 +388,24 @@ To configure this, see `hledger-reporting-day'."
                  t
                  bury-bufferp)))
 
+(defun hledger-compute-total (accounts-string &optional beg  end)
+  "Computes the total for given accounts.
+This function depends upon how `hledger-bin' prints data to the console.
+If that changes, things will break. BEG and END are dates."
+  (let* ((date-now (hledger-end-date (current-time)))
+         (output (hledger-shell-command-to-string
+                  (concat " balance "
+                          accounts-string
+                          (if beg (concat " --begin " beg) "") 
+                          " --end " (or end date-now)
+                          " --depth 1"))))
+    (string-to-number (nth 1 (split-string output)))))
+
 (defun hledger-generate-ratios ()
   "Computes various personal finance ratios:
 
 Computes the emergency fund ratio for the current month.
-EFR = (Current liquid assets)/(Monthly nondiscretionary expenses)
+EFR = (Current liquid assets)/(Monthly essential expenses)
 
 I consider expenses on housing, eating and family to be
 non-discretionary. Shoot for keeping it 6. Too high isn't
@@ -416,48 +429,21 @@ three times.
                                                            -12)))
          (reporting-date-now (hledger-end-date (hledger-nth-of-this-month
                                                    hledger-reporting-day)))
-         (liquid-assets-report-output
-          (hledger-shell-command-to-string
-           (concat " balance "
-                   hledger-ratios-liquid-asset-accounts
-                   " --end " date-now
-                   " --depth 1")))
-         (liabilities-report-output
-          (hledger-shell-command-to-string
-           (concat " balance "
-                   " --end " date-now
-                   " --depth 1 "
-                   hledger-ratios-debt-accounts)))
-         (total-assets-output
-          (hledger-shell-command-to-string
-           (concat " balance "
-                   " --begin " reporting-date-an-year-ago
-                   " --end " reporting-date-now
-                   " --depth 1 "
-                   hledger-ratios-assets-accounts)))
-         (total-income-output
-          (hledger-shell-command-to-string
-           (concat " balance "
-                   " --begin " reporting-date-an-year-ago
-                   " --end " reporting-date-now
-                   " --depth 1 "
-                   hledger-ratios-income-accounts)))
-         (expenses-report-output
-          (hledger-shell-command-to-string
-           (concat " balance "
-                   hledger-ratios-nondiscritionary-expense-accounts
-                   " --depth 1 "
-                   " --begin " reporting-date-an-year-ago
-                   " --end " reporting-date-now)))
-         (total-assets (string-to-number (nth 1 (split-string total-assets-output))))
-         (total-income (string-to-number (nth 1 (split-string total-income-output))))
-         (total-expenses (string-to-number (nth 1 (split-string expenses-report-output))))
-         (liquid-assets (string-to-number (nth 1 (split-string liquid-assets-report-output))))
-         (liabilities (- (string-to-number (nth 1 (split-string liabilities-report-output)))))
+         (total-assets (hledger-compute-total hledger-ratios-assets-accounts
+                                              reporting-date-an-year-ago
+                                              reporting-date-now))
+         (total-income (hledger-compute-total hledger-ratios-income-accounts
+                                              reporting-date-an-year-ago
+                                              reporting-date-now))
+         (total-expenses (hledger-compute-total hledger-ratios-essential-expense-accounts
+                                               reporting-date-an-year-ago
+                                               reporting-date-now))
+         (liquid-assets (hledger-compute-total hledger-ratios-liquid-asset-accounts))
+         (liabilities (- (hledger-compute-total hledger-ratios-debt-accounts)))
          (monthly-expenses (/ total-expenses 12))
-         (monthly-income (/ total-income 12))
-         (monthly-savings (/ total-assets -12.0)))
-    (list 'avg-income (* monthly-income -1.0)             ;; Monthly income
+         (monthly-income (/ total-income -12.0))
+         (monthly-savings (/ total-assets 12.0)))
+    (list 'avg-income (* monthly-income 1.0)              ;; Monthly income
           'avg-expenses (* monthly-expenses 1.0)          ;; Average expenses
           'efr (/ liquid-assets (* monthly-expenses 1.0)) ;; Emergency-fund-ratio
           'cr  (/ liquid-assets (* liabilities 1.0))      ;; Current ratio
