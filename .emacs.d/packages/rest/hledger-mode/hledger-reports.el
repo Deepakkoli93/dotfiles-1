@@ -401,6 +401,26 @@ If that changes, things will break. BEG and END are dates."
                           " --depth 1"))))
     (string-to-number (nth 1 (split-string output)))))
 
+(defun hledger-compute-totals (accounts-list &optional beg end)
+  "Computes the total for a list of accounts. See `hledger-compute-total'."
+  (let* ((date-now (hledger-end-date (current-time)))
+         (output (hledger-shell-command-to-string
+                  (concat " balance "
+                          (mapconcat 'identity accounts-list " ")
+                          (if beg (concat " --begin " beg) "") 
+                          " --end " (or end date-now)
+                          " --depth 1"
+                          " --format '\"%(account)\" %(total)' ")))
+         (elisp-string (concat "("
+                               (replace-regexp-in-string
+                                (concat hledger-currency-string
+                                        "\\|-")
+                                ""
+                                output)
+                               ")"))
+         (result (car (read-from-string elisp-string))))
+    result))
+
 (defun hledger-generate-ratios ()
   "Computes various personal finance ratios:
 
@@ -428,20 +448,36 @@ three times.
                                                            hledger-reporting-day
                                                            -12)))
          (reporting-date-now (hledger-end-date (hledger-nth-of-this-month
-                                                   hledger-reporting-day)))
-         (total-assets (hledger-compute-total hledger-ratios-assets-accounts
-                                              reporting-date-an-year-ago
-                                              reporting-date-now))
-         (total-income (hledger-compute-total hledger-ratios-income-accounts
-                                              reporting-date-an-year-ago
-                                              reporting-date-now))
-         (total-expenses (hledger-compute-total hledger-ratios-essential-expense-accounts
-                                               reporting-date-an-year-ago
-                                               reporting-date-now))
-         (liquid-assets (hledger-compute-total hledger-ratios-liquid-asset-accounts))
-         (liabilities (- (hledger-compute-total hledger-ratios-debt-accounts)))
+                                                hledger-reporting-day)))
+
+         (totals-plist-1 (hledger-compute-totals
+                          (list hledger-ratios-assets-accounts
+                                hledger-ratios-income-accounts
+                                hledger-ratios-essential-expense-accounts)
+                          reporting-date-an-year-ago
+                          reporting-date-now))
+         ;; For average balances
+         (total-assets
+          (lax-plist-get totals-plist-1
+                         (hledger-get-top-level-acount hledger-ratios-assets-accounts)))
+         (total-income
+          (lax-plist-get totals-plist-1
+                         (hledger-get-top-level-acount hledger-ratios-income-accounts)))
+         (total-expenses
+          (lax-plist-get totals-plist-1
+                         (hledger-get-top-level-acount hledger-ratios-essential-expense-accounts)))
+         ;; For current balances
+         (totals-plist-2 (hledger-compute-totals
+                          (list hledger-ratios-liquid-asset-accounts
+                                hledger-ratios-debt-accounts)))
+         (liquid-assets
+          (lax-plist-get totals-plist-2
+                         (hledger-get-top-level-acount hledger-ratios-liquid-asset-accounts)))
+         (liabilities
+          (lax-plist-get totals-plist-2
+                         (hledger-get-top-level-acount hledger-ratios-debt-accounts)))
          (monthly-expenses (/ total-expenses 12))
-         (monthly-income (/ total-income -12.0))
+         (monthly-income (/ total-income 12.0))
          (monthly-savings (/ total-assets 12.0)))
     (list 'avg-income (* monthly-income 1.0)              ;; Monthly income
           'avg-expenses (* monthly-expenses 1.0)          ;; Average expenses
@@ -555,6 +591,10 @@ See `hledger-prev-report'."
     (set-text-properties (point-min)
                          (point-max)
                          '(read-only t front-sticky t))))
+
+(defun hledger-get-top-level-acount (acc-string)
+  "Returns the top-level account from ACC-STRING."
+  (car (split-string acc-string ":")))
 
 (provide 'hledger-reports)
 ;;; hledger-reports.el ends here
