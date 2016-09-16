@@ -314,7 +314,7 @@ To configure this, see `hledger-reporting-day'."
          (end-time (hledger-nth-of-this-month hledger-reporting-day))
          (beg-time-string (hledger-format-time beg-time))
          (end-time-string (hledger-format-time end-time)))
-    (hledger-jdo (format "balance expenses income --flat -b %s -e %s"
+    (hledger-jdo (format "balance expenses income -b %s -e %s --depth 2"
                          beg-time-string
                          end-time-string)
                  keep-bufferp
@@ -329,26 +329,7 @@ To configure this, see `hledger-reporting-day'."
         (sort-numeric-fields 2 beg (point))
         (reverse-region beg (point)))
       (forward-line 2)
-      (insert "\nExpenses\n========\n"))
-    (hledger-jdo (format "balance expenses --depth 2 --flat -b %s -e %s"
-                         beg-time-string
-                         end-time-string)
-                 t
-                 bury-bufferp)
-    (with-current-buffer (hledger-get-perfin-buffer t)
-      (goto-char (point-min))
-      (while (not (looking-at "Expenses"))
-        (forward-line))
-      (forward-line 2)
-      ;; Sorting and add trailing newlines
-      (let ((beg (point)))
-        (while (not (looking-at "--"))
-          (forward-line))
-        (sort-numeric-fields 2 beg (point))
-        (forward-line 2)
-        (insert "\n\n")
-        (forward-line -4)
-        (reverse-region beg (point)))
+      (insert "\n\n"))
       ;; Back to the start
       (goto-char (point-min))
       (when bury-bufferp
@@ -490,6 +471,7 @@ three times.
 (defun hledger-overall-report ()
   "A combination of all the relevant reports."
   (interactive)
+  (message "Generating overall report...")
   (let ((inhibit-read-only t))
     (hledger-running-report nil t)
     (hledger-monthly-report t t)
@@ -516,7 +498,8 @@ three times.
                         efr sr
                         cr  avg-income
                         dr  avg-expenses)))                             
-      (goto-char (point-min)))))
+      (goto-char (point-min))))
+  (message "Done!"))
 
 (defun hledger-run-command-for-month (m command)
   "Runs an hledger COMMAND for Mth month.
