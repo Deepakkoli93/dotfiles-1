@@ -122,4 +122,13 @@ of the *scratch* buffer with the quote string."
         (url-retrieve (url-generic-parse-url qod-service-url)
                       'mylife-qod-callback))))
 
+(defun mylife-scratch-buffer ()
+  "Recreate and refresh the scracth buffer."
+  (interactive)
+  (with-current-buffer (get-buffer-create "*scratch*")
+    (let ((inhibit-read-only t)
+          (content (concat (mylife-random-quote-string)
+                           (mylife-get-auroville-quality))))
+      (insert content))))
+
 (provide 'mylife-quotes)

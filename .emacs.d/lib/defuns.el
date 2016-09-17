@@ -515,6 +515,6 @@ Taken from Chris Done's config"
                   (concat "convert -delay 70 /tmp/frames/*.png /tmp/frames/out.gif && "
                           "echo Ouput saved to /tmp/frames/out.gif &")))))))
 
-    
+
 (provide 'defuns)
 ;;; defuns.el ends here

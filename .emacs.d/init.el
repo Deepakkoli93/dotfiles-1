@@ -348,7 +348,6 @@
 (setq ad-redefinition-action 'accept)
 (helm-mode 1)
 
-
 ;; Personal Finance
 ;; ―――――――――――――――――――――――――――――――――――― 
 (require 'hledger-mode)
