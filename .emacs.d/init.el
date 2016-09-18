@@ -21,6 +21,13 @@
 
 ;;; VARIABLES
 ;;  ─────────────────────────────────────────────────────────────────
+(defvar emacs-scratch-text-size 0
+  "Size of region containing the inital quote in scratch buffer.
+Useful in case we need to refresh only this part of the buffer.")
+
+(defvar idle-scratch-buffer-refresh-time 60
+  "Refresh scratch buffer quote after these many seconds of inactivity.")
+
 (defvar use-auto-completep
   nil
   "Boolean that decides whether auto-complete is configured and used.")
@@ -677,7 +684,11 @@
                              (time-to-seconds (time-subtract (current-time)
                                                              emacs-start-time))))
             (pop-to-buffer "*scratch*")
-            (make-old-content-read-only)
+            (setq emacs-scratch-text-size (point-max))
+            ;; Refresh the quote once in a while
+            (run-with-idle-timer idle-scratch-buffer-refresh-time
+                                 t
+                                 'mylife-refresh-scratch-buffer)
             (delete-other-windows)))
 ;; Keep the startup time in the echo area. 
 (defun display-startup-echo-area-message ()

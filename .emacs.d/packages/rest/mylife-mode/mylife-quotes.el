@@ -122,13 +122,20 @@ of the *scratch* buffer with the quote string."
         (url-retrieve (url-generic-parse-url qod-service-url)
                       'mylife-qod-callback))))
 
-(defun mylife-scratch-buffer ()
+(defun mylife-refresh-scratch-buffer (&optional pop-to-bufferp)
   "Recreate and refresh the scracth buffer."
   (interactive)
   (with-current-buffer (get-buffer-create "*scratch*")
     (let ((inhibit-read-only t)
           (content (concat (mylife-random-quote-string)
                            (mylife-get-auroville-quality))))
-      (insert content))))
+      (when (not (= emacs-scratch-text-size 0))
+        (delete-region (point-min) (min (point-max)
+                                        emacs-scratch-text-size)))
+      (goto-char (point-min))
+      (insert content)
+      (setq emacs-scratch-text-size (point))
+      (font-lock-mode 1)
+      (and pop-to-bufferp (pop-to-buffer "*scratch*")))))
 
 (provide 'mylife-quotes)
