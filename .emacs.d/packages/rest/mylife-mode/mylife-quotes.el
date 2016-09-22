@@ -130,6 +130,8 @@ of the *scratch* buffer with the quote string."
           (inhibit-read-only t)
           (content (concat (mylife-random-quote-string)
                            (mylife-get-auroville-quality))))
+      ;; Advance marker when we insert text at its position
+      (set-marker-insertion-type here-marker t)
       (when (not (= emacs-scratch-text-size 0))
         (delete-region (point-min) (min (point-max)
                                         emacs-scratch-text-size)))

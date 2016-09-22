@@ -338,16 +338,16 @@ Useful in case we need to refresh only this part of the buffer.")
 
 ;; IDO
 ;; show completions vertically
+(require 'ido)
 (setq ido-decorations (quote
                        ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]"
                         " [Matched]" " [Not readable]" " [Too big]"
                         " [Confirm]")))
 (setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
 (setq ido-auto-merge-work-directories-length -1)
 ;; Ignore listing irc buffers and helm session buffers.
 (setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*" "\\*helm.*"))
-(ido-mode t)
+(ido-mode 1)
 
 ;; helm
 (require 'helm-config)
@@ -578,7 +578,8 @@ Useful in case we need to refresh only this part of the buffer.")
       '(emacs-lisp-mode-hook lisp-mode-hook
                              clojure-mode-hook
                              cider-repl-mode-hook
-                             eshell-mode-hook))
+                             eshell-mode-hook
+                             minibuffer-inactive-mode-hook))
 
 ;;; MAN-MODE
 ;;  ─────────────────────────────────────────────────────────────────
@@ -684,7 +685,8 @@ Useful in case we need to refresh only this part of the buffer.")
                              (time-to-seconds (time-subtract (current-time)
                                                              emacs-start-time))))
             (pop-to-buffer "*scratch*")
-            (setq emacs-scratch-text-size (point-max))
+            (goto-char (point-max))
+            (setq emacs-scratch-text-size (point))
             ;; Refresh the quote once in a while
             (run-with-idle-timer idle-scratch-buffer-refresh-time
                                  t
