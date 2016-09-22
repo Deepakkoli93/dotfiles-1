@@ -126,7 +126,8 @@ of the *scratch* buffer with the quote string."
   "Recreate and refresh the scracth buffer."
   (interactive)
   (with-current-buffer (get-buffer-create "*scratch*")
-    (let ((inhibit-read-only t)
+    (let ((here-marker (point-marker))
+          (inhibit-read-only t)
           (content (concat (mylife-random-quote-string)
                            (mylife-get-auroville-quality))))
       (when (not (= emacs-scratch-text-size 0))
@@ -136,6 +137,7 @@ of the *scratch* buffer with the quote string."
       (insert content)
       (setq emacs-scratch-text-size (point))
       (font-lock-mode 1)
+      (goto-char (marker-position here-marker))
       (and pop-to-bufferp (pop-to-buffer "*scratch*")))))
 
 (provide 'mylife-quotes)
