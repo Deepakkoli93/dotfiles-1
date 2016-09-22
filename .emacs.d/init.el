@@ -581,6 +581,11 @@ Useful in case we need to refresh only this part of the buffer.")
                              eshell-mode-hook
                              minibuffer-inactive-mode-hook))
 
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (interactive)
+            (local-set-key (kbd "M-.") 'find-function)))
+
 ;;; MAN-MODE
 ;;  ─────────────────────────────────────────────────────────────────
 (add-hook 'Man-mode-hook 'utils-easy-move-mode)
