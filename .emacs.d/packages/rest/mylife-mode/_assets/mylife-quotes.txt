@@ -32,7 +32,6 @@ gold.”
                                                      - Kahlil Gibran  
 
 “Persistent people begin their success where others end in failures.”
-
                                                   - Edward Eggleston  
 
 “Pick battles big enough to matter, small enough to win.” 
@@ -43,7 +42,6 @@ who can’t put his pants on.”
                                                   - Arthur K. Watson  
 
 “The more original a discovery, the more obvious it seems afterward.”
-
                                                    - Arthur Koestler  
 
 “Loyalty to a petrified opinion never yet broke a chain or freed a
@@ -227,7 +225,6 @@ conscience, thus helping to bring the collective conscience to life.”
 
 “Nothing has a stronger influence psychologically on their environment
 and especially on their children than the unlived life of the parent.”
-
                                                          - Carl Jung  
 
 “Simplicity is the most difficult thing to secure in this world; it is
@@ -1041,7 +1038,6 @@ and thought is a painful process.”
 
 “You never change things by fighting the existing reality. To change
 something, build a new model that makes the existing model obsolete.”
-
                                                 - Buckminster Fuller  
 
 “Learning of all kinds goes on best, lasts best, and tends to lead
@@ -1230,7 +1226,6 @@ eighteen.”
 
 “A variable is to data flow what GOTO is to control flow. Just as GOTO
 allows control to go anywhere, a variable allows data to go anywhere.”
-
                                                    - Arch D Robinson  
 
 “Many of the things you can count, don’t count. Many of the things you
@@ -1755,8 +1750,7 @@ cease.”
                                                             - Gandhi  
 
 “Abundance is not something we acquire. It is something we tune into.”
-
-                                                        - Wayne Dyer  
+                                                          - Wayne Dyer  
 
 “Beauty is a consequential thing, a product of solving problems
 correctly.” 
@@ -1806,7 +1800,6 @@ foolish thoughts. The point is that the process is reversible.”
 
 “That language is an instrument of human reason, and not merely a
 medium for the expression of thought, is a truth generally admitted.”
-
                                  - George Boole, The Laws of Thought  
 
 “If all mankind minus one were of one opinion, mankind would be no
@@ -1991,7 +1984,6 @@ for that. Hummingbird mind, I should think.”
                                       - Ted Nelson (via Jake Elliott)
 
 “It is impossible for a man to learn what he thinks he already knows.”
-
                                                          - Epictetus  
 
 “Syntactic sugar causes cancer of the semicolon.” 
@@ -2348,7 +2340,6 @@ it, take yourself out of it.”
                                                   - Hardy D. Jackson  
 
 “Good ideas come from bad ideas, but only if there are enough of them”
-
                                                         - Seth Godin  
 
 “The intellectual mind that is unconnected to the heart is an
@@ -2721,7 +2712,6 @@ solve: find it.”
                                                       - George Polya  
 
 “If you never did, you should. These things are fun and fun is good.”
-
                                                           - Dr Suess  
 
 “We are all born originals — why is it so many of us die copies?” 
@@ -2795,7 +2785,6 @@ away.”
 
 “In the sky, there is no distinction of east and west; people create
 distinctions out of their own minds and then believe them to be true.”
-
                                                             - Buddha  
 
 “The purpose of abstraction is not to be vague, but to create a new
@@ -2906,8 +2895,8 @@ Yang of attachment)
 “A different world cannot be built by indifferent people.” 
                                                        - Horace Mann  
 
-“Self
--judgment is how conditioned mind keeps control over your life.” - Cheri Huber  
+“Self-judgment is how conditioned mind keeps control over your life.”
+                                                       - Cheri Huber  
 
 “Nationalism is an infantile disease. It is the measels of
 mankind. Never do anything against conscience — even if the state
