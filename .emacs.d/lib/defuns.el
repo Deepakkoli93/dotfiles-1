@@ -120,6 +120,12 @@ I will rewrite it to mak it simpler"
     (set-window-buffer (selected-window) (current-buffer))
     (setq toggle-reading-mode nil)))
 
+(defun isearch-exit-other-end ()
+  "Exit isearch, at the opposite end of the string."
+  (interactive)
+  (isearch-exit)
+  (goto-char isearch-other-end))
+
 (defun lookup-word (word dict fallback-function)
   "Lookup a given WORD in the dictionary DICT or fallback to FALLBACK-FUNCTION.
 Currently I think the online dictionary is more useful so I have
@@ -515,6 +521,52 @@ Taken from Chris Done's config"
                   (concat "convert -delay 70 /tmp/frames/*.png /tmp/frames/out.gif && "
                           "echo Ouput saved to /tmp/frames/out.gif &")))))))
 
+
+(defun fetch-parse-and-do (url parser action)
+  "Helper function for all network related things.
+Fetches the url. Changes the current buffer to the response
+buffer.  Calls the parser on the buffer starting at the beginning
+of the HTTP response in the response buffer.  Calls action on the
+value returned by the parser function."
+  (let ((url-request-method "GET")
+        (url-callback `(lambda (status)
+                         (if status
+                             (message "%s" status)
+                           (search-forward "\n\n")
+                           (,action (,parser))
+                           (kill-buffer (current-buffer))))))
+    (url-retrieve url url-callback)))
+
+
+(defun get-location-coordinates (address)
+  "Show and return the latitude and longitude of ADDRESS.
+This uses the google maps api as described here:
+https://developers.google.com/maps/documentation/geocoding/intro"
+  (interactive "sAddress: ")
+  (let ((api-url-endpoint
+         (url-encode-url
+          (format "https://maps.googleapis.com/maps/api/geocode/json?address=%s"
+                  address)))
+        (get-info-string-from-result
+         (lambda (result)
+           (let* ((fmt_address (assoc-default 'formatted_address result))
+                  (geometry (assoc-default 'geometry result))
+                  (location (assoc-default 'location geometry))
+                  (latitude (assoc-default 'lat location))
+                  (longitude (assoc-default 'lng location)))
+             (format "Address: %s \nLatitude: %s\nLongitude: %s\n"
+                     fmt_address
+                     latitude
+                     longitude)))))
+    (fetch-parse-and-do api-url-endpoint
+                        'json-read
+                        (lambda (response)
+                          (display-message-or-buffer
+                           (mapconcat (lambda (result)
+                                        (funcall get-info-string-from-result
+                                                 result))
+                                      (assoc-default 'results response)
+                                      "\n"))))))
 
 (provide 'defuns)
 ;;; defuns.el ends here

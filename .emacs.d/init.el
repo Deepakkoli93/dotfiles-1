@@ -331,6 +331,11 @@ Useful in case we need to refresh only this part of the buffer.")
  ;; no-mode
  (t (message "No completion enabled.")))
 
+;; isearch
+;; Move point to the beginning of match on isearch end 
+(define-key isearch-mode-map [(control return)]
+  #'isearch-exit-other-end)
+
 ;; yasnippet
 (require 'yasnippet)
 (setq yas-snippet-dirs (expand-file-name "snippets/" user-emacs-directory))
@@ -346,7 +351,8 @@ Useful in case we need to refresh only this part of the buffer.")
 (setq ido-enable-flex-matching t)
 (setq ido-auto-merge-work-directories-length -1)
 ;; Ignore listing irc buffers and helm session buffers.
-(setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*" "\\*helm.*"))
+(setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*"
+                           ".*irc\.slack\.com.*" "\\*helm.*"))
 (ido-mode 1)
 
 ;; helm
@@ -355,7 +361,7 @@ Useful in case we need to refresh only this part of the buffer.")
 (setq ad-redefinition-action 'accept)
 (helm-mode 1)
 
-;; Personal Finance
+;;; Personal Finance
 ;; ―――――――――――――――――――――――――――――――――――― 
 (require 'hledger-mode)
 (add-hook 'hledger-mode-hook (lambda ()
@@ -426,6 +432,12 @@ Useful in case we need to refresh only this part of the buffer.")
 (setq org-habit-following-days 6
       org-habit-preceding-days 21
       org-habit-graph-column 50)
+
+;; org-agenda
+(setq org-agenda-skip-scheduled-if-deadline-is-shown t
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-deadline-warning-days 3)
 
 ;; org-capture
 (setq org-capture-templates
@@ -697,6 +709,7 @@ Useful in case we need to refresh only this part of the buffer.")
                                  t
                                  'mylife-refresh-scratch-buffer)
             (delete-other-windows)))
+
 ;; Keep the startup time in the echo area. 
 (defun display-startup-echo-area-message ()
   "Does nothing. Says nothing. Displays nothing. That's so it."
