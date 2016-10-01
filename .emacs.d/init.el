@@ -22,9 +22,12 @@
 ;;; VARIABLES AND PREFIX COMMANDS
 ;;  ─────────────────────────────────────────────────────────────────
 
-;; Personal prefix map | Stolen from John Whigley's config
+;; Personal prefix maps 
 (defvar ctl-period-map)
 (define-prefix-command 'ctl-period-map)
+
+(defvar ctl-comma-map)
+(define-prefix-command 'ctl-comma-map)
 
 (defvar emacs-scratch-text-size 0
   "Size of region containing the inital quote in scratch buffer.
@@ -108,10 +111,20 @@ Useful in case we need to refresh only this part of the buffer.")
 ;; Keeping things in reach!
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c m") 'switch-to-minibuffer)
+(global-set-key (kbd "C-<return>") 'other-window)
 
-;; Personal prefix
+;; Personal prefixs
+;; ctl-period
 (global-set-key (kbd "C-.") 'ctl-period-map)
 (global-set-key (kbd "C-. m") 'magit-status)
+(global-set-key (kbd "C-. u") 'delete-indentation)
+(global-set-key (kbd "C-. w") 'ido-jump-to-window)
+
+;; ctl-comma
+(global-set-key (kbd "C-, j") 'windmove-down)
+(global-set-key (kbd "C-, k") 'windmove-up)
+(global-set-key (kbd "C-, h") 'windmove-left)
+(global-set-key (kbd "C-, l") 'windmove-right)
 
 ;; Bindings for org-mode
 (global-set-key (kbd "C-c a") 'org-agenda)
@@ -127,7 +140,6 @@ Useful in case we need to refresh only this part of the buffer.")
 ;; Utilities
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-g f") 'avy-goto-char-timer)
-(global-set-key (kbd "C-c w") 'switch-to-window)
 
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
 (global-set-key (kbd "C-c +") 'vicarie/eval-replace-last-sexp)
@@ -197,6 +209,9 @@ Useful in case we need to refresh only this part of the buffer.")
                       :weight 'normal
                       :height 98
                       :width 'normal))
+
+;; yes-or-no
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Make chromium the default browser if it is installed
 (when (executable-find "chromium")
