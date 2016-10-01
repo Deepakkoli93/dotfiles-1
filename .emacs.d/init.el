@@ -19,8 +19,13 @@
                                        "mylife-mode")))
 (package-initialize)
 
-;;; VARIABLES
+;;; VARIABLES AND PREFIX COMMANDS
 ;;  ─────────────────────────────────────────────────────────────────
+
+;; Personal prefix map | Stolen from John Whigley's config
+(defvar ctl-period-map)
+(define-prefix-command 'ctl-period-map)
+
 (defvar emacs-scratch-text-size 0
   "Size of region containing the inital quote in scratch buffer.
 Useful in case we need to refresh only this part of the buffer.")
@@ -104,6 +109,10 @@ Useful in case we need to refresh only this part of the buffer.")
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c m") 'switch-to-minibuffer)
 
+;; Personal prefix
+(global-set-key (kbd "C-.") 'ctl-period-map)
+(global-set-key (kbd "C-. m") 'magit-status)
+
 ;; Bindings for org-mode
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
@@ -137,6 +146,7 @@ Useful in case we need to refresh only this part of the buffer.")
 
 ;; Mouse events
 (global-set-key [mouse-3] 'define-word-at-point)
+
 
 ;;; MISCELLANY
 ;;  ─────────────────────────────────────────────────────────────────

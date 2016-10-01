@@ -568,5 +568,6 @@ https://developers.google.com/maps/documentation/geocoding/intro"
                                       (assoc-default 'results response)
                                       "\n"))))))
 
+
 (provide 'defuns)
 ;;; defuns.el ends here
