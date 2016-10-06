@@ -53,32 +53,6 @@
   :group 'mylife)
   
 
-;;; Derivations
-(setq mylife-birth-time (date-to-time mylife-birth-date))
-
-(setq mylife-death-time (time-add mylife-birth-time
-                                (days-to-time (* mylife-mylife-expectancy
-                                                 365))))
-(setq mylife-days-gone
-            (round (time-to-number-of-days
-                    (time-since mylife-birth-date))))
-(setq mylife-days-left
-            (round (time-to-number-of-days
-                    (time-subtract mylife-death-time
-                                   (current-time)))))
-(setq mylife-years-gone
-            (round (/ mylife-days-gone
-                      365.0)))
-(setq mylife-years-left
-            (round (/ mylife-days-left
-                      365.0)))
-(setq mylife-weeks-gone
-            (round (/ mylife-days-gone
-                      7.0)))
-(setq mylife-weeks-left
-            (round (/ mylife-days-left
-                      7.0)))
-
 ;;; Auxiliary functions
 (defun mylife-get-display-buffer ()
   "Get/create the display buffer."
@@ -112,7 +86,30 @@
 
 (defun mylife-mode-init ()
   "Function that does initial setup in the major-mode function."
-  (ignore))
+  ;; Derivations
+  (setq mylife-birth-time (date-to-time mylife-birth-date))
+  (setq mylife-death-time (time-add mylife-birth-time
+                                    (days-to-time (* mylife-mylife-expectancy
+                                                     365))))
+  (setq mylife-days-gone
+        (round (time-to-number-of-days
+                (time-since mylife-birth-date))))
+  (setq mylife-days-left
+        (round (time-to-number-of-days
+                (time-subtract mylife-death-time
+                               (current-time)))))
+  (setq mylife-years-gone
+        (round (/ mylife-days-gone
+                  365.0)))
+  (setq mylife-years-left
+        (round (/ mylife-days-left
+                  365.0)))
+  (setq mylife-weeks-gone
+        (round (/ mylife-days-gone
+                  7.0)))
+  (setq mylife-weeks-left
+        (round (/ mylife-days-left
+                  7.0))))
 
 
 (defun mylife-get-auroville-quality ()

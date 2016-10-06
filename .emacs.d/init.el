@@ -118,7 +118,7 @@ Useful in case we need to refresh only this part of the buffer.")
 (global-set-key (kbd "C-.") 'ctl-period-map)
 (global-set-key (kbd "C-. m") 'magit-status)
 (global-set-key (kbd "C-. u") 'delete-indentation)
-(global-set-key (kbd "C-. w") 'ido-jump-to-window)
+(global-set-key (kbd "C-. q") 'mylife-add-new-quote)
 
 ;; ctl-comma
 (global-set-key (kbd "C-, j") 'windmove-down)
@@ -459,7 +459,8 @@ Useful in case we need to refresh only this part of the buffer.")
       org-habit-graph-column 50)
 
 ;; org-agenda
-(setq org-agenda-skip-scheduled-if-deadline-is-shown t
+(setq org-agenda-sticky t
+      org-agenda-skip-scheduled-if-deadline-is-shown t
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
       org-deadline-warning-days 3)
@@ -666,7 +667,8 @@ Useful in case we need to refresh only this part of the buffer.")
                                      "#archlinux" "#xmonad" "#c" "#bash"
                                      "#git" "#fp@nith" "#lisp" "#clojure"
                                      "#scheme" "#elm")))
-(setq erc-prompt-for-nickserv-password nil)
+(setq erc-prompt-for-nickserv-password nil
+      erc-server-reconnect-attempts 1024)
 (if (boundp 'my-freenode-nickserv-password)
     (setq erc-nickserv-password
           `((freenode (("narendraj9" . ,my-freenode-nickserv-password))))))
