@@ -114,11 +114,11 @@ Useful in case we need to refresh only this part of the buffer.")
 (global-set-key (kbd "C-<return>") 'other-window)
 
 ;; Personal prefixs
-;; ctl-period
+;; ctl-period | Convenience is the rule here.
 (global-set-key (kbd "C-.") 'ctl-period-map)
-(global-set-key (kbd "C-. m") 'magit-status)
-(global-set-key (kbd "C-. u") 'delete-indentation)
 (global-set-key (kbd "C-. q") 'mylife-add-new-quote)
+(global-set-key (kbd "C-. C-m") 'magit-status)
+(global-set-key (kbd "C-. C-u") 'delete-indentation)
 
 ;; ctl-comma
 (global-set-key (kbd "C-, j") 'windmove-down)
@@ -282,9 +282,16 @@ Useful in case we need to refresh only this part of the buffer.")
                     :foreground "steel blue")
 
 ;; Spell-checking
-(dolist (hook '(markdown-mode-hook latex-mode-hook org-mode-hook))
+(dolist (hook '(markdown-mode-hook
+                latex-mode-hook
+                org-mode-hook
+                hledger-mode-hook))
   (add-hook hook (lambda ()
-                   (flyspell-mode 1))))
+                   (flyspell-mode 1)
+                   (unbind-key "C-." flyspell-mode-map)
+                   (bind-key "C-. C-."
+                             'flyspell-auto-correct-word
+                             flyspell-mode-map))))
 (setq ispell-personal-dictionary personal-dictionary-file)
                                  
 ;; Unique buffer names
@@ -389,8 +396,6 @@ Useful in case we need to refresh only this part of the buffer.")
 ;;; Personal Finance
 ;; ―――――――――――――――――――――――――――――――――――― 
 (require 'hledger-mode)
-(add-hook 'hledger-mode-hook (lambda ()
-                               (flyspell-mode 1)))
 (hledger-enable-reporting)
 
 ;;; ESHELL
