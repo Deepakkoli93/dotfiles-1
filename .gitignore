@@ -11,6 +11,8 @@
 .emacs.d/packages/elpa/gnupg/
 .emacs.d/packages/elpa/archives/
 
+.yas-compiled-snippets.el
+
 !.emacs.d/backups/
 .emacs.d/backups/*
 !.emacs.d/backups/.gitignore

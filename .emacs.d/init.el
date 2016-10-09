@@ -26,9 +26,6 @@
 (defvar ctl-period-map)
 (define-prefix-command 'ctl-period-map)
 
-(defvar ctl-comma-map)
-(define-prefix-command 'ctl-comma-map)
-
 (defvar emacs-scratch-text-size 0
   "Size of region containing the inital quote in scratch buffer.
 Useful in case we need to refresh only this part of the buffer.")
@@ -119,12 +116,11 @@ Useful in case we need to refresh only this part of the buffer.")
 (global-set-key (kbd "C-. q") 'mylife-add-new-quote)
 (global-set-key (kbd "C-. C-m") 'magit-status)
 (global-set-key (kbd "C-. C-u") 'delete-indentation)
-
-;; ctl-comma
-(global-set-key (kbd "C-, j") 'windmove-down)
-(global-set-key (kbd "C-, k") 'windmove-up)
-(global-set-key (kbd "C-, h") 'windmove-left)
-(global-set-key (kbd "C-, l") 'windmove-right)
+;; window navigation
+(global-set-key (kbd "C-. C-j") 'windmove-down)
+(global-set-key (kbd "C-. C-k") 'windmove-up)
+(global-set-key (kbd "C-. C-h") 'windmove-left)
+(global-set-key (kbd "C-. C-l") 'windmove-right)
 
 ;; Bindings for org-mode
 (global-set-key (kbd "C-c a") 'org-agenda)

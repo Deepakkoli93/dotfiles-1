@@ -5,7 +5,7 @@ cd ~/miscellany
 git commit -am "Scheduled daily journal commit"
 
 # Pull work subtree
-git subtree pull --prefix=work/ work master
+git subtree pull --prefix=work/ work master --squash
 
 (
 git push origin master
@@ -13,5 +13,8 @@ while [[ $? -ne 0 ]]; do
     sleep 2m 
     git push origin master
 done 
-focus "Pushed ~/miscellany.git to github." 2 20
+
+# Let's notify the user
+notify-send "Pushed ~/miscellany.git to github." 
+
 ) &
