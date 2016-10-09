@@ -45,9 +45,18 @@ Useful in case we need to refresh only this part of the buffer.")
   (expand-file-name "~/.emacs.d/lib/")
   "Path to file contaings all function definitions.")
 
-(defvar org-directory
+(defvar personal-org-directory
   (expand-file-name "~/miscellany/personal/org/")
   "Directory for keeping my org-mode files.")
+
+(defvar work-org-directory
+  (expand-file-name "~/miscellany/work/personal/org/")
+  "Directory for keeping my notes @work.")
+
+(defvar org-extra-files
+  (file-expand-wildcards (expand-file-name "*.org" work-org-directory))
+  "Files to be added for search only in org mode. 
+This is to prevent my personal agenda getting affected by work agenda.")
 
 (defvar emacs-themes-directory
   (expand-file-name "~/.emacs.d/themes/")
@@ -447,7 +456,10 @@ Useful in case we need to refresh only this part of the buffer.")
 (require 'org)
 (require 'org-habit)
 
+(setq org-directory personal-org-directory)
+(setq org-agenda-text-search-extra-files org-extra-files)
 (setq org-agenda-files `(,org-directory))
+
 ;; state logging for org-habit (! => with timestamp) (@ => timestamp + note)
 (setq org-todo-keywords
       '((sequence "TODO" "DONE(!)")))
