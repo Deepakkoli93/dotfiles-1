@@ -22,7 +22,8 @@
 ;;; VARIABLES AND PREFIX COMMANDS
 ;;  ─────────────────────────────────────────────────────────────────
 
-;; Personal prefix maps 
+;; Personal prefix maps
+(require 'bind-key)
 (defvar ctl-period-map)
 (define-prefix-command 'ctl-period-map)
 
@@ -121,7 +122,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;; Personal prefixs
 ;; ctl-period | Convenience is the rule here.
-(global-set-key (kbd "C-.") 'ctl-period-map)
+(bind-key* (kbd "C-.") 'ctl-period-map)
 (global-set-key (kbd "C-. q") 'mylife-add-new-quote)
 (global-set-key (kbd "C-. C-m") 'magit-status)
 (global-set-key (kbd "C-. C-u") 'delete-indentation)
@@ -207,9 +208,9 @@ This is to prevent my personal agenda getting affected by work agenda.")
                     (font-spec :name "Symbola" :size 15)
                     nil 'append))
 (when (find-font (font-spec :name "Monaco"))
-    (set-face-attribute 'default nil
+  (set-face-attribute 'default nil
                       :family "Monaco"
-                      :foundry "apple"
+                      :foundry "APPL"
                       :slant 'normal
                       :weight 'normal
                       :height 98
