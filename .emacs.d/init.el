@@ -1,6 +1,29 @@
-                                            ;;;;;;;;;;;;;;;;;;
-                                            ;; My init.el   ;;
-                                            ;;;;;;;;;;;;;;;;;;
+;;; init.el --- My init.el                           -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2016  Narendra Joshi
+
+;; Author: Narendra Joshi <narendraj9@gmail.com>
+;; Keywords: local
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;;  My Emacs configuration. 
+
+;;; Code:
+
 ;;; The Epoch
 (defconst emacs-start-time (current-time))
 
@@ -123,9 +146,13 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Personal prefixs
 ;; ctl-period | Convenience is the rule here.
 (bind-key* (kbd "C-.") 'ctl-period-map)
-(global-set-key (kbd "C-. q") 'mylife-add-new-quote)
+(global-set-key (kbd "C-. C-.") 'avy-goto-char-timer)
 (global-set-key (kbd "C-. C-m") 'magit-status)
 (global-set-key (kbd "C-. C-u") 'delete-indentation)
+(global-set-key (kbd "C-. q") 'mylife-add-new-quote)
+(global-set-key (kbd "C-. f") 'ispell-word)
+(global-set-key (kbd "C-. C-o") 'goto-address-at-point)
+
 ;; window navigation
 (global-set-key (kbd "C-. C-j") 'windmove-down)
 (global-set-key (kbd "C-. C-k") 'windmove-up)
@@ -145,7 +172,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;; Utilities
 (global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "M-g f") 'avy-goto-char-timer)
 
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
 (global-set-key (kbd "C-c +") 'vicarie/eval-replace-last-sexp)
@@ -756,3 +782,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
   "Does nothing. Says nothing. Displays nothing. That's so it."
   (ignore))
 
+
+(provide 'init)
+;;; init.el ends here
