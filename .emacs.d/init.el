@@ -355,7 +355,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
   (setq company-global-modes '(hledger-mode java-mode))
   (setq company-idle-delay 0.3)
   (global-company-mode)
-  (add-to-list 'company-backends 'company-hledger)
+  (add-to-list 'company-backends 'hledger-company)
   ;; ^ company-hledger should be defined before company mode is used.
   (define-key company-active-map (kbd "C-n") 'company-select-next-or-abort)
   (define-key company-active-map (kbd "C-p") 'company-select-previous-or-abort))
@@ -426,9 +426,13 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (helm-mode 1)
 
 ;;; Personal Finance
-;; ―――――――――――――――――――――――――――――――――――― 
+;; ――――――――――――――――――――――――――――――――――――
 (require 'hledger-mode)
+(add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
 (hledger-enable-reporting)
+(add-hook 'hledger-view-mode-hook (lambda ()
+                                    (hl-line-mode 1)))
+
 
 ;;; ESHELL
 ;;  ─────────────────────────────────────────────────────────────────
