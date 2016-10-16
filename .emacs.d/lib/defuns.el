@@ -35,7 +35,7 @@
 
   ;; And the cursor thinner
   (set-cursor-color "LemonChiffon")
-  
+
   ;; Pretty window divider
   (set-face-background 'vertical-border "peru")
   (set-face-foreground 'vertical-border (face-background 'vertical-border))
@@ -139,7 +139,7 @@ an invalid command name 'sdcv-invalid'. "
     (funcall fallback-function word)))
 
 (defun lookup-word-at-point (dict fallback-function)
-  "Generic helper function for `define-word-at-point' and 
+  "Generic helper function for `define-word-at-point' and
 `show-synonyms-for-word-at-point'."
   (let* ((word (word-at-point)))
     (cond (mark-active
@@ -171,7 +171,7 @@ and sdcv is installed."
 
 (defun trim (s)
   "Removes trailing whitespace."
-  (replace-regexp-in-string 
+  (replace-regexp-in-string
    "[ \t\n]+$"
    ""
    s))
@@ -189,7 +189,7 @@ and `forward-paragraph' because I tend to use then together always."
   (require 'erc-services)
   (require 'tls)
   (erc-services-mode 1)
-  (if (boundp 'my-freenode-nickserv-password) 
+  (if (boundp 'my-freenode-nickserv-password)
       (erc-tls :server "irc.freenode.net"
                :port 6697
                :nick "narendraj9"
@@ -238,7 +238,7 @@ that don't have an associated file."
                      nil
                      ".txt")))
     (write-region (point-min) (point-max) temp-file)
-    temp-file))  
+    temp-file))
 
 (defun upload-file (file-path)
   "Upload a file to transfer.sh using curl. I am thinking that
@@ -284,7 +284,7 @@ a file."
                                             (trim url-link)))
                          (kill-buffer (current-buffer))))))
     (url-retrieve upload-url url-callback)))
-    
+
 (defun org-late-todo (n)
   "Switch todo assuming an old date [n days ago]"
   (interactive "nDays: ")
@@ -293,7 +293,7 @@ a file."
                              delta-time)))
     (letf (((symbol-function 'current-time) (lambda () now)))
       (org-agenda-todo))))
-    
+
 (defun switch-to-minibuffer ()
   "Switch to minibuffer."
   (interactive)
@@ -301,7 +301,7 @@ a file."
     (select-window (active-minibuffer-window))))
 
 (defun read-date (&optional format)
-  "Get date from the user and return it in the format FORMAT. 
+  "Get date from the user and return it in the format FORMAT.
 If format isn't specified it defaults to `%Y %m %d`"
   (format-time-string (if format format "%Y %m %d")
                       (org-time-string-to-time (org-read-date))))
@@ -335,11 +335,10 @@ If format isn't specified it defaults to `%Y %m %d`"
   "Remove whitespaces. "
   (interactive)
   (whitespace-cleanup)
-  (delete-trailing-whitespace)
-  (message "Cleaned up whitespaces!"))
+  (delete-trailing-whitespace))
 
 (defun inhibit-read-only ()
-  "Avoid read-only mode. 
+  "Avoid read-only mode.
 Because eshell is silly and into read-only mode on typing over prompt."
   (interactive)
   (setq inhibit-read-only t))
@@ -364,7 +363,7 @@ Because eshell is silly and into read-only mode on typing over prompt."
   (deactivate-mark))
 
 (defun he-toggle ()
-  "Toggle highlight expression inside selected parens. 
+  "Toggle highlight expression inside selected parens.
 Useful when showing code."
   (interactive)
   (if (equal show-paren-style 'parenthesis)
@@ -438,7 +437,7 @@ Useful when showing code."
     (unless (package-installed-p package)
       (package-install package))))
 
-;;; Defunctional Playground 
+;;; Defunctional Playground
 ;;  ─────────────────────────────────────────────────────────────────
 (defun take-notes ()
   (interactive)
@@ -462,7 +461,7 @@ Useful when showing code."
   "Change focus to window running android studio."
   (interactive)
   (shell-command "wmctrl -a 'Android Studio'"))
- 
+
 (defun post-to-slack (webhook-url text)
   "Post text to the slack webhook-url"
   (let ((url-request-method "POST")
@@ -568,6 +567,14 @@ https://developers.google.com/maps/documentation/geocoding/intro"
                                       (assoc-default 'results response)
                                       "\n"))))))
 
+
+
+(defun unfill-paragraph ()
+  "Unfill paragraph removing hard newlines.
+From Emacs Wiki."
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph)))
 
 (provide 'defuns)
 ;;; defuns.el ends here

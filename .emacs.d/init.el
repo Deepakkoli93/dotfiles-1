@@ -176,6 +176,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (global-set-key (kbd "C-c =") 'vicarie/eval-print-last-sexp)
 (global-set-key (kbd "C-c +") 'vicarie/eval-replace-last-sexp)
 (global-set-key (kbd "C-c q") 'fill-paragraph-and-move-forward)
+(global-set-key (kbd "M-Q") 'unfill-paragraph)
 
 (global-set-key (kbd "C-c D") 'insert-date-at-point)
 (global-set-key (kbd "C-c L") 'linum-mode)
