@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;;  My Emacs configuration. 
+;;  My Emacs configuration.
 
 ;;; Code:
 
@@ -79,7 +79,7 @@ Useful in case we need to refresh only this part of the buffer.")
 
 (defvar org-extra-files
   (file-expand-wildcards (expand-file-name "*.org" work-org-directory))
-  "Files to be added for search only in org mode. 
+  "Files to be added for search only in org mode.
 This is to prevent my personal agenda getting affected by work agenda.")
 
 (defvar emacs-themes-directory
@@ -105,7 +105,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
                     temp-files-directory)
   "Directory for storing emacs desktop session files.")
 
-(defvar personal-dictionary-file 
+(defvar personal-dictionary-file
   (expand-file-name "~/miscellany/assets/personal-dict.en.pws")
   "File to keep words that I think should be a part of my dictionary")
 
@@ -263,6 +263,9 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (setq recentf-max-saved-items 100)
 (recentf-mode 1)
 
+;; Cleanup whitespace before saving files
+(add-hook 'before-save-hook 'cleanup-whitespace)
+
 ;; Save all backup files in a fixed directory
 (setq auto-save-list-file-prefix
       (concat backups-directory "autosaves-"))
@@ -301,7 +304,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Get quick emacs key binding suggestions
 (require 'guide-key)
 (setq guide-key/guide-key-sequence t)
-(guide-key-mode 1) 
+(guide-key-mode 1)
 
 ;; avy
 (require 'avy)
@@ -325,7 +328,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
                              'flyspell-auto-correct-word
                              flyspell-mode-map))))
 (setq ispell-personal-dictionary personal-dictionary-file)
-                                 
+
 ;; Unique buffer names
 (require 'uniquify)
 (setq
@@ -346,7 +349,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (require 'mylife-mode)
 
 ;;; Completion at Point
-;; ――――――――――――――――――――――――――――――――――――  
+;; ――――――――――――――――――――――――――――――――――――
 (cond
  ;; company-mode
  ((and (boundp 'use-companyp)
@@ -391,12 +394,12 @@ This is to prevent my personal agenda getting affected by work agenda.")
   (define-key ac-menu-map "\C-n" 'ac-next)
   (define-key ac-menu-map "\C-p" 'ac-previous)
   (define-key ac-menu-map (kbd "TAB") 'ac-complete))
- 
+
  ;; no-mode
  (t (message "No completion enabled.")))
 
 ;; isearch
-;; Move point to the beginning of match on isearch end 
+;; Move point to the beginning of match on isearch end
 (define-key isearch-mode-map [(control return)]
   #'isearch-exit-other-end)
 
@@ -527,7 +530,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
            "* %?\n "
            :kill-buffer t)
           ("h" "Habit" entry (file+headline "habits.org"  "Habits")
-           ,(concat "* TODO %?\n" 
+           ,(concat "* TODO %?\n"
                     "  SCHEDULED: <%(read-date \"%Y-%m-%d %a\") .+%^{Repeat every|1d|1w|1m|}> \n"
                     "  :PROPERTIES:       \n"
                     "  :STYLE:    habit   \n"
@@ -781,7 +784,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
                                  'mylife-refresh-scratch-buffer)
             (delete-other-windows)))
 
-;; Keep the startup time in the echo area. 
+;; Keep the startup time in the echo area.
 (defun display-startup-echo-area-message ()
   "Does nothing. Says nothing. Displays nothing. That's so it."
   (ignore))
