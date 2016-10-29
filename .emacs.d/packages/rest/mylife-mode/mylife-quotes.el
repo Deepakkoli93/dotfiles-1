@@ -54,9 +54,9 @@
       (split-string
        (buffer-substring-no-properties (point-min) (point-max))
        "\n\n"))))
-  "Quotes from Conal Elliot's website and more. Ignore if an error occurs 
+  "Quotes from Conal Elliot's website and more. Ignore if an error occurs
 while parsing the quotes file"
-  
+
   :group 'mylife-mode
   :type '(repeat string))
 
@@ -77,7 +77,7 @@ while parsing the quotes file"
     (format "“%s”\n%s" quote author-line-string)))
 
 (defun mylife-add-new-quote (quote &optional author)
-  "Adds a new quote to the list of quotes. 
+  "Adds a new quote to the list of quotes.
 Turn mylife-quotes into a variable maintained with `customize-save-variable`."
   (interactive "sQuote: \nsAuthor: ")
   (with-current-buffer (find-file-noselect mylife-personal-quotes-file)
@@ -116,7 +116,7 @@ of the *scratch* buffer with the quote string."
   "Fetches quote of the day from theysaidso.com"
   (interactive)
   (setq qod-result "")
-  (with-current-buffer 
+  (with-current-buffer
       (let ((url-request-method "GET")
             (qod-service-url "http://quotes.rest/qod.json"))
         (url-retrieve (url-generic-parse-url qod-service-url)
@@ -126,7 +126,8 @@ of the *scratch* buffer with the quote string."
   "Recreate and refresh the scracth buffer."
   (interactive)
   (with-current-buffer (get-buffer-create "*scratch*")
-    (let ((here-marker (point-marker))
+    (let ((quote-visible-p (pos-visible-in-window-p (point-min)))
+          (here-marker (point-marker))
           (inhibit-read-only t)
           (content (concat (mylife-random-quote-string)
                            (mylife-get-auroville-quality))))
@@ -140,6 +141,8 @@ of the *scratch* buffer with the quote string."
       (setq emacs-scratch-text-size (point))
       (font-lock-mode 1)
       (goto-char (marker-position here-marker))
+      (when quote-visible-p
+        (set-window-start (selected-window) (point-min)))
       (and pop-to-bufferp (pop-to-buffer "*scratch*")))))
 
 (provide 'mylife-quotes)

@@ -15,7 +15,7 @@
 ;; like to call once in a while.
 
 
-;;; Code: 
+;;; Code:
 
 (add-to-list 'auto-mode-alist '("\\.life\\'" . life-mode))
 
@@ -23,6 +23,7 @@
 (require 'mylife-quotes)
 (require 'mylife-dictionary)
 (require 'mylife-logger)
+(require 'mylife-miscellany)
 
 (defgroup mylife nil
   "Customization group for mylife-mode.")
@@ -51,7 +52,7 @@
   "Character for the time units in futures."
   :type 'character
   :group 'mylife)
-  
+
 
 ;;; Auxiliary functions
 (defun mylife-get-display-buffer ()
@@ -122,7 +123,7 @@
                   誠実
                 Seijitsu
                 Sincerity
-                    
+
 "
 
 "
@@ -200,7 +201,7 @@
     (propertize (nth  (mod index (length qualities)) qualities)
                 'font-lock-face '(:foreground "Sienna" :height 3.0)
                 'rear-nonsticky t)))
-     
+
 
 ;;;###autoload
 (define-derived-mode mylife-mode prog-mode "Mylife" ()
@@ -209,4 +210,3 @@
   (mylife-mode-init))
 
 (provide 'mylife-mode)
-
