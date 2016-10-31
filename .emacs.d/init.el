@@ -289,6 +289,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (setq-default tab-width 4)
 
 ;; Miscellany (maybe)
+(fancy-narrow-mode 1)
 (setq-default indent-tabs-mode nil)
 (setq x-select-enable-clipboard t)
 (setq inhibit-splash-screen t)
