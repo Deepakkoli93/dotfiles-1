@@ -251,6 +251,8 @@ This is to prevent my personal agenda getting affected by work agenda.")
   (setq browse-url-browser-function 'browse-url-chromium))
 
 ;; PDF-tools
+(require 'pdf-view)
+(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
 (add-hook 'pdf-view-mode-hook (lambda ()
                                 (require 'pdf-view)
                                 (unless (ignore-errors (pdf-tools-install) t)
@@ -304,9 +306,8 @@ This is to prevent my personal agenda getting affected by work agenda.")
                         (apply f args))))
 
 ;; Get quick emacs key binding suggestions
-(require 'guide-key)
-(setq guide-key/guide-key-sequence t)
-(guide-key-mode 1)
+(require 'which-key)
+(which-key-mode 1)
 
 ;; avy
 (require 'avy)
