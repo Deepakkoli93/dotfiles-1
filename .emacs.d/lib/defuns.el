@@ -57,6 +57,7 @@
   (setq sml/no-confirm-load-theme t)
   (sml/setup))
 
+
 (defun switch-to-window (direction)
   "Switch to another window with vim like keys."
   (interactive "c")
@@ -66,6 +67,7 @@
     (?k (windmove-up))
     (?l (windmove-right))
     (other (ido-jump-to-window))))
+
 
 (defun ido-jump-to-window ()
   "This is shamelessly copied from the Emacs Wiki.
@@ -95,6 +97,7 @@ I will rewrite it to mak it simpler"
                        (window-list))))
       (select-window (car window-of-buffer)))))
 
+
 (defun toggle-reading-mode ()
   "Set up the current window for reading."
   (interactive)
@@ -120,11 +123,13 @@ I will rewrite it to mak it simpler"
     (set-window-buffer (selected-window) (current-buffer))
     (setq toggle-reading-mode nil)))
 
+
 (defun isearch-exit-other-end ()
   "Exit isearch, at the opposite end of the string."
   (interactive)
   (isearch-exit)
   (goto-char isearch-other-end))
+
 
 (defun lookup-word (word dict fallback-function)
   "Lookup a given WORD in the dictionary DICT or fallback to FALLBACK-FUNCTION.
@@ -137,6 +142,7 @@ an invalid command name 'sdcv-invalid'. "
                           (shell-quote-argument word)
                           " | tail -n +5 ")))
     (funcall fallback-function word)))
+
 
 (defun lookup-word-at-point (dict fallback-function)
   "Generic helper function for `define-word-at-point' and
@@ -152,6 +158,7 @@ an invalid command name 'sdcv-invalid'. "
               dict
               fallback-function)))))
 
+
 (defun define-word-at-point ()
     "Shows the definition of the word at point.
 Assumes that popup.el is already loaded, wordnet dictionary is available
@@ -159,15 +166,18 @@ and sdcv is installed."
     (interactive)
     (lookup-word-at-point "WordNet" 'mylife-define-word))
 
+
 (defun show-synonyms-for-word-at-point ()
   "Shows synonyms similar to `define-word-at-point'"
   (interactive)
   (lookup-word-at-point "Moby Thesaurus II" 'mylife-find-synonyms))
 
+
 (defun enlarge-current-window ()
   "Enlarge the current window by 5 lines."
   (interactive)
   (enlarge-window 5))
+
 
 (defun trim (s)
   "Removes trailing whitespace."
@@ -176,12 +186,14 @@ and sdcv is installed."
    ""
    s))
 
+
 (defun fill-paragraph-and-move-forward ()
     "A simple function that combines `fill-paragraph'
 and `forward-paragraph' because I tend to use then together always."
   (interactive)
   (fill-paragraph)
   (forward-paragraph))
+
 
 (defun erc-connect ()
   "Connect to erc."
@@ -196,6 +208,7 @@ and `forward-paragraph' because I tend to use then together always."
                :password my-freenode-nickserv-password)
     (message "Error: my-freenode-nickserv-password not bound")))
 
+
 (defun slack-connect ()
   "Connect to slack."
   (interactive)
@@ -209,11 +222,13 @@ and `forward-paragraph' because I tend to use then together always."
                :password my-slack-vicarie-password)
     (message "Error: my-slack-vicarie-password not bound")))
 
+
 (defun vicarie/eval-last-sexp-and-do (f)
   "Eval the last sexp and call f on its value"
   (let ((standard-output (current-buffer))
         (value (eval-last-sexp nil)))
     (funcall f value)))
+
 
 (defun vicarie/eval-print-last-sexp ()
     "Evaluate and print the last sexp on the same line."
@@ -221,12 +236,14 @@ and `forward-paragraph' because I tend to use then together always."
   (vicarie/eval-last-sexp-and-do (lambda (value)
                                    (insert (format " (= %s ) " value)))))
 
+
 (defun vicarie/eval-replace-last-sexp ()
   "Evaluate and replace last sexp with its value. "
   (interactive)
   (vicarie/eval-last-sexp-and-do (lambda (value)
                                    (backward-kill-sexp)
                                    (insert (format "%s" value)))))
+
 
 (defun create-file-for-buffer ()
   "Create a temporary file for the current buffer. To be used for buffers
@@ -239,6 +256,7 @@ that don't have an associated file."
                      ".txt")))
     (write-region (point-min) (point-max) temp-file)
     temp-file))
+
 
 (defun upload-file (file-path)
   "Upload a file to transfer.sh using curl. I am thinking that
@@ -255,11 +273,13 @@ and calling `upload-buffer'."
   (message (format "Link copied to clipboard: %s"
                    (trim (current-kill 0)))))
 
+
 (defun upload-buffer ()
   "Upload current buffer to transfer.sh
 This function uses the function `upload-region'."
   (interactive)
   (upload-region (point-min) (point-max)))
+
 
 (defun upload-region (beg end)
   "Upload the contents of the selected region in current buffer
@@ -285,6 +305,7 @@ a file."
                          (kill-buffer (current-buffer))))))
     (url-retrieve upload-url url-callback)))
 
+
 (defun org-late-todo (n)
   "Switch todo assuming an old date [n days ago]"
   (interactive "nDays: ")
@@ -294,17 +315,20 @@ a file."
     (letf (((symbol-function 'current-time) (lambda () now)))
       (org-agenda-todo))))
 
+
 (defun switch-to-minibuffer ()
   "Switch to minibuffer."
   (interactive)
   (when (active-minibuffer-window)
     (select-window (active-minibuffer-window))))
 
+
 (defun read-date (&optional format)
   "Get date from the user and return it in the format FORMAT.
 If format isn't specified it defaults to `%Y %m %d`"
   (format-time-string (if format format "%Y %m %d")
                       (org-time-string-to-time (org-read-date))))
+
 
 (defun make-old-content-read-only ()
   "Only allow for appending new content in the buffer."
@@ -317,7 +341,8 @@ If format isn't specified it defaults to `%Y %m %d`"
                  (end-of-line)
                  (point))))
       (add-text-properties begin end
-                         '(read-only t rear-nonsticky t front-sticky t)))))
+                           '(read-only t rear-nonsticky t front-sticky t)))))
+
 
 ;; Minor mode for enabling rainbow mode everywhere
 (define-globalized-minor-mode global-rainbow-mode rainbow-mode
@@ -325,11 +350,13 @@ If format isn't specified it defaults to `%Y %m %d`"
     (when (not (memq major-mode '(eshell-mode org-agenda-mode erc-mode Info-mode)))
       (rainbow-mode))))
 
+
 (defun kill-buffer-delete-window ()
   "Kill current buffer and delete its window."
   (interactive)
   (kill-buffer (current-buffer))
   (delete-window))
+
 
 (defun cleanup-whitespace ()
   "Remove whitespaces. "
@@ -337,11 +364,13 @@ If format isn't specified it defaults to `%Y %m %d`"
   (whitespace-cleanup)
   (delete-trailing-whitespace))
 
+
 (defun inhibit-read-only ()
   "Avoid read-only mode.
 Because eshell is silly and into read-only mode on typing over prompt."
   (interactive)
   (setq inhibit-read-only t))
+
 
 (defun kill-with-linenum (beg end)
   "Kill region with the line numbers."
@@ -362,6 +391,7 @@ Because eshell is silly and into read-only mode on typing over prompt."
       (kill-new chunk)))
   (deactivate-mark))
 
+
 (defun he-toggle ()
   "Toggle highlight expression inside selected parens.
 Useful when showing code."
@@ -369,6 +399,7 @@ Useful when showing code."
   (if (equal show-paren-style 'parenthesis)
       (setq show-paren-style 'expression)
     (setq show-paren-style 'parenthesis)))
+
 
 (defun kill-other-buffers ()
   "Kill all buffers except the current one and the erc buffers."
@@ -382,10 +413,12 @@ Useful when showing code."
               (kill-buffer buffer)))
           (buffer-list))))
 
+
 (defun yank-to-x-clipboard (&optional region-beg region-end)
   "Yank selected text to X clipboard. Use when on console."
   (interactive "r")
   (shell-command-on-region region-beg region-end "xclip -i -selec clip"))
+
 
 (defun blog-post (file)
   "Start a post in the blog-dir directory"
@@ -394,10 +427,12 @@ Useful when showing code."
   (find-file file)
   (yas-expand "post"))
 
+
 (defun insert-date-at-point ()
   "Insert current date at the current position of point."
   (interactive)
   (insert (format-time-string "%Y-%m-%d")))
+
 
 (defun notify (msg &optional font-size duration)
   "Notify me with a msg. Requires that dzen is installed."
@@ -407,9 +442,11 @@ Useful when showing code."
                                        (or font-size 50)
                                        (or duration 10))))
 
+
 ;; Setup an emacs window into 70-30% horizontally.
 (fset 'split-thirty-seventy
       "\C-x2\C-u4\C-x^\C-u4\C-x^")
+
 
 (defun split-and-shell ()
   "Split the buffer vertically and shart shell in one of the windows."
@@ -417,6 +454,7 @@ Useful when showing code."
   (execute-kbd-macro (symbol-function 'split-thirty-seventy))
   (other-window 1)
   (eshell))
+
 
 (defun package-install-missing-packages ()
   "Function for installing missing packages."
@@ -437,6 +475,7 @@ Useful when showing code."
     (unless (package-installed-p package)
       (package-install package))))
 
+
 ;;; Defunctional Playground
 ;;  ─────────────────────────────────────────────────────────────────
 (defun take-notes ()
@@ -445,6 +484,7 @@ Useful when showing code."
   (find-file (expand-file-name "notes.org" org-directory))
   (goto-char (point-max)))
 
+
 (defun snap-it-to-file ()
   "Take a screenshot of emacs and return the file path."
   (make-directory "/tmp/screenshots/" t)
@@ -452,15 +492,18 @@ Useful when showing code."
     (shell-command-to-string
      "scrot -u -e 'echo -n /tmp/screenshots/$f'")))
 
+
 (defun snap-it ()
   "Take a screenshot and upload it to transfer.sh"
   (interactive)
   (upload-file (snap-it-to-file)))
 
+
 (defun go-back-to-intellij ()
   "Change focus to window running android studio."
   (interactive)
   (shell-command "wmctrl -a 'Android Studio'"))
+
 
 (defun post-to-slack (webhook-url text)
   "Post text to the slack webhook-url"
@@ -476,6 +519,7 @@ Useful when showing code."
                            (kill-buffer (current-buffer))))))
     (url-retrieve webhook-url url-callback)))
 
+
 (defun post-region-to-slack-cooking (beg end)
   "Post region to one of my slack channels."
   (interactive "r")
@@ -484,6 +528,7 @@ Useful when showing code."
                      (buffer-substring beg end))
     (message "`my-slack-vicarie-cooking-webhook` not bound to the webhook url")))
 
+
 (defun screenshot-frame (window-id)
   "Take a screenshot of 400x200 pixels of the Emacs frame.
 Taken from Chris Done's config"
@@ -491,6 +536,7 @@ Taken from Chris Done's config"
    (concat "import -window "
            (shell-quote-argument window-id)
            " +repage /tmp/frames/`date +%s`.png")))
+
 
 (defun start-recording-window ()
   "Record screenshots of the window and prepare a gif."
@@ -568,13 +614,68 @@ https://developers.google.com/maps/documentation/geocoding/intro"
                                       "\n"))))))
 
 
-
 (defun unfill-paragraph ()
   "Unfill paragraph removing hard newlines.
 From Emacs Wiki."
   (interactive)
   (let ((fill-column (point-max)))
     (fill-paragraph)))
+
+
+(defun toggle-window-split ()
+  "Toggle between horizontal and vertical splits.
+This has been taken from http://whattheemacsd.com/."
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
+
+
+(defun rotate-windows ()
+  "Rotate your windows.
+This has been taken from http://whattheemacsd.com/."
+  (interactive)
+  (cond ((not (> (count-windows)1))
+         (message "You can't rotate a single window!"))
+        (t
+         (setq i 1)
+         (setq numWindows (count-windows))
+         (while  (< i numWindows)
+           (let* (
+                  (w1 (elt (window-list) i))
+                  (w2 (elt (window-list) (+ (% i numWindows) 1)))
+
+                  (b1 (window-buffer w1))
+                  (b2 (window-buffer w2))
+
+                  (s1 (window-start w1))
+                  (s2 (window-start w2))
+                  )
+             (set-window-buffer w1  b2)
+             (set-window-buffer w2 b1)
+             (set-window-start w1 s2)
+             (set-window-start w2 s1)
+             (setq i (1+ i)))))))
+
 
 (provide 'defuns)
 ;;; defuns.el ends here
