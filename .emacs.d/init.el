@@ -510,7 +510,8 @@ This is to prevent my personal agenda getting affected by work agenda.")
       org-habit-graph-column 50)
 
 ;; org-agenda
-(setq org-agenda-sticky t
+(setq org-agenda-span 1
+      org-agenda-sticky t
       org-agenda-skip-scheduled-if-deadline-is-shown t
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
