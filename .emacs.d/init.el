@@ -148,10 +148,11 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (bind-key* (kbd "C-.") 'ctl-period-map)
 (global-set-key (kbd "C-. C-.") 'avy-goto-char-timer)
 (global-set-key (kbd "C-. C-m") 'magit-status)
+(global-set-key (kbd "C-. C-o") 'goto-address-at-point)
 (global-set-key (kbd "C-. C-u") 'delete-indentation)
 (global-set-key (kbd "C-. q") 'mylife-add-new-quote)
 (global-set-key (kbd "C-. f") 'ispell-word)
-(global-set-key (kbd "C-. C-o") 'goto-address-at-point)
+(global-set-key (kbd "C-. s") 'surround-symbol-with)
 
 ;; window navigation
 (global-set-key (kbd "C-. C-j") 'windmove-down)

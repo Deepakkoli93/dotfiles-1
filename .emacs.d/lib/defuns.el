@@ -677,5 +677,20 @@ This has been taken from http://whattheemacsd.com/."
              (setq i (1+ i)))))))
 
 
+(defun surround-symbol-with (s)
+  "Surround the symbol at point with string S.
+This works with any mode that supports thingatpt.el for a symbol."
+  (interactive "sWrapper string: ")
+  (let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (when bounds
+      (save-excursion
+        ;; Insert the second delimiter first to avoid changing the
+        ;; starting bound.
+        (goto-char (cdr bounds))
+        (insert s)
+        ;; Now the first delimiter
+        (goto-char (car bounds))
+        (insert s)))))
+
 (provide 'defuns)
 ;;; defuns.el ends here
