@@ -227,7 +227,111 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Prefer newer lisp files.
 (setq load-prefer-new t)
 
-;; Encoding and default font settings
+;; yes-or-no
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; Make chromium the default browser if it is installed
+(when (executable-find "chromium")
+  (setq browse-url-browser-function 'browse-url-chromium))
+
+;; Cleanup whitespace before saving files
+(add-hook 'before-save-hook 'cleanup-whitespace)
+
+;; Enable disabled commands
+(put 'narrow-to-region 'disabled nil)
+
+;; General settings
+(show-paren-mode 1)
+(setq show-paren-style 'parenthesis)
+(setq show-paren-delay 0)
+
+(setq column-number-mode t)
+(setq-default tab-width 4)
+
+;; Miscellany (maybe)
+(require 'fancy-narrow)
+(fancy-narrow-mode 1)
+
+(setq-default indent-tabs-mode nil)
+(setq x-select-enable-clipboard t)
+(setq inhibit-splash-screen t)
+
+;; Get quick emacs key binding suggestions
+(require 'which-key)
+(which-key-mode 1)
+
+;; Line numbers for rows
+(global-linum-mode 0)
+(setq linum-format "%2d│")
+(set-face-attribute 'linum nil
+                    :background "black"
+                    :foreground "steel blue")
+
+;; Unique buffer names
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward
+      uniquify-separator " • ")
+
+
+;;; NAVIGATION
+;; ――――――――――――――――――――――――――――――――――――――――
+;; Move point to the beginning of match on isearch end
+(require 'avy)
+
+(define-key isearch-mode-map [(control return)]
+  #'isearch-exit-other-end)
+
+;; I think I will mostly want the pointer to go to the end with M-r
+;; And then I would do a M-l to re-center it. Since both of them use
+;; `recenter-positions'. I am using advices.
+(setq recenter-positions '(bottom top middle))
+(advice-add 'recenter-top-bottom
+            :around (lambda (f &rest args)
+                      (let ((recenter-positions '(middle top bottom)))
+                        (apply f args))))
+
+
+;; RECENT FILES
+;; ――――――――――――――――――――――――――――――――――――――――
+(add-hook 'recentf-dialog-mode-hook 'utils-easy-move-mode)
+(setq recentf-auto-cleanup 'never)
+(setq recentf-keep '(file-remote-p file-readable-p))
+(setq recentf-max-saved-items 100)
+(recentf-mode 1)
+
+
+;;; BACKUPS
+;; ――――――――――――――――――――――――――――――――――――――――
+(setq auto-save-list-file-prefix
+      (concat backups-directory "autosaves-"))
+(setq backup-directory-alist
+      `((".*" . ,backups-directory)
+        backup-by-copying t
+        version-control t
+        delete-old-versions t
+        kept-new-versions 5
+        kept-old-versions 5))
+(setq auto-save-file-name-transforms
+      `((".*" ,backups-directory t)))
+
+
+;;; SPELL-CHECKING
+;; ――――――――――――――――――――――――――――――――――――――――
+(dolist (hook '(markdown-mode-hook
+                latex-mode-hook
+                org-mode-hook
+                hledger-mode-hook))
+  (add-hook hook (lambda ()
+                   (flyspell-mode 1)
+                   (unbind-key "C-." flyspell-mode-map)
+                   (bind-key "C-. C-."
+                             'flyspell-auto-correct-word
+                             flyspell-mode-map))))
+(setq ispell-personal-dictionary personal-dictionary-file)
+
+
+;;; FONTS and ENCODING
+;; ――――――――――――――――――――――――――――――――――――――――
 (prefer-coding-system 'utf-8)
 (when (find-font (font-spec :name "Symbola"))
   (set-fontset-font "fontset-default" nil
@@ -242,115 +346,14 @@ This is to prevent my personal agenda getting affected by work agenda.")
                       :height 98
                       :width 'normal))
 
-;; yes-or-no
-(defalias 'yes-or-no-p 'y-or-n-p)
 
-;; Make chromium the default browser if it is installed
-(when (executable-find "chromium")
-  (setq browse-url-browser-function 'browse-url-chromium))
-
-;; PDF-tools
-(require 'pdf-view)
-(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
-(add-hook 'pdf-view-mode-hook (lambda ()
-                                (unless (ignore-errors (pdf-tools-install) t)
-                                  (message "Warning: pdf-tools failed to install."))
-                                (utils-easy-move-mode)))
-
-;; Recent files menu | remote files mess things up
-(add-hook 'recentf-dialog-mode-hook 'utils-easy-move-mode)
-(setq recentf-auto-cleanup 'never)
-(setq recentf-keep '(file-remote-p file-readable-p))
-(setq recentf-max-saved-items 100)
-(recentf-mode 1)
-
-;; Cleanup whitespace before saving files
-(add-hook 'before-save-hook 'cleanup-whitespace)
-
-;; Save all backup files in a fixed directory
-(setq auto-save-list-file-prefix
-      (concat backups-directory "autosaves-"))
-(setq backup-directory-alist
-      `((".*" . ,backups-directory)
-        backup-by-copying t
-        version-control t
-        delete-old-versions t
-        kept-new-versions 5
-        kept-old-versions 5))
-(setq auto-save-file-name-transforms
-      `((".*" ,backups-directory t)))
-
-;; General settings
-(show-paren-mode 1)
-(setq show-paren-style 'parenthesis)
-(setq show-paren-delay 0)
-
-(setq column-number-mode t)
-(setq-default tab-width 4)
-
-;; Miscellany (maybe)
-(fancy-narrow-mode 1)
-(setq-default indent-tabs-mode nil)
-(setq x-select-enable-clipboard t)
-(setq inhibit-splash-screen t)
-
-;; I think I will mostly want the pointer to go to the end with M-r
-;; And then I would do a M-l to re-center it. Since both of them use
-;; `recenter-positions'. I am using advices.
-(setq recenter-positions '(bottom top middle))
-(advice-add 'recenter-top-bottom
-            :around (lambda (f &rest args)
-                      (let ((recenter-positions '(middle top bottom)))
-                        (apply f args))))
-
-;; Get quick emacs key binding suggestions
-(require 'which-key)
-(which-key-mode 1)
-
-;; avy
-(require 'avy)
-
-;; Line numbers for rows
-(global-linum-mode 0)
-(setq linum-format "%2d│")
-(set-face-attribute 'linum nil
-                    :background "black"
-                    :foreground "steel blue")
-
-;; Spell-checking
-(dolist (hook '(markdown-mode-hook
-                latex-mode-hook
-                org-mode-hook
-                hledger-mode-hook))
-  (add-hook hook (lambda ()
-                   (flyspell-mode 1)
-                   (unbind-key "C-." flyspell-mode-map)
-                   (bind-key "C-. C-."
-                             'flyspell-auto-correct-word
-                             flyspell-mode-map))))
-(setq ispell-personal-dictionary personal-dictionary-file)
-
-;; Unique buffer names
-(require 'uniquify)
-(setq
- uniquify-buffer-name-style 'post-forward
- uniquify-separator " • ")
-
-;; abbrev-mode
-(setq save-abbrevs nil)
-(setq-default abbrev-mode t)
-(setq abbrev-file-name abbrev-file)
-(if (file-exists-p abbrev-file-name)
-    (quietly-read-abbrev-file))
-
-;; Enable disabled commands
-(put 'narrow-to-region 'disabled nil)
-
-;; mylife-mode
+;;; MYLIFE-MODE
+;; ――――――――――――――――――――――――――――――――――――――――
 (require 'mylife-mode)
 
+
 ;;; Completion at Point
-;; ――――――――――――――――――――――――――――――――――――
+;; ――――――――――――――――――――――――――――――――――――――――
 (cond
  ;; company-mode
  ((and (boundp 'use-companyp)
@@ -399,15 +402,33 @@ This is to prevent my personal agenda getting affected by work agenda.")
  ;; no-mode
  (t (message "No completion enabled.")))
 
-;; isearch
-;; Move point to the beginning of match on isearch end
-(define-key isearch-mode-map [(control return)]
-  #'isearch-exit-other-end)
-
-;; yasnippet
+;;; SNIPPETS and ABBREVS
+;; ――――――――――――――――――――――――――――――――――――――――
 (require 'yasnippet)
 (setq yas-snippet-dirs (expand-file-name "snippets/" user-emacs-directory))
 (yas-global-mode 1)
+
+(setq save-abbrevs nil)
+(setq-default abbrev-mode t)
+(setq abbrev-file-name abbrev-file)
+(if (file-exists-p abbrev-file-name)
+    (quietly-read-abbrev-file))
+
+
+;;; PDF-TOOLS
+;; ――――――――――――――――――――――――――――――――――――――――
+(require 'pdf-view)
+(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
+(add-hook 'pdf-view-mode-hook (lambda ()
+                                (unless (ignore-errors (pdf-tools-install) t)
+                                  (message "Warning: pdf-tools failed to install."))
+                                (utils-easy-move-mode)))
+
+;; HELM
+(require 'helm-config)
+;; To ignore warnings about redefinitions
+(setq ad-redefinition-action 'accept)
+(helm-mode 1)
 
 ;; IDO
 ;; show completions vertically
@@ -422,12 +443,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*"
                            ".*irc\.slack\.com.*" "\\*helm.*"))
 (ido-mode 1)
-
-;; helm
-(require 'helm-config)
-;; To ignore warnings about redefinitions
-(setq ad-redefinition-action 'accept)
-(helm-mode 1)
 
 ;;; Personal Finance
 ;; ――――――――――――――――――――――――――――――――――――
