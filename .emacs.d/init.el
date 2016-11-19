@@ -442,6 +442,18 @@ This is to prevent my personal agenda getting affected by work agenda.")
                                     (hl-line-mode 1)))
 
 
+;;; Programming in general
+;; ――――――――――――――――――――――――――――――――――――
+(require 'flycheck)
+(setq flycheck-global-modes '(clojure-mode
+                              emacs-lisp-mode
+                              haskell-mode
+                              c-mode))
+(add-hook 'after-init-hook
+          (lambda ()
+            (global-flycheck-mode 1)))
+
+
 ;;; ESHELL
 ;;  ─────────────────────────────────────────────────────────────────
 (defmacro with-face (str &rest properties)
