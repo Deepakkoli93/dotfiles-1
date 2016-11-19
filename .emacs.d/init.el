@@ -141,7 +141,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (global-set-key (kbd "C-<return>") 'other-window)
 
 ;; Personal prefixs
-;; ctl-period | Convenience is the rule here.
+;; ctl-period | Convenience is the ~rule~ here.
 (bind-key* (kbd "C-.") 'ctl-period-map)
 (global-set-key (kbd "C-. C-.") 'avy-goto-char-timer)
 (global-set-key (kbd "C-. C-m") 'magit-status)
@@ -253,10 +253,9 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (require 'pdf-view)
 (add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
 (add-hook 'pdf-view-mode-hook (lambda ()
-                                (require 'pdf-view)
                                 (unless (ignore-errors (pdf-tools-install) t)
-                                  (message "Warning: pdf-tools failed to install.")
-                                  (utils-easy-move-mode))))
+                                  (message "Warning: pdf-tools failed to install."))
+                                (utils-easy-move-mode)))
 
 ;; Recent files menu | remote files mess things up
 (add-hook 'recentf-dialog-mode-hook 'utils-easy-move-mode)
@@ -434,8 +433,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; ――――――――――――――――――――――――――――――――――――
 (require 'hledger-mode)
 (add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
-
-(hledger-enable-reporting)
 
 (when (boundp 'my-hledger-service-fetch-url)
   (setq hledger-service-fetch-url
