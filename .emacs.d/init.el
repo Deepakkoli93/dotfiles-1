@@ -71,7 +71,7 @@ Useful in case we need to refresh only this part of the buffer.")
 
 (defvar personal-org-directory
   (expand-file-name "~/miscellany/personal/org/")
-  "Directory for keeping my org-mode files.")
+  "Directory for keeping my `org-mode' files.")
 
 (defvar work-org-directory
   (expand-file-name "~/miscellany/work/personal/org/")
@@ -84,12 +84,12 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 (defvar emacs-themes-directory
   (expand-file-name "~/.emacs.d/themes/")
-  "Directory containing emacs custom themes.")
+  "Directory containing Emacs custom themes.")
 
 (defvar abbrev-file
   (expand-file-name "abbrev_defs"
                     emacs-lib-directory)
-  "File to keep abbrev definitions. ")
+  "File to keep abbrev definitions.")
 
 (defvar temp-files-directory
   (concat user-emacs-directory "tmp/")
@@ -98,16 +98,16 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (defvar backups-directory
   (expand-file-name "backups/"
                     temp-files-directory)
-  "Backups everywhere isn't cool. Keep all of them in this directory.")
+  "Backups everywhere isn't cool.  Keep all of them in this directory.")
 
 (defvar desktops-directory
   (expand-file-name "desktops/"
                     temp-files-directory)
-  "Directory for storing emacs desktop session files.")
+  "Directory for storing Emacs desktop session files.")
 
 (defvar personal-dictionary-file
   (expand-file-name "~/miscellany/assets/personal-dict.en.pws")
-  "File to keep words that I think should be a part of my dictionary")
+  "File to keep words that I think should be a part of my dictionary.")
 
 ;; Blog
 (defvar blog-dir
@@ -117,9 +117,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Hledger
 (defvar hledger-jfile
       (expand-file-name "~/miscellany/personal/finance/accounting.journal"))
-(when (boundp 'my-hledger-service-fetch-url)
-  (setq hledger-service-fetch-url
-        my-hledger-service-fetch-url))
 
 (defvar toggle-reading-mode nil
   "Buffer local variable to keep track of reading mode state.")
@@ -437,7 +434,13 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; ――――――――――――――――――――――――――――――――――――
 (require 'hledger-mode)
 (add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
+
 (hledger-enable-reporting)
+
+(when (boundp 'my-hledger-service-fetch-url)
+  (setq hledger-service-fetch-url
+        my-hledger-service-fetch-url))
+
 (add-hook 'hledger-view-mode-hook (lambda ()
                                     (hl-line-mode 1)))
 
@@ -456,8 +459,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;;; ESHELL
 ;;  ─────────────────────────────────────────────────────────────────
-(defmacro with-face (str &rest properties)
-  `(propertize ,str 'face (list ,@properties)))
 ;; Ignore consecutive duplicates in eshell history
 (setq eshell-hist-ignoredups t)
 ;; Don't cycle through possible completions
@@ -601,7 +602,8 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;; Imported from linux/Documentation/CodingStyle
 (defun c-lineup-arglist-tabs-only (ignored)
-  "Line up argument lists by tabs, not spaces"
+  "Line up argument lists by tabs, not spaces.
+Argument IGNORED is just ignored."
   (let* ((anchor (c-langelem-pos c-syntactic-element))
          (column (c-langelem-2nd-pos c-syntactic-element))
          (offset (- (1+ column) anchor))
@@ -801,11 +803,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
                                  t
                                  'mylife-refresh-scratch-buffer)
             (delete-other-windows)))
-
-;; Keep the startup time in the echo area.
-(defun display-startup-echo-area-message ()
-  "Does nothing. Says nothing. Displays nothing. That's so it."
-  (ignore))
 
 
 (provide 'init)

@@ -26,8 +26,8 @@
 ;;; Code:
 
 (defun set-appearance ()
+  "Set up the appearance of Emacs."
   (interactive)
-  "Set up the appearance of emacs."
   ;; Make the window simpler.
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
@@ -57,9 +57,13 @@
   (setq sml/no-confirm-load-theme t)
   (sml/setup))
 
+(defmacro with-face (str &rest properties)
+  "Propertize string STR with PROPERTIES."
+  `(propertize ,str 'face (list ,@properties)))
 
 (defun switch-to-window (direction)
-  "Switch to another window with vim like keys."
+  "Switch to another window with vim like keys.
+Argument DIRECTION decides the direction of switch."
   (interactive "c")
   (pcase direction
     (?h (windmove-left))
@@ -134,7 +138,7 @@ I will rewrite it to mak it simpler"
 (defun lookup-word (word dict fallback-function)
   "Lookup a given WORD in the dictionary DICT or fallback to FALLBACK-FUNCTION.
 Currently I think the online dictionary is more useful so I have
-an invalid command name 'sdcv-invalid'. "
+an invalid command name 'sdcv-invalid'."
   (if  (executable-find "sdcv-invalid")
       (popup-tip (shell-command-to-string
                   (format "sdcv -nu \"%s\" %s %s"
@@ -145,8 +149,10 @@ an invalid command name 'sdcv-invalid'. "
 
 
 (defun lookup-word-at-point (dict fallback-function)
-  "Generic helper function for `define-word-at-point' and
-`show-synonyms-for-word-at-point'."
+  "Generic helper function for `define-word-at-point'.
+See also `show-synonyms-for-word-at-point'.
+Argument DICT is the name of dictionary.
+Argument FALLBACK-FUNCTION is used when DICT fails."
   (let* ((word (word-at-point)))
     (cond (mark-active
            (lookup-word (buffer-substring (mark) (point)) dict fallback-function))
@@ -160,7 +166,7 @@ an invalid command name 'sdcv-invalid'. "
 
 
 (defun define-word-at-point ()
-    "Shows the definition of the word at point.
+    "Show the definition of the word at point.
 Assumes that popup.el is already loaded, wordnet dictionary is available
 and sdcv is installed."
     (interactive)
@@ -168,7 +174,7 @@ and sdcv is installed."
 
 
 (defun show-synonyms-for-word-at-point ()
-  "Shows synonyms similar to `define-word-at-point'"
+  "Show synonyms similar to `define-word-at-point'."
   (interactive)
   (lookup-word-at-point "Moby Thesaurus II" 'mylife-find-synonyms))
 
@@ -180,7 +186,7 @@ and sdcv is installed."
 
 
 (defun trim (s)
-  "Removes trailing whitespace."
+  "Remove trailing whitespace from string S."
   (replace-regexp-in-string
    "[ \t\n]+$"
    ""
@@ -188,8 +194,8 @@ and sdcv is installed."
 
 
 (defun fill-paragraph-and-move-forward ()
-    "A simple function that combines `fill-paragraph'
-and `forward-paragraph' because I tend to use then together always."
+    "Combine `fill-paragraph'and `forward-paragraph'.
+I tend to use then together always."
   (interactive)
   (fill-paragraph)
   (forward-paragraph))
@@ -224,7 +230,7 @@ and `forward-paragraph' because I tend to use then together always."
 
 
 (defun vicarie/eval-last-sexp-and-do (f)
-  "Eval the last sexp and call f on its value"
+  "Eval the last sexp and call F on its value."
   (let ((standard-output (current-buffer))
         (value (eval-last-sexp nil)))
     (funcall f value)))
@@ -238,7 +244,7 @@ and `forward-paragraph' because I tend to use then together always."
 
 
 (defun vicarie/eval-replace-last-sexp ()
-  "Evaluate and replace last sexp with its value. "
+  "Evaluate and replace last sexp with its value."
   (interactive)
   (vicarie/eval-last-sexp-and-do (lambda (value)
                                    (backward-kill-sexp)
@@ -246,8 +252,8 @@ and `forward-paragraph' because I tend to use then together always."
 
 
 (defun create-file-for-buffer ()
-  "Create a temporary file for the current buffer. To be used for buffers
-that don't have an associated file."
+  "Create a temporary file for the current buffer.
+To be used for buffers that don't have an associated file."
   (let* ((temp-file (make-temp-file
                      (replace-regexp-in-string "\*"
                                                ""
@@ -259,9 +265,11 @@ that don't have an associated file."
 
 
 (defun upload-file (file-path)
-  "Upload a file to transfer.sh using curl. I am thinking that
+  "Upload a file to transfer.sh using curl.
+I am thinking that
 using curl is more efficient for binary files than using a buffer
-and calling `upload-buffer'."
+and calling `upload-buffer'.
+Argument FILE-PATH is the path to file."
   (interactive "fFile: ")
   (kill-new (shell-command-to-string
              (format "%s %s %s%s"
@@ -275,17 +283,19 @@ and calling `upload-buffer'."
 
 
 (defun upload-buffer ()
-  "Upload current buffer to transfer.sh
+  "Upload current buffer to transfer.sh.
 This function uses the function `upload-region'."
   (interactive)
   (upload-region (point-min) (point-max)))
 
 
 (defun upload-region (beg end)
-  "Upload the contents of the selected region in current buffer
-using transfer.sh Link to the uploaded file is copied to
-clipboard. Creates a temp file if the buffer isn't associted with
-a file."
+  "Upload the contents of the selected region in current buffer.
+It uses transfer.sh Link to the uploaded file is copied to
+clipboard.  Creates a temp file if the buffer isn't associted with
+a file.
+Argument BEG beginning point for region.
+Argument END ending point for region."
   (interactive "r")
   (let* ((buf-file-path (buffer-file-name))
          (file-path (or buf-file-path
@@ -307,7 +317,7 @@ a file."
 
 
 (defun org-late-todo (n)
-  "Switch todo assuming an old date [n days ago]"
+  "Switch todo assuming an old date [N days ago]."
   (interactive "nDays: ")
   (let* ((delta-time (days-to-time n))
          (now (time-subtract (current-time)
@@ -359,7 +369,7 @@ If format isn't specified it defaults to `%Y %m %d`"
 
 
 (defun cleanup-whitespace ()
-  "Remove whitespaces. "
+  "Remove whitespaces."
   (interactive)
   (whitespace-cleanup)
   (delete-trailing-whitespace))
@@ -373,7 +383,7 @@ Because eshell is silly and into read-only mode on typing over prompt."
 
 
 (defun kill-with-linenum (beg end)
-  "Kill region with the line numbers."
+  "Kill region (BEG, END) with line numbers."
   (interactive "r")
   (save-excursion
     (goto-char end)
@@ -415,13 +425,14 @@ Useful when showing code."
 
 
 (defun yank-to-x-clipboard (&optional region-beg region-end)
-  "Yank selected text to X clipboard. Use when on console."
+  "Yank selected text in (REGION-BEG, REGION-END) to X clipboard.
+Use when on console."
   (interactive "r")
   (shell-command-on-region region-beg region-end "xclip -i -selec clip"))
 
 
 (defun blog-post (file)
-  "Start a post in the blog-dir directory"
+  "Start a post FILE in the ‘blog-dir’ directory."
   (interactive (list (let ((default-directory blog-posts-dir))
                        (read-file-name "Filename: "))))
   (find-file file)
@@ -435,7 +446,8 @@ Useful when showing code."
 
 
 (defun notify (msg &optional font-size duration)
-  "Notify me with a msg. Requires that dzen is installed."
+  "Notify me with a MSG of size FONT-SIZE for DURATION seconds.
+Requires that dzen is installed."
   (start-process-shell-command "dzen" nil
                                (format "echo %s | dzen2 -l 200 -fn 'Comic Sans MS:size=%s' -p %s"
                                        (shell-quote-argument msg)
@@ -479,6 +491,7 @@ Useful when showing code."
 ;;; Defunctional Playground
 ;;  ─────────────────────────────────────────────────────────────────
 (defun take-notes ()
+  "Open notes file."
   (interactive)
   "Quick go to the notes file. "
   (find-file (expand-file-name "notes.org" org-directory))
@@ -486,7 +499,7 @@ Useful when showing code."
 
 
 (defun snap-it-to-file ()
-  "Take a screenshot of emacs and return the file path."
+  "Take a screenshot of Emacs and return the file path."
   (make-directory "/tmp/screenshots/" t)
   (let ((default-directory "/tmp/screenshots/"))
     (shell-command-to-string
@@ -494,7 +507,7 @@ Useful when showing code."
 
 
 (defun snap-it ()
-  "Take a screenshot and upload it to transfer.sh"
+  "Take a screenshot and upload it to transfer.sh."
   (interactive)
   (upload-file (snap-it-to-file)))
 
@@ -506,7 +519,7 @@ Useful when showing code."
 
 
 (defun post-to-slack (webhook-url text)
-  "Post text to the slack webhook-url"
+  "Post to the slack WEBHOOK-URL contents of TEXT."
   (let ((url-request-method "POST")
         (url-request-data (json-encode `(:text ,text)))
         (url-request-extra-header '(("Content-Type" . "application/json")))
@@ -521,7 +534,7 @@ Useful when showing code."
 
 
 (defun post-region-to-slack-cooking (beg end)
-  "Post region to one of my slack channels."
+  "Post region (BEG, END) to one of my slack channels."
   (interactive "r")
   (if (boundp 'my-slack-vicarie-cooking-webhook)
       (post-to-slack my-slack-vicarie-cooking-webhook
@@ -530,7 +543,7 @@ Useful when showing code."
 
 
 (defun screenshot-frame (window-id)
-  "Take a screenshot of 400x200 pixels of the Emacs frame.
+  "Take a screenshot of 400x200 pixels window with WINDOW-ID.
 Taken from Chris Done's config"
   (shell-command-to-string
    (concat "import -window "
@@ -569,9 +582,9 @@ Taken from Chris Done's config"
 
 (defun fetch-parse-and-do (url parser action)
   "Helper function for all network related things.
-Fetches the url. Changes the current buffer to the response
-buffer.  Calls the parser on the buffer starting at the beginning
-of the HTTP response in the response buffer.  Calls action on the
+Fetches the URL.  Changes the current buffer to the response
+buffer.  Calls the PARSER on the buffer starting at the beginning
+of the HTTP response in the response buffer.  Calls ACTION on the
 value returned by the parser function."
   (let ((url-request-method "GET")
         (url-callback `(lambda (status)
@@ -678,7 +691,7 @@ This has been taken from http://whattheemacsd.com/."
 
 
 (defun surround-symbol-with (c)
-  "Surround the symbol at point with string S.
+  "Surround the symbol at point with string C.
 This works with any mode that supports thingatpt.el for a symbol."
   (interactive "cWrapper char: ")
   (let ((bounds (bounds-of-thing-at-point 'symbol))
