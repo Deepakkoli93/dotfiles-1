@@ -706,5 +706,14 @@ This works with any mode that supports thingatpt.el for a symbol."
         (goto-char (car bounds))
         (insert s)))))
 
+
+(defun out-or-onto-calc ()
+  "Jump to the calc buffer or the editing buffer."
+  (interactive)
+  (if (eq major-mode 'calc-mode)
+      (calc-other-window)
+    (calc)))
+
+
 (provide 'defuns)
 ;;; defuns.el ends here

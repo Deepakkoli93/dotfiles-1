@@ -10,6 +10,7 @@
 !.emacs.d/lib/
 .emacs.d/packages/elpa/gnupg/
 .emacs.d/packages/elpa/archives/
+epdfinfo
 
 .yas-compiled-snippets.el
 

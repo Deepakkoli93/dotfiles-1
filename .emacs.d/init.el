@@ -138,15 +138,18 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Keeping things in reach!
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c m") 'switch-to-minibuffer)
-(global-set-key (kbd "C-<return>") 'other-window)
+(bind-key* (kbd "C-<return>") 'other-window)
 
 ;; Personal prefixs
 ;; ctl-period | Convenience is the ~rule~ here.
 (bind-key* (kbd "C-.") 'ctl-period-map)
 (global-set-key (kbd "C-. C-.") 'avy-goto-char-timer)
 (global-set-key (kbd "C-. C-m") 'magit-status)
+(global-set-key (kbd "C-. C-n") 'forward-paragraph)
 (global-set-key (kbd "C-. C-o") 'goto-address-at-point)
+(global-set-key (kbd "C-. C-p") 'backward-paragraph)
 (global-set-key (kbd "C-. C-u") 'delete-indentation)
+(global-set-key (kbd "C-. c") 'out-or-onto-calc)
 (global-set-key (kbd "C-. q") 'mylife-add-new-quote)
 (global-set-key (kbd "C-. f") 'ispell-word)
 (global-set-key (kbd "C-. s") 'surround-symbol-with)
