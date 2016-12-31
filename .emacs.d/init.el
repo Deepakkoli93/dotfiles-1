@@ -144,6 +144,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; ctl-period | Convenience is the ~rule~ here.
 (bind-key* (kbd "C-.") 'ctl-period-map)
 (global-set-key (kbd "C-. C-.") 'avy-goto-char-timer)
+(global-set-key (kbd "C-. d") 'duplicate-current-line)
 (global-set-key (kbd "C-. C-m") 'magit-status)
 (global-set-key (kbd "C-. C-n") 'forward-paragraph)
 (global-set-key (kbd "C-. C-o") 'goto-address-at-point)
@@ -153,6 +154,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (global-set-key (kbd "C-. q") 'mylife-add-new-quote)
 (global-set-key (kbd "C-. f") 'ispell-word)
 (global-set-key (kbd "C-. s") 'surround-symbol-with)
+(global-set-key (kbd "C-. w") 'open-woman-page)
 
 ;; window navigation
 (global-set-key (kbd "C-. C-j") 'windmove-down)
@@ -706,7 +708,7 @@ Argument IGNORED is just ignored."
             (interactive)
             (local-set-key (kbd "M-.") 'find-function)))
 
-;;; MAN-MODE
+;;; [WO]MAN-MODE
 ;;  ─────────────────────────────────────────────────────────────────
 (add-hook 'Man-mode-hook 'utils-easy-move-mode)
 (setenv "MANWIDTH" "80")

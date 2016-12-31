@@ -681,8 +681,7 @@ This has been taken from http://whattheemacsd.com/."
                   (b2 (window-buffer w2))
 
                   (s1 (window-start w1))
-                  (s2 (window-start w2))
-                  )
+                  (s2 (window-start w2)))
              (set-window-buffer w1  b2)
              (set-window-buffer w2 b1)
              (set-window-start w1 s2)
@@ -714,6 +713,32 @@ This works with any mode that supports thingatpt.el for a symbol."
       (calc-other-window)
     (calc)))
 
+
+(defun duplicate-current-line (prefix)
+  "Duplicate current line.
+Argument PREFIX decides whether we keep the point on current line
+or the duplicated line."
+  (interactive "P")
+  (let* ((col (current-column))
+         (beg (line-beginning-position))
+         (end (line-end-position))
+         (text (buffer-substring beg end)))
+    (save-excursion
+      (forward-line)
+      (insert (format "%s\n" text)))
+    ;; When the prefix isn't supplied move the point to the next
+    ;; line. It is more natural to make a copy of the first line and
+    ;; edit the copy below that line.
+    (when (not prefix)
+      (forward-line)
+      (move-to-column col))))
+
+
+(defun open-woman-page ()
+  "Open woman page in a split right window."
+  (interactive)
+  (split-window-sensibly)
+  (woman))
 
 (provide 'defuns)
 ;;; defuns.el ends here
