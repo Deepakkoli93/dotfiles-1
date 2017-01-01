@@ -543,6 +543,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; org-agenda
 (setq org-agenda-span 1
       org-agenda-sticky t
+      org-agenda-restore-windows-after-quit t
       org-agenda-skip-scheduled-if-deadline-is-shown t
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
