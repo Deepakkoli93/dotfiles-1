@@ -467,7 +467,9 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (require 'flycheck)
 (setq flycheck-global-modes '(clojure-mode
                               emacs-lisp-mode
+                              python-mode
                               haskell-mode
+                              ruby-mode
                               c-mode))
 (add-hook 'after-init-hook
           (lambda ()
@@ -702,6 +704,7 @@ Argument IGNORED is just ignored."
                              clojure-mode-hook
                              cider-repl-mode-hook
                              eshell-mode-hook
+                             ruby-mode-hook
                              minibuffer-inactive-mode-hook))
 
 (add-hook 'emacs-lisp-mode-hook
