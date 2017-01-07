@@ -135,6 +135,9 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;;; GLOBAL KEY BINDINGS
 ;;  ─────────────────────────────────────────────────────────────────
+;; Overriding the `other-window' binding
+(global-set-key (kbd "C-x o") 'ace-window)
+
 ;; Keeping things in reach!
 (global-set-key (kbd "M-[") 'backward-kill-word)
 (global-set-key (kbd "C-c m") 'switch-to-minibuffer)
@@ -288,7 +291,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
   (lambda ()
     (interactive)
     (shell (generate-new-buffer "*shell*"))))
-
+(define-key eyebrowse-mode-map (kbd "C-c C-w r") 'rotate-windows)
 
 
 ;;; NAVIGATION
@@ -566,6 +569,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;; org-clocktable config
 ;; Let's see when they remove `org-combine-plists' if ever.
+(require 'org-clock)
 (setq org-clocktable-defaults (org-combine-plists org-clocktable-defaults
                                                   (list :stepskip0 t
                                                         :fileskip0 t)))
