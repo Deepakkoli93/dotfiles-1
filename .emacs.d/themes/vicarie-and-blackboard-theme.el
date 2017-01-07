@@ -63,10 +63,11 @@
  `(org-verse ((t (:inherit org-block :slant italic))))
  `(org-todo ((t (:bold t :foreground "Red"))))
  `(org-done ((t (:bold t :foreground "ForestGreen"))))
- `(org-agenda-structure ((t (:weight bold :foreground "tomato"))))
+ `(org-agenda-structure ((t (:weight bold :foreground "SteelBlue" :background "PaleGoldenrod"))))
  `(org-agenda-date ((t (:foreground "#6ac214"))))
  `(org-agenda-date-weekend ((t (:weight normal :foreground "dodger blue"))))
- `(org-agenda-date-today ((t (:weight bold :foreground "#edd400"))))
+ `(org-warning ((t (:weight bold :foreground "tomato"))))
+ `(org-upcoming-deadline ((t (:weight normal :foreground "goldenrod"))))
 
  ;; company
  '(company-scrollbar-bg ((t (:background "#2a2a2a"))))
