@@ -78,6 +78,10 @@
  '(helm-candidate-number ((t (:background "goldenrod" :foreground "black"))))
  '(helm-header-line-left-margin ((t (:background "chocolate" :foreground "black"))))
  '(helm-selection ((t (:background "steel blue" :distant-foreground "white"))))
- '(helm-source-header ((t (:background "saddle brown" :foreground "white" :weight bold :height 1.3 :family "Sans Serif")))))
+ '(helm-source-header ((t (:background "saddle brown" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
+
+ ;; eyebrowse
+ '(eyebrowse-mode-line-inactive ((t (:foreground "white"))))
+ '(eyebrowse-mode-line-active ((t (:background "goldenrod" :foreground "black")))))
 
 (provide-theme 'vicarie-and-blackboard)

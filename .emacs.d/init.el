@@ -278,6 +278,13 @@ This is to prevent my personal agenda getting affected by work agenda.")
       uniquify-separator " • ")
 
 
+;;; WORKSPACES
+;; ――――――――――――――――――――――――――――――――――――――――
+;; Using eyebrowse-mode to have workspace-likes in Emacs
+(eyebrowse-mode 1)
+
+
+
 ;;; NAVIGATION
 ;; ――――――――――――――――――――――――――――――――――――――――
 ;; Move point to the beginning of match on isearch end
