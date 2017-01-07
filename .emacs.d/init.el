@@ -281,7 +281,13 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;;; WORKSPACES
 ;; ――――――――――――――――――――――――――――――――――――――――
 ;; Using eyebrowse-mode to have workspace-likes in Emacs
+;; On Non-Linux laptops, I should bind "C-c C-w" to "Super" so that
+;; it feels liks XMonad inside Emacs.
 (eyebrowse-mode 1)
+(define-key eyebrowse-mode-map (kbd "C-c C-w RET")
+  (lambda ()
+    (interactive)
+    (shell (generate-new-buffer "*shell*"))))
 
 
 
@@ -557,6 +563,12 @@ This is to prevent my personal agenda getting affected by work agenda.")
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
       org-deadline-warning-days 3)
+
+;; org-clocktable config
+;; Let's see when they remove `org-combine-plists' if ever.
+(setq org-clocktable-defaults (org-combine-plists org-clocktable-defaults
+                                                  (list :stepskip0 t
+                                                        :fileskip0 t)))
 
 ;; org-capture
 (setq org-capture-templates
