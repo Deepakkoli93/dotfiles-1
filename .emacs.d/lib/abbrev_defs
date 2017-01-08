@@ -28,12 +28,11 @@
 (define-abbrev-table 'fundamental-mode-abbrev-table '())
 
 (define-abbrev-table 'global-abbrev-table
-  '(
-    ("9arrow" "⟶" (edebug-eval-mode-abbrev-table) 0)
+  '(("9arrow" "⟶" (edebug-eval-mode-abbrev-table) 0)
     ("9bar" "―" nil 0)
     ("9blt" "•" nil 0)
     ("9rs" "₹" nil 0)
-   ))
+    ("9br" "────────────────────────────────────────" nil 0)))
 
 (define-abbrev-table 'helm-grep-mode-abbrev-table '())
 
@@ -94,4 +93,3 @@
 (define-abbrev-table 'vc-git-log-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
-

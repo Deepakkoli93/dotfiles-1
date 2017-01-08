@@ -292,6 +292,12 @@ This is to prevent my personal agenda getting affected by work agenda.")
     (interactive)
     (shell (generate-new-buffer "*shell*"))))
 (define-key eyebrowse-mode-map (kbd "C-c C-w r") 'rotate-windows)
+;; Create three window configurations on Emacs startup.
+(add-hook 'after-init-hook (lambda ()
+                             (dotimes (_ 2)
+                               (eyebrowse-create-window-config)
+                               ;; Just to be Number 1!
+                               (eyebrowse-last-window-config))))
 
 
 ;;; NAVIGATION
@@ -727,7 +733,6 @@ Argument IGNORED is just ignored."
                              clojure-mode-hook
                              cider-repl-mode-hook
                              eshell-mode-hook
-                             ruby-mode-hook
                              minibuffer-inactive-mode-hook))
 
 (add-hook 'emacs-lisp-mode-hook
@@ -752,6 +757,7 @@ Argument IGNORED is just ignored."
 ;;  ─────────────────────────────────────────────────────────────────
 (autoload 'inf-ruby "inf-ruby" "Run on inferior Ruby process" t)
 (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
+(add-hook 'ruby-mode-hook 'electric-pair-mode)
 
 ;;; LUA MODE
 ;;  ─────────────────────────────────────────────────────────────────
@@ -761,6 +767,7 @@ Argument IGNORED is just ignored."
 ;;; MAGIT
 ;;  ─────────────────────────────────────────────────────────────────
 (setq magit-auto-revert-mode nil)
+(add-hook 'git-commit-mode-hook 'turn-on-flyspell)
 
 ;; TRAMP-MODE
 ;;  ─────────────────────────────────────────────────────────────────
