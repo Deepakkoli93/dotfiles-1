@@ -493,6 +493,10 @@ This is to prevent my personal agenda getting affected by work agenda.")
                               haskell-mode
                               ruby-mode
                               c-mode))
+;; Spell checking in comments.
+(mapc (lambda (h)
+        (add-hook (intern (format "%s-hook" h)) 'flyspell-prog-mode))
+      flycheck-global-modes)
 (add-hook 'after-init-hook
           (lambda ()
             (global-flycheck-mode 1)))
