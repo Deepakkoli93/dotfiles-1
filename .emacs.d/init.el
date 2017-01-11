@@ -354,10 +354,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
                 hledger-mode-hook))
   (add-hook hook (lambda ()
                    (flyspell-mode 1)
-                   (unbind-key "C-." flyspell-mode-map)
-                   (bind-key "C-. C-."
-                             'flyspell-auto-correct-word
-                             flyspell-mode-map))))
+                   (unbind-key "C-." flyspell-mode-map))))
 (setq ispell-personal-dictionary personal-dictionary-file)
 
 
@@ -504,7 +501,11 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (add-hook 'after-init-hook
           (lambda ()
             (global-flycheck-mode 1)))
-
+(add-hook 'flyspell-prog-mode-hook
+          (lambda ()
+            ;; C-. is my personal prefix. I just don't like it being
+            ;; stolen.
+            (unbind-key "C-." flyspell-mode-map)))
 
 ;;; ESHELL
 ;;  ─────────────────────────────────────────────────────────────────
@@ -539,7 +540,11 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Disable electric-indent-mode
 (add-hook 'haskell-mode-hook
           (lambda ()
-            (electric-indent-mode -1)))
+            (electric-indent-mode -1)
+            (unbind-key "C-." haskell-mode-map)
+            (itero-mode)
+            (prettify-symbols-mode 1)
+            (push '("\\" . ?λ) prettify-symbols-alist)))
 
 ;; Check haskell-mode info page if anything breaks!
 (eval-after-load "haskell-mode"
@@ -843,8 +848,7 @@ Argument IGNORED is just ignored."
 ;; ─────────────────────────────────────────────────────────────────
 ;; A random quote from mylife-mode in the *scratch* buffer.
 (setq initial-major-mode 'fundamental-mode)
-(setq initial-scratch-message (concat (mylife-random-quote-string)
-                                      (mylife-get-auroville-quality)))
+(setq initial-scratch-message (mylife-generate-scratch-message))
 
 ;; Show emacs startup time after init
 (add-hook 'emacs-startup-hook
@@ -856,7 +860,6 @@ Argument IGNORED is just ignored."
                                                              emacs-start-time))))
             (pop-to-buffer "*scratch*")
             (goto-char (point-max))
-            (setq emacs-scratch-text-size (point))
             ;; Refresh the quote once in a while
             (run-with-idle-timer idle-scratch-buffer-refresh-time
                                  t
