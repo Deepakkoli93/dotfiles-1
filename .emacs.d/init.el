@@ -152,6 +152,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (global-set-key (kbd "C-. C-n") 'forward-paragraph)
 (global-set-key (kbd "C-. C-o") 'goto-address-at-point)
 (global-set-key (kbd "C-. C-p") 'backward-paragraph)
+(global-set-key (kbd "C-. C-r") 'helm-do-grep-ag)
 (global-set-key (kbd "C-. C-u") 'delete-indentation)
 (global-set-key (kbd "C-. c") 'out-or-onto-calc)
 (global-set-key (kbd "C-. q") 'mylife-add-new-quote)
@@ -247,6 +248,9 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;; Enable disabled commands
 (put 'narrow-to-region 'disabled nil)
+
+;; Replace selection
+(delete-selection-mode 1)
 
 ;; General settings
 (show-paren-mode 1)
