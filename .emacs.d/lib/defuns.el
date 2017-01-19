@@ -740,5 +740,13 @@ or the duplicated line."
   (split-window-sensibly)
   (woman))
 
+
+(defun helm-do-grep-ag-with-directory (d)
+  "Do `helm-do-grep-ag' with `default-directory' set to D."
+  (interactive "DRoot: ")
+  (let ((default-directory d))
+    (call-interactively 'helm-do-grep-ag)))
+
+
 (provide 'defuns)
 ;;; defuns.el ends here

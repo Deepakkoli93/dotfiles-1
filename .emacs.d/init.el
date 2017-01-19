@@ -152,7 +152,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (global-set-key (kbd "C-. C-n") 'forward-paragraph)
 (global-set-key (kbd "C-. C-o") 'goto-address-at-point)
 (global-set-key (kbd "C-. C-p") 'backward-paragraph)
-(global-set-key (kbd "C-. C-r") 'helm-do-grep-ag)
+(global-set-key (kbd "C-. C-r") 'helm-do-grep-ag-with-directory)
 (global-set-key (kbd "C-. C-u") 'delete-indentation)
 (global-set-key (kbd "C-. c") 'out-or-onto-calc)
 (global-set-key (kbd "C-. q") 'mylife-add-new-quote)
@@ -297,11 +297,11 @@ This is to prevent my personal agenda getting affected by work agenda.")
     (shell (generate-new-buffer "*shell*"))))
 (define-key eyebrowse-mode-map (kbd "C-c C-w r") 'rotate-windows)
 ;; Create three window configurations on Emacs startup.
-(add-hook 'after-init-hook (lambda ()
-                             (dotimes (_ 2)
-                               (eyebrowse-create-window-config)
-                               ;; Just to be Number 1!
-                               (eyebrowse-last-window-config))))
+(add-hook 'emacs-startup-hook (lambda ()
+                                (dotimes (_ 2)
+                                  (eyebrowse-create-window-config)
+                                  ;; Just to be Number 1!
+                                  (eyebrowse-last-window-config))))
 
 
 ;;; NAVIGATION
@@ -784,6 +784,7 @@ Argument IGNORED is just ignored."
 ;;  ─────────────────────────────────────────────────────────────────
 (setq magit-auto-revert-mode nil)
 (add-hook 'git-commit-mode-hook 'turn-on-flyspell)
+(add-hook 'magit-mode-hook 'magit-auto-revert-mode)
 
 ;; TRAMP-MODE
 ;;  ─────────────────────────────────────────────────────────────────
