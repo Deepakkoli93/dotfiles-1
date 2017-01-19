@@ -586,6 +586,9 @@ This is to prevent my personal agenda getting affected by work agenda.")
       org-agenda-skip-deadline-if-done t
       org-deadline-warning-days 3)
 
+;; org-clock
+(setq org-clock-idle-time 5)
+
 ;; org-clocktable config
 ;; Let's see when they remove `org-combine-plists' if ever.
 (require 'org-clock)
