@@ -244,7 +244,11 @@ This is to prevent my personal agenda getting affected by work agenda.")
   (setq browse-url-browser-function 'browse-url-chromium))
 
 ;; Cleanup whitespace before saving files
-(add-hook 'before-save-hook 'cleanup-whitespace)
+(add-hook 'before-save-hook
+          (lambda ()
+            ;; Exclude whitespace-sensitive modes that I know of. 
+            (when (not (memq major-mode '(markdown-mode)))
+              (cleanup-whitespace))))
 
 ;; Enable disabled commands
 (put 'narrow-to-region 'disabled nil)
@@ -562,9 +566,9 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (require 'org)
 (require 'org-habit)
 
-(setq org-directory personal-org-directory)
-(setq org-agenda-text-search-extra-files org-extra-files)
-(setq org-agenda-files `(,org-directory))
+;; org-org
+(setq org-directory personal-org-directory
+      org-cycle-separator-lines 0)
 
 ;; state logging for org-habit (! => with timestamp) (@ => timestamp + note)
 (setq org-todo-keywords
@@ -582,7 +586,9 @@ This is to prevent my personal agenda getting affected by work agenda.")
       org-habit-graph-column 50)
 
 ;; org-agenda
-(setq org-agenda-span 1
+(setq org-agenda-files `(,org-directory)
+      org-agenda-text-search-extra-files org-extra-files
+      org-agenda-span 1
       org-agenda-sticky t
       org-agenda-restore-windows-after-quit t
       org-agenda-skip-scheduled-if-deadline-is-shown t
