@@ -568,7 +568,11 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;; state logging for org-habit (! => with timestamp) (@ => timestamp + note)
 (setq org-todo-keywords
-      '((sequence "TODO" "DONE(!)")))
+      '((sequence "TODO" "|" "DONE(d!)" "WONT-DO(w@)"))
+      org-todo-keyword-faces
+      '(("TODO" . "yellow3")
+        ("DONE" . "green")
+        ("WONT-DO" . "red")))
 
 (add-to-list 'org-modules 'org-habit)
 
@@ -643,6 +647,11 @@ This is to prevent my personal agenda getting affected by work agenda.")
                                              (org-return t)))
             (local-set-key (kbd "C-c p") 'org-pomodoro)
             (local-set-key (kbd "C-c a") 'org-agenda)))
+(add-hook 'org-agenda-mode-hook
+          (lambda ()
+            ;; bindings
+            (local-set-key (kbd "C-c p") 'org-pomodoro)
+            (hl-line-mode 1)))
 
 
 ;;; POMODORO
