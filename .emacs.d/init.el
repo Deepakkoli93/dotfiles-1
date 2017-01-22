@@ -246,7 +246,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Cleanup whitespace before saving files
 (add-hook 'before-save-hook
           (lambda ()
-            ;; Exclude whitespace-sensitive modes that I know of. 
+            ;; Exclude whitespace-sensitive modes that I know of.
             (when (not (memq major-mode '(markdown-mode)))
               (cleanup-whitespace))))
 
@@ -568,7 +568,8 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;; org-org
 (setq org-directory personal-org-directory
-      org-cycle-separator-lines 0)
+      org-cycle-separator-lines 0
+      org-catch-invisible-edits 'error)
 
 ;; state logging for org-habit (! => with timestamp) (@ => timestamp + note)
 (setq org-todo-keywords

@@ -81,6 +81,9 @@
  '(helm-selection ((t (:background "steel blue" :distant-foreground "white"))))
  '(helm-source-header ((t (:background "saddle brown" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
 
+ ;;
+ '(hl-line ((t (:box (:line-width -1 :color "dark olive green" :style released-button)))))
+
  ;; eyebrowse
  '(eyebrowse-mode-line-inactive ((t (:foreground "white"))))
  '(eyebrowse-mode-line-active ((t (:background "goldenrod" :foreground "black")))))
