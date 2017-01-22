@@ -52,7 +52,9 @@
   (add-hook 'after-init-hook (lambda ()
                                (interactive)
                                (load-theme 'vicarie-and-blackboard t)))
-  ;; mode-line
+  ;; mode-line | no minor-modes in the mode line
+  (setq eyebrowse-mode-line-style t)
+  (setq rm-blacklist ".*")
   (setq sml/theme 'dark)
   (setq sml/no-confirm-load-theme t)
   (sml/setup))
@@ -451,8 +453,8 @@ Requires that dzen is installed."
   (start-process-shell-command "dzen" nil
                                (format "echo %s | dzen2 -l 200 -fn 'Comic Sans MS:size=%s' -p %s"
                                        (shell-quote-argument msg)
-                                       (or font-size 50)
-                                       (or duration 10))))
+                                       (or font-size 25)
+                                       (or duration 5))))
 
 
 ;; Setup an emacs window into 70-30% horizontally.

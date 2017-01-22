@@ -392,7 +392,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
        use-companyp)
   (require 'company)
   (setq company-global-modes '(hledger-mode java-mode))
-  (setq company-idle-delay 0.3)
+  (setq company-idle-delay 0.1)
   (global-company-mode)
   (add-to-list 'company-backends 'hledger-company)
   ;; ^ company-hledger should be defined before company mode is used.
@@ -666,13 +666,13 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; pomodoro hooks for awesome notifications
 (add-hook 'org-pomodoro-finished-hook
           (lambda ()
-            (notify "Break!")))
+            (notify "Take a short break :)")))
 (add-hook 'org-pomodoro-started-hook
           (lambda ()
-            (notify "Start!")))
+            (notify "Time to get started!")))
 (add-hook 'org-pomodoro-break-finished-hook
           (lambda ()
-            (notify "Over!")))
+            (notify "You have completed a Pomodoro!")))
 
 ;;; C-MODE
 ;;  ─────────────────────────────────────────────────────────────────
