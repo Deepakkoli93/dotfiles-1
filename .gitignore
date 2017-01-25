@@ -8,6 +8,7 @@
 !.emacs.d/snippets/
 !.emacs.d/packages/
 !.emacs.d/lib/
+!.emacs.d/etc/
 .emacs.d/packages/elpa/gnupg/
 .emacs.d/packages/elpa/archives/
 epdfinfo
@@ -33,4 +34,3 @@ epdfinfo
 .weechat/script/plugins.xml.gz
 
 .ncmpcpp/*.log
-

@@ -67,7 +67,11 @@ Useful in case we need to refresh only this part of the buffer.")
 
 (defvar emacs-lib-directory
   (expand-file-name "~/.emacs.d/lib/")
-  "Path to file contaings all function definitions.")
+  "Path to directory containing all function definitions.")
+
+(defvar emacs-etc-directory
+  (expand-file-name "~/.emacs.d/etc/")
+  "Path to the directory containing all application configuration.")
 
 (defvar personal-org-directory
   (expand-file-name "~/miscellany/personal/org/")
@@ -573,11 +577,14 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;; state logging for org-habit (! => with timestamp) (@ => timestamp + note)
 (setq org-todo-keywords
-      '((sequence "TODO" "|" "DONE(d!)" "WONT-DO(w@)"))
+      '((sequence "TODO" "|" "DONE(d!)" "WONT-DO(w@)")
+        (sequence "TRACKING(r)" "TRACKED(g@)"))
       org-todo-keyword-faces
       '(("TODO" . "yellow3")
         ("DONE" . "green")
-        ("WONT-DO" . "red")))
+        ("WONT-DO" . "red")
+        ("TRACKING" . "light green")
+        ("TRACKED" . "green")))
 
 (add-to-list 'org-modules 'org-habit)
 
@@ -808,6 +815,12 @@ Argument IGNORED is just ignored."
 ;; Make backups for tramp files in their original locations
 (add-to-list 'backup-directory-alist
              (cons tramp-file-name-regexp nil))
+
+
+;;; EMAIL
+;; ──────────────────────────────────────────────────────────────────
+(setq gnus-init-file (expand-file-name "gnus.el" emacs-etc-directory))
+
 
 ;;; ERC
 ;;  ─────────────────────────────────────────────────────────────────
