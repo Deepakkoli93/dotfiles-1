@@ -278,6 +278,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;; Get quick emacs key binding suggestions
 (require 'which-key)
+(setq which-key-max-description-length nil)
 (which-key-mode 1)
 
 ;; Line numbers for rows

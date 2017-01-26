@@ -45,30 +45,37 @@
 
 ;; http://groups.google.com/group/gnu.emacs.gnus/browse_thread/thread/a673a74356e7141f
 (when window-system
-  (setq gnus-sum-thread-tree-indent "  ")
-  (setq gnus-sum-thread-tree-root "") ;; "● ")
-  (setq gnus-sum-thread-tree-false-root "") ;; "◯ ")
-  (setq gnus-sum-thread-tree-single-indent "") ;; "◎ ")
-  (setq gnus-sum-thread-tree-vertical        "│")
-  (setq gnus-sum-thread-tree-leaf-with-other "├─► ")
-  (setq gnus-sum-thread-tree-single-leaf     "╰─► "))
-(setq gnus-summary-line-format
-      (concat
-       "%0{%U%R%z%}"
-       "%3{│%}" "%1{%d%}" "%3{│%}" ;; date
-       "  "
-       "%4{%-20,20f%}"               ;; name
-       "  "
-       "%3{│%}"
-       " "
-       "%1{%B%}"
-       "%s\n"))
+  (setq gnus-sum-thread-tree-indent "  "
+        gnus-sum-thread-tree-root "● "
+        gnus-sum-thread-tree-false-root "◯ "
+        gnus-sum-thread-tree-single-indent "◎ "
+        gnus-sum-thread-tree-vertical        "│"
+        gnus-sum-thread-tree-leaf-with-other "├─► "
+        gnus-sum-thread-tree-single-leaf     "╰─► "))
+
+(setq gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
+      gnus-summary-line-format (concat
+                                "%0{%U%R%z%}"
+                                "%3{│%}" "%1{%&user-date;%}" "%3{│%}" ;; date
+                                "  "
+                                "%4{%-20,20f%}" ;; name
+                                "  "
+                                "%3{│%}"
+                                " "
+                                "%1{%B%}"
+                                "%s\n"))
+
 (setq gnus-summary-display-arrow t)
 
 
-;; Article sorting
-(setq gnus-article-sort-functions '((not gnus-article-sort-by-number)))
+;; Article and thread sorting
+(setq gnus-thread-sort-functions
+      '(gnus-thread-sort-by-most-recent-date
+        (not gnus-thread-sort-by-number)))
 
+
+;; HTML Email -> Text
+(setq mm-text-html-renderer 'gnus-w3m)
 
 (provide 'gnus)
 ;;; gnus.el ends here
