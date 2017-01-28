@@ -671,16 +671,23 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;;; POMODORO
 ;;  ─────────────────────────────────────────────────────────────────
+(setq org-pomodoro-keep-killed-pomodoro-time t)
+
+;; The agenda buffer isn't refreshed properly by default.
+(add-hook 'org-pomodoro-killed-hook 'org-agenda-redo)
+
 ;; pomodoro hooks for awesome notifications
 (add-hook 'org-pomodoro-finished-hook
           (lambda ()
-            (notify "Take a short break :)")))
+            (notify "Time for some laziness.")
+            (org-agenda-redo)))
 (add-hook 'org-pomodoro-started-hook
           (lambda ()
-            (notify "Time to get started!")))
+            (notify "Time for some deep work.")))
 (add-hook 'org-pomodoro-break-finished-hook
           (lambda ()
-            (notify "You have completed a Pomodoro!")))
+            (notify "Break over")
+            (org-agenda-redo)))
 
 ;;; C-MODE
 ;;  ─────────────────────────────────────────────────────────────────

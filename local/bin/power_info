@@ -18,11 +18,9 @@ function power_info()
 				if [[ $batt_left -le "$least" ]] ; then
 					systemctl suspend
 				fi
-				echo "Battery Critically Low: $batt_left% left" | \
-						dzen2 -ta c -h 200 -p 3 -e 'onstart=raise;button1=exit;' &
+				notify-send -t 10000 -u critical "Battery critically low: $batt_left% left"
 			fi
-			echo "Battery Low: $batt_left% left" |  \
-						dzen2 -ta c -p 3 -e 'onstart=raise;button1=exit;' &
+			notify-send -t 10000 -u normal "Battery Low: $batt_left% left"
 		fi
 	fi
 
@@ -31,4 +29,5 @@ function power_info()
 	power_info
 }
 
+# start it one minute after X startup
 sleep 1m && power_info
