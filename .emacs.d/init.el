@@ -486,6 +486,10 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (require 'hledger-mode)
 (add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
 
+;; Enable Hledger monthly email reporting This works because of an
+;; ugly hack for the time being.
+(add-hook 'emacs-startup-hook 'hledger-enable-reporting)
+
 (when (boundp 'my-hledger-service-fetch-url)
   (setq hledger-service-fetch-url
         my-hledger-service-fetch-url))
