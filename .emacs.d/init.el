@@ -598,7 +598,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (setq org-agenda-files `(,org-directory)
       org-agenda-text-search-extra-files org-extra-files
       org-agenda-span 1
-      org-agenda-sticky t
       org-agenda-restore-windows-after-quit t
       org-agenda-skip-scheduled-if-deadline-is-shown t
       org-agenda-skip-scheduled-if-done t
@@ -673,21 +672,15 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;;  ─────────────────────────────────────────────────────────────────
 (setq org-pomodoro-keep-killed-pomodoro-time t)
 
-;; The agenda buffer isn't refreshed properly by default.
-(add-hook 'org-pomodoro-killed-hook 'org-agenda-redo)
-
-;; pomodoro hooks for awesome notifications
 (add-hook 'org-pomodoro-finished-hook
           (lambda ()
-            (notify "Time for some laziness.")
-            (org-agenda-redo)))
+            (notify "Time for some laziness.")))
 (add-hook 'org-pomodoro-started-hook
           (lambda ()
             (notify "Time for some deep work.")))
-(add-hook 'org-pomodoro-break-finished-hook
+(add-hook 'org-pomodooro-break-finished-hook
           (lambda ()
-            (notify "Break over")
-            (org-agenda-redo)))
+            (notify "Break over")))
 
 ;;; C-MODE
 ;;  ─────────────────────────────────────────────────────────────────

@@ -24,7 +24,9 @@
 
 ;;; Code:
 
+(require 'bbdb)
 (require 'gnus)
+(require 'gnus-async)
 
 
 (setq user-email-address "narendraj9@gmail.com"
@@ -67,15 +69,20 @@
 
 (setq gnus-summary-display-arrow t)
 
+;; Pre-fetch for speed
+(setq gnus-asynchronous t)
 
 ;; Article and thread sorting
 (setq gnus-thread-sort-functions
       '(gnus-thread-sort-by-most-recent-date
         (not gnus-thread-sort-by-number)))
 
-
 ;; HTML Email -> Text
 (setq mm-text-html-renderer 'gnus-w3m)
+
+;; Contacts auto-completion
+(bbdb-initialize 'gnus 'message)
+(setq bbdb/news-auto-create-p t)
 
 (provide 'gnus)
 ;;; gnus.el ends here

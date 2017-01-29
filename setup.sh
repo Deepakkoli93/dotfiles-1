@@ -19,6 +19,7 @@ function install-packages() {
 		  dosfstools dos2unix 
 		  recordmydesktop 
 		  openssh networkmanager network-manager-applet
+          docx2txt
 		  linux-manpages tree 
 		  gcc ghc
 		  cabal-install 
