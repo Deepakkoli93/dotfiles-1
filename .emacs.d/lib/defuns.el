@@ -742,6 +742,16 @@ or the duplicated line."
   (split-window-sensibly)
   (woman))
 
+(defun helm-grep-it (arg)
+  "Run the_silver_search with `helm-do-grep.
+
+Argument ARG is the prefix argument which when not supplied causes `vc-root-dir'
+to be the default root.  Otherwise current-directory is the default root."
+  (interactive "P")
+  (let ((default-directory (if arg
+                               default-directory
+                             (expand-file-name (vc-root-dir)))))
+    (call-interactively 'helm-do-grep-ag-with-directory)))
 
 (defun helm-do-grep-ag-with-directory (d)
   "Do `helm-do-grep-ag' with `default-directory' set to D."
