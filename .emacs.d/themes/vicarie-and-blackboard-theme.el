@@ -81,10 +81,13 @@
  '(helm-selection ((t (:background "steel blue" :distant-foreground "white"))))
  '(helm-source-header ((t (:background "saddle brown" :foreground "white" :weight bold :height 1.3 :family "Sans Serif"))))
 
- ;;
+ ;; Highlighted line in `hl-line-mode'
  '(hl-line ((t (:box (:line-width -1 :color "dark olive green" :style released-button)))))
 
- ;; eyebrowse
+ ;; Leading key-char for `ace-window'
+ '(aw-leading-char-face ((t (:foreground "goldenrod" :height 2.0 :weight bold))))
+
+ ;; Mode-line faces for `eyebrowse'.
  '(eyebrowse-mode-line-inactive ((t (:foreground "white"))))
  '(eyebrowse-mode-line-active ((t (:background "goldenrod" :foreground "black")))))
 

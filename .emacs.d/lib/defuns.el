@@ -750,7 +750,8 @@ to be the default root.  Otherwise current-directory is the default root."
   (interactive "P")
   (let ((default-directory (if arg
                                default-directory
-                             (expand-file-name (vc-root-dir)))))
+                             (expand-file-name (or (vc-root-dir)
+                                                   default-directory)))))
     (call-interactively 'helm-do-grep-ag-with-directory)))
 
 (defun helm-do-grep-ag-with-directory (d)

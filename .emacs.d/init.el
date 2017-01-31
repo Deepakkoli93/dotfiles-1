@@ -164,12 +164,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (global-set-key (kbd "C-. s") 'surround-symbol-with)
 (global-set-key (kbd "C-. w") 'open-woman-page)
 
-;; window navigation
-(global-set-key (kbd "C-. C-j") 'windmove-down)
-(global-set-key (kbd "C-. C-k") 'windmove-up)
-(global-set-key (kbd "C-. C-h") 'windmove-left)
-(global-set-key (kbd "C-. C-l") 'windmove-right)
-
 ;; Bindings for org-mode
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
