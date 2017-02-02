@@ -354,6 +354,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (dolist (hook '(markdown-mode-hook
                 latex-mode-hook
                 org-mode-hook
+                message-mode-hook
                 hledger-mode-hook))
   (add-hook hook (lambda ()
                    (flyspell-mode 1)

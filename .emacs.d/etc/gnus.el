@@ -25,12 +25,15 @@
 ;;; Code:
 
 (require 'bbdb)
+(require 'bbdb-gnus)
 (require 'gnus)
 (require 'gnus-async)
+(require 'smtpmail)
 
-
+(defvar user-email-address)
 (setq user-email-address "narendraj9@gmail.com"
-      user-full-name "Narendra Joshi")
+      user-full-name "Narendra Joshi"
+      message-signature "- Narendra")
 
 
 (setq gnus-select-method
@@ -81,8 +84,15 @@
 (setq mm-text-html-renderer 'gnus-w3m)
 
 ;; Contacts auto-completion
-(bbdb-initialize 'gnus 'message)
-(setq bbdb/news-auto-create-p t)
+(setq bbdb-file "~/miscellany/assets/bbdb"
+      bbdb/news-auto-create-p t
+      bbdb/mail-auto-create-p t)
+
+(add-hook 'gnus-startup-hook
+          (lambda ()
+                  (bbdb-initialize 'gnus 'message)))
+
+
 
 (provide 'gnus)
 ;;; gnus.el ends here
