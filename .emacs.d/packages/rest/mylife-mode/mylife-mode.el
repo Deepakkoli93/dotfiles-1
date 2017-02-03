@@ -19,6 +19,8 @@
 
 (add-to-list 'auto-mode-alist '("\\.life\\'" . life-mode))
 
+(require 'parse-time)
+
 (require 'mylife-relationships)
 (require 'mylife-quotes)
 (require 'mylife-dictionary)

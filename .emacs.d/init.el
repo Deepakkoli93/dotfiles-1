@@ -612,7 +612,10 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Split org-agenda vertically | @TODO: Find a better way.
 (add-hook 'org-agenda-mode-hook
           (lambda ()
-            (toggle-window-split)))
+            (when (window-at-side-p (selected-window) 'top)
+              (toggle-window-split))
+            (local-set-key (kbd "C-c p") 'org-pomodoro)
+            (hl-line-mode 1)))
 
 ;; org-clock
 (setq org-clock-idle-time 5)
@@ -671,11 +674,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
                                              (org-return t)))
             (local-set-key (kbd "C-c p") 'org-pomodoro)
             (local-set-key (kbd "C-c a") 'org-agenda)))
-(add-hook 'org-agenda-mode-hook
-          (lambda ()
-            ;; bindings
-            (local-set-key (kbd "C-c p") 'org-pomodoro)
-            (hl-line-mode 1)))
 
 
 ;;; POMODORO
