@@ -85,8 +85,17 @@
     (goto-char (point-min))))
 
 
+(defun mylife-wish-me-happy-birthday-on-time ()
+  "Wishes you a happy birthday on `mylife-birth-date'.
+@TODO: Make the text show configurable"
+  (if (equal (format-time-string "%m/%d"
+                                 (parse-iso8601-time-string mylife-birth-date))
+             (format-time-string "%m/%d"))
+      (animate-birthday-present (getenv "USER"))))
+
+
 (defun mylife-mode-init ()
-  "Function that does initial setup in the major-mode function."
+  "Function that does initial setup in the `major-mode' function."
   ;; Derivations
   (setq mylife-birth-time (date-to-time mylife-birth-date))
   (setq mylife-death-time (time-add mylife-birth-time

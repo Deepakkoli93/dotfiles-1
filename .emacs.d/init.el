@@ -897,18 +897,21 @@ Argument IGNORED is just ignored."
 ;; Show emacs startup time after init
 (add-hook 'emacs-startup-hook
           `(lambda ()
-            "Show the emacs load time on startup in the echo area."
-            (message (format "Finished loading %s in %.2f seconds."
-                             ,load-file-name
-                             (time-to-seconds (time-subtract (current-time)
-                                                             emacs-start-time))))
-            (pop-to-buffer "*scratch*")
-            (goto-char (point-max))
-            ;; Refresh the quote once in a while
-            (run-with-idle-timer idle-scratch-buffer-refresh-time
-                                 t
-                                 'mylife-refresh-scratch-buffer)
-            (delete-other-windows)))
+             "Show the emacs load time on startup in the echo area."
+             (mylife-wish-me-happy-birthday-on-time)
+             (message (format "Finished loading %s in %.2f seconds."
+                              ,load-file-name
+                              (time-to-seconds (time-subtract (current-time)
+                                                              emacs-start-time))))
+             (pop-to-buffer "*scratch*")
+             (goto-char (point-max))
+             ;; Refresh the quote once in a while
+             (run-with-idle-timer idle-scratch-buffer-refresh-time
+                                  t
+                                  'mylife-refresh-scratch-buffer)
+             ;; Show org-agenda after some idle-time
+             (run-with-idle-timer 300 t 'jump-to-org-agenda)
+             (delete-other-windows)))
 
 
 (provide 'init)
