@@ -166,6 +166,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (global-set-key (kbd "C-. w") 'open-woman-page)
 
 ;; Bindings for org-mode
+(global-set-key (kbd "C-c o") 'org-agenda-list)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c l") 'org-store-link)
