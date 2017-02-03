@@ -141,6 +141,8 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;;  ─────────────────────────────────────────────────────────────────
 ;; Overriding the `other-window' binding
 (global-set-key (kbd "C-x o") 'ace-window)
+;; For some reason helm-mode doesn't override `find-file'.
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
 
 ;; Keeping things in reach!
 (global-set-key (kbd "M-[") 'backward-kill-word)
@@ -480,7 +482,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Ignore listing irc buffers and helm session buffers.
 (setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*"
                            ".*irc\.slack\.com.*" "\\*helm.*"))
-(ido-mode 1)
 
 ;;; Personal Finance
 ;; ――――――――――――――――――――――――――――――――――――
@@ -606,6 +607,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
       org-agenda-restore-windows-after-quit t
       org-agenda-skip-scheduled-if-deadline-is-shown t
       org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-timestamp-if-done t
       org-agenda-skip-deadline-if-done t
       org-deadline-warning-days 3)
 
