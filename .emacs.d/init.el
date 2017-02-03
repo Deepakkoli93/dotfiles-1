@@ -151,6 +151,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; ctl-period | Convenience is the ~rule~ here.
 (bind-key* (kbd "C-.") 'ctl-period-map)
 (global-set-key (kbd "C-. C-.") 'avy-goto-char-timer)
+(global-set-key (kbd "C-. @") 'er/expand-region)
 (global-set-key (kbd "C-. d") 'duplicate-current-line)
 (global-set-key (kbd "C-. C-m") 'magit-status)
 (global-set-key (kbd "C-. C-n") 'forward-paragraph)
@@ -251,8 +252,10 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Enable disabled commands
 (put 'narrow-to-region 'disabled nil)
 
-;; Replace selection
+;; Replace selection and require expand region.
+(require 'expand-region)
 (delete-selection-mode 1)
+
 
 ;; General settings
 (show-paren-mode 1)
@@ -299,6 +302,8 @@ This is to prevent my personal agenda getting affected by work agenda.")
     (interactive)
     (shell (generate-new-buffer "*shell*"))))
 (define-key eyebrowse-mode-map (kbd "C-c C-w r") 'rotate-windows)
+(define-key eyebrowse-mode-map (kbd "C-c C-w t") 'toggle-window-split)
+
 ;; Create three window configurations on Emacs startup.
 (add-hook 'emacs-startup-hook (lambda ()
                                 (dotimes (_ 2)
@@ -603,6 +608,11 @@ This is to prevent my personal agenda getting affected by work agenda.")
       org-agenda-skip-deadline-if-done t
       org-deadline-warning-days 3)
 
+;; Split org-agenda vertically | @TODO: Find a better way.
+(add-hook 'org-agenda-mode-hook
+          (lambda ()
+            (toggle-window-split)))
+
 ;; org-clock
 (setq org-clock-idle-time 5)
 
@@ -820,6 +830,7 @@ Argument IGNORED is just ignored."
 ;;; EMAIL
 ;; ──────────────────────────────────────────────────────────────────
 (setq gnus-init-file (expand-file-name "gnus.el" emacs-etc-directory))
+(setq password-cache-expiry 86400)
 
 
 ;;; ERC

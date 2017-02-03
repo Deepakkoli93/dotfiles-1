@@ -33,7 +33,7 @@
 (defvar user-email-address)
 (setq user-email-address "narendraj9@gmail.com"
       user-full-name "Narendra Joshi"
-      message-signature "- Narendra")
+      message-signature "Narendra Joshi")
 
 
 (setq gnus-select-method
