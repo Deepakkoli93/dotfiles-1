@@ -276,11 +276,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (setq x-select-enable-clipboard t)
 (setq inhibit-splash-screen t)
 
-;; Get quick emacs key binding suggestions
-(require 'which-key)
-(setq which-key-max-description-length nil)
-(which-key-mode 1)
-
 ;; Line numbers for rows
 (global-linum-mode 0)
 (setq linum-format "%2d│")
@@ -292,6 +287,17 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward
       uniquify-separator " • ")
+
+;;; EMACS Itself
+;; ─────────────────────────────────────────────────────────────────
+;; Discovering more about Emacs
+(require 'discover)
+(global-discover-mode 1)
+
+;; Get quick emacs key binding suggestions
+(require 'which-key)
+(setq which-key-max-description-length nil)
+(which-key-mode 1)
 
 
 ;;; WORKSPACES
@@ -819,6 +825,12 @@ Argument IGNORED is just ignored."
 (setq magit-auto-revert-mode nil)
 (add-hook 'git-commit-mode-hook 'turn-on-flyspell)
 (add-hook 'magit-mode-hook 'magit-auto-revert-mode)
+(mapc (lambda (mode)
+        (add-hook mode
+                  (lambda ()
+                    ;; I want to use C-RET solely for switching buffers.
+                    (unbind-key "C-RET" (intern (format "%s-map" mode))))))
+      '(magit-mode magit-status-mode))
 
 ;; TRAMP-MODE
 ;;  ─────────────────────────────────────────────────────────────────
