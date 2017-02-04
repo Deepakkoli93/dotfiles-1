@@ -49,6 +49,8 @@
 (require 'bind-key)
 (defvar ctl-period-map)
 (define-prefix-command 'ctl-period-map)
+(defvar ctl-quote-map)
+(define-prefix-command 'ctl-quote-map)
 
 (defvar emacs-scratch-text-size 0
   "Size of region containing the inital quote in scratch buffer.
@@ -167,6 +169,14 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (global-set-key (kbd "C-. s") 'surround-symbol-with)
 (global-set-key (kbd "C-. w") 'open-woman-page)
 
+;; ctl-quote | I am expanding my personal prefix territory.
+(bind-key* (kbd "C-'") 'ctl-quote-map)
+(global-set-key (kbd "C-' r") 'rinari-prefix-map)
+(global-set-key (kbd "C-' C") 'mc/edit-lines)
+(global-set-key (kbd "C-' >") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-' <") 'mc/mark-previous-like-this)
+
+
 ;; Bindings for org-mode
 (global-set-key (kbd "C-c o") 'org-agenda-list)
 (global-set-key (kbd "C-c a") 'org-agenda)
@@ -255,11 +265,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; Enable disabled commands
 (put 'narrow-to-region 'disabled nil)
 
-;; Replace selection and require expand region.
-(require 'expand-region)
-(delete-selection-mode 1)
-
-
 ;; General settings
 (show-paren-mode 1)
 (setq show-paren-style 'parenthesis)
@@ -287,6 +292,12 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward
       uniquify-separator " • ")
+
+;;; TEXT-EDITING
+;; ─────────────────────────────────────────────────────────────────
+(require 'multiple-cursors)
+(require 'expand-region)
+(delete-selection-mode 1)
 
 ;;; EMACS Itself
 ;; ─────────────────────────────────────────────────────────────────
@@ -459,16 +470,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (setq abbrev-file-name abbrev-file)
 (if (file-exists-p abbrev-file-name)
     (quietly-read-abbrev-file))
-
-
-;;; PDF-TOOLS
-;; ――――――――――――――――――――――――――――――――――――――――
-(require 'pdf-view)
-(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
-(add-hook 'pdf-view-mode-hook (lambda ()
-                                (unless (ignore-errors (pdf-tools-install) t)
-                                  (message "Warning: pdf-tools failed to install."))
-                                (utils-easy-move-mode)))
 
 ;; HELM
 (require 'helm-config)
@@ -811,9 +812,23 @@ Argument IGNORED is just ignored."
 
 ;;; RUBY MODE
 ;;  ─────────────────────────────────────────────────────────────────
-(autoload 'inf-ruby "inf-ruby" "Run on inferior Ruby process" t)
-(add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
+(require 'rinari)
+(defvar rinari-prefix-map)
+(define-prefix-command 'rinari-prefix-map)
+(global-rinari-mode 1)
 (add-hook 'ruby-mode-hook 'electric-pair-mode)
+(add-hook 'rinari-minor-mode-hook
+          ;; Taken from `rinari.el'. I don't understand what they are
+          ;; doing with `rinari-jump-schema'.
+          (lambda ()
+            (dolist (el (append (mapcar
+                                 (lambda (el)
+                                   (cons (concat "f" (second el))
+                                         (read (format "'rinari-find-%S"
+                                                       (first el)))))
+                                 rinari-jump-schema)
+                                rinari-minor-mode-keybindings))
+              (eval `(define-key rinari-prefix-map ,(car el) ,(cdr el))))))
 
 ;;; LUA MODE
 ;;  ─────────────────────────────────────────────────────────────────
