@@ -171,11 +171,13 @@ This is to prevent my personal agenda getting affected by work agenda.")
 
 ;; ctl-quote | I am expanding my personal prefix territory.
 (bind-key* (kbd "C-'") 'ctl-quote-map)
+
+(global-set-key (kbd "C-' d") 'helm-dash-at-point)
 (global-set-key (kbd "C-' r") 'rinari-prefix-map)
+
 (global-set-key (kbd "C-' C") 'mc/edit-lines)
 (global-set-key (kbd "C-' >") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-' <") 'mc/mark-previous-like-this)
-
 
 ;; Bindings for org-mode
 (global-set-key (kbd "C-c o") 'org-agenda-list)
@@ -471,25 +473,6 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (if (file-exists-p abbrev-file-name)
     (quietly-read-abbrev-file))
 
-;; HELM
-(require 'helm-config)
-;; To ignore warnings about redefinitions
-(setq ad-redefinition-action 'accept)
-(helm-mode 1)
-
-;; IDO
-;; show completions vertically
-(require 'ido)
-(setq ido-decorations (quote
-                       ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]"
-                        " [Matched]" " [Not readable]" " [Too big]"
-                        " [Confirm]")))
-(setq ido-enable-flex-matching t)
-(setq ido-auto-merge-work-directories-length -1)
-;; Ignore listing irc buffers and helm session buffers.
-(setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*"
-                           ".*irc\.slack\.com.*" "\\*helm.*"))
-
 ;;; Personal Finance
 ;; ――――――――――――――――――――――――――――――――――――
 (require 'hledger-mode)
@@ -702,6 +685,36 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (add-hook 'org-pomodooro-break-finished-hook
           (lambda ()
             (notify "Break over")))
+
+
+;;; HELM and IDO
+;; ──────────────────────────────────────────────────────────────────
+(require 'helm-config)
+(require 'helm-dash)
+(require 'w3m)
+
+;; To ignore warnings about redefinitions
+(setq ad-redefinition-action 'accept)
+(helm-mode 1)
+
+(setq helm-dash-browser-func 'w3m)
+(setq helm-dash-enable-debugging nil)
+(setq helm-dash-common-docsets '("Go" "Clojure"))
+
+
+;; ido-mode
+;; show completions vertically
+(require 'ido)
+(setq ido-decorations (quote
+                       ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]"
+                        " [Matched]" " [Not readable]" " [Too big]"
+                        " [Confirm]")))
+(setq ido-enable-flex-matching t)
+(setq ido-auto-merge-work-directories-length -1)
+;; Ignore listing irc buffers and helm session buffers.
+(setq ido-ignore-buffers '("\\` "  "^#.*" ".*freenode\.net.*"
+                           ".*irc\.slack\.com.*" "\\*helm.*"))
+
 
 ;;; C-MODE
 ;;  ─────────────────────────────────────────────────────────────────

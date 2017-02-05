@@ -75,6 +75,9 @@
 ;; Pre-fetch for speed
 (setq gnus-asynchronous t)
 
+;; GCC
+(setq gnus-gcc-mark-as-read t)
+
 ;; Article and thread sorting
 (setq gnus-thread-sort-functions
       '(gnus-thread-sort-by-most-recent-date
