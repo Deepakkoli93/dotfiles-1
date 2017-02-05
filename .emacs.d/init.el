@@ -515,6 +515,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
                               python-mode
                               haskell-mode
                               ruby-mode
+                              go-mode
                               c-mode))
 ;; Spell checking in comments.
 (mapc (lambda (h)
@@ -583,6 +584,9 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;;  ─────────────────────────────────────────────────────────────────
 (require 'org)
 (require 'org-habit)
+;; For org-notify to work | I noticed that org-notify hangs
+;; Emacs. Let's see if that happens again.
+(require 'notifications)
 
 ;; org-org
 (setq org-directory personal-org-directory
@@ -830,6 +834,18 @@ Argument IGNORED is just ignored."
                                 rinari-minor-mode-keybindings))
               (eval `(define-key rinari-prefix-map ,(car el) ,(cdr el))))))
 
+
+;;; GO MODE
+;; ──────────────────────────────────────────────────────────────────
+(require 'go-mode)
+(add-hook 'go-mode-hook
+          (lambda ()
+            ;; This is to make sure we make use of auto-loading.
+            (add-hook 'before-save-hook 'gofmt-before-save)
+            ;; Some key-bindings
+            (local-set-key (kbd "M-.") #'godef-jump)
+            (electric-pair-mode 1)))
+
 ;;; LUA MODE
 ;;  ─────────────────────────────────────────────────────────────────
 (setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
@@ -854,6 +870,18 @@ Argument IGNORED is just ignored."
 (add-to-list 'backup-directory-alist
              (cons tramp-file-name-regexp nil))
 
+
+;;; BBDB
+;; ──────────────────────────────────────────────────────────────────
+(require 'bbdb)
+(require 'bbdb-mua)
+(setq bbdb-file "~/miscellany/assets/bbdb")
+
+;; Updates to the db
+(setq bbdb-mua-auto-update-p 'create
+      bbdb-mua-pop-up nil)
+
+(bbdb-mua-auto-update-init 'gnus 'message)
 
 ;;; EMAIL
 ;; ──────────────────────────────────────────────────────────────────

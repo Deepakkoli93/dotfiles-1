@@ -24,6 +24,10 @@ export PATH=$PATH:~/.gem/ruby/2.3.0/bin/
 # libglyrc that is used by the show_x script
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:~/.local/lib/
 
+# Go
+export GOPATH=~/code/gocode/
+export PATH=$PATH:$GOPATH/bin/
+
 # Java |
 export JAVA_HOME=/usr/local/java/jdk8
 export JDK_HOME=/usr/local/java/jdk8

@@ -83,16 +83,5 @@
 ;; HTML Email -> Text
 (setq mm-text-html-renderer 'gnus-w3m)
 
-;; Contacts auto-completion
-(setq bbdb-file "~/miscellany/assets/bbdb"
-      bbdb/news-auto-create-p t
-      bbdb/mail-auto-create-p t)
-
-(add-hook 'gnus-startup-hook
-          (lambda ()
-                  (bbdb-initialize 'gnus 'message)))
-
-
-
 (provide 'gnus)
 ;;; gnus.el ends here
