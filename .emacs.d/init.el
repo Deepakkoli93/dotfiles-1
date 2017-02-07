@@ -172,6 +172,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; ctl-quote | I am expanding my personal prefix territory.
 (bind-key* (kbd "C-'") 'ctl-quote-map)
 
+(global-set-key (kbd "C-' C-'") 'imenu)
 (global-set-key (kbd "C-' d") 'helm-dash-at-point)
 (global-set-key (kbd "C-' r") 'rinari-prefix-map)
 
