@@ -39,7 +39,8 @@
                                            user-emacs-directory)))
   (normal-top-level-add-to-load-path '("hledger-mode"
                                        "utils"
-                                       "mylife-mode")))
+                                       "mylife-mode"
+                                       "emlib")))
 (package-initialize)
 
 ;;; VARIABLES AND PREFIX COMMANDS
@@ -321,10 +322,11 @@ This is to prevent my personal agenda getting affected by work agenda.")
 ;; it feels liks XMonad inside Emacs.
 (eyebrowse-mode 1)
 (define-key eyebrowse-mode-map (kbd "C-c C-w RET")
-  (lambda ()
+  (defun open-a-shell ()
     (interactive)
     (shell (generate-new-buffer "*shell*"))))
 (define-key eyebrowse-mode-map (kbd "C-c C-w r") 'rotate-windows)
+(define-key eyebrowse-mode-map (kbd "C-c C-w s") 'split-and-shell)
 (define-key eyebrowse-mode-map (kbd "C-c C-w t") 'toggle-window-split)
 
 ;; Create three window configurations on Emacs startup.

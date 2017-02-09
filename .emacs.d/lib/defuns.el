@@ -54,7 +54,6 @@
                                (load-theme 'vicarie-and-blackboard t)))
   ;; mode-line | no minor-modes in the mode line
   (setq eyebrowse-mode-line-style t)
-  (setq rm-blacklist ".*")
   (setq sml/theme 'dark)
   (setq sml/no-confirm-load-theme t)
   (sml/setup))
@@ -459,7 +458,7 @@ Requires that dzen is installed."
 
 ;; Setup an emacs window into 70-30% horizontally.
 (fset 'split-thirty-seventy
-      "\C-x2\C-u4\C-x^\C-u4\C-x^")
+      "\C-x2\C-u4\C-x^\C-u4\C-x^\C-u4\C-x^")
 
 
 (defun split-and-shell ()
@@ -726,8 +725,8 @@ or the duplicated line."
          (end (line-end-position))
          (text (buffer-substring beg end)))
     (save-excursion
-      (forward-line)
-      (insert (format "%s\n" text)))
+      (end-of-line)
+      (insert (format "\n%s" text)))
     ;; When the prefix isn't supplied move the point to the next
     ;; line. It is more natural to make a copy of the first line and
     ;; edit the copy below that line.

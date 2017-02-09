@@ -50,13 +50,19 @@
 
 ;; http://groups.google.com/group/gnu.emacs.gnus/browse_thread/thread/a673a74356e7141f
 (when window-system
-  (setq gnus-sum-thread-tree-indent "  "
+  (setq gnus-thread-hide-subtree t
+        gnus-sum-thread-tree-indent "  "
         gnus-sum-thread-tree-root "● "
         gnus-sum-thread-tree-false-root "◯ "
         gnus-sum-thread-tree-single-indent "◎ "
         gnus-sum-thread-tree-vertical        "│"
         gnus-sum-thread-tree-leaf-with-other "├─► "
         gnus-sum-thread-tree-single-leaf     "╰─► "))
+
+;; Article and thread sorting
+(setq gnus-thread-sort-functions
+      '(gnus-thread-sort-by-most-recent-date
+        (not gnus-thread-sort-by-number)))
 
 (setq gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
       gnus-summary-line-format (concat
@@ -77,11 +83,6 @@
 
 ;; GCC
 (setq gnus-gcc-mark-as-read t)
-
-;; Article and thread sorting
-(setq gnus-thread-sort-functions
-      '(gnus-thread-sort-by-most-recent-date
-        (not gnus-thread-sort-by-number)))
 
 ;; HTML Email -> Text
 (setq mm-text-html-renderer 'gnus-w3m)
