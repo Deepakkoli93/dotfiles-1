@@ -26,21 +26,25 @@
 
 (require 'bbdb)
 (require 'bbdb-gnus)
+
 (require 'gnus)
 (require 'gnus-async)
-(require 'smtpmail)
 
-(defvar user-email-address)
-(setq user-email-address "narendraj9@gmail.com"
+(require 'nnmail)
+(require 'smtpmail)
+(require 'message)
+
+(setq user-mail-address "narendraj9@gmail.com"
       user-full-name "Narendra Joshi"
       message-signature "Narendra Joshi")
 
 
 (setq gnus-select-method
-      '(nnimap "gmail"
+      `(nnimap "gmail"
                (nnimap-address "imap.gmail.com")
-               (nnimap-server-port "imaps")
-               (nnimap-stream ssl)))
+               (nnimap-inbox "INBOX")
+               (nnimap-stream ssl)
+               (nnimap-split-methods default)))
 
 
 (setq smtpmail-smtp-server "smtp.gmail.com"
@@ -78,11 +82,14 @@
 
 (setq gnus-summary-display-arrow t)
 
+;; INBOX splitting
+(setq nnmail-split-methods
+      '(("GNU" "^To:.*gnu\\.org")
+        ("GNU" "^Cc:.*gnu\\.org")
+        ("Primary" "")))
+
 ;; Pre-fetch for speed
 (setq gnus-asynchronous t)
-
-;; GCC
-(setq gnus-gcc-mark-as-read t)
 
 ;; HTML Email -> Text
 (setq mm-text-html-renderer 'gnus-w3m)
