@@ -136,6 +136,10 @@
  `(message-header-to ((t (:foreground "white"))))
  `(message-header-cc ((t (:foreground "white"))))
 
+ ;; Faces for `'web-mode'
+ `(web-mode-html-tag-face ((t (:foreground "tomato"))))
+ `(web-mode-html-attr-face ((t (:foreground "yellow"))))
+
  ;; Mode-line faces for `eyebrowse'.
  '(eyebrowse-mode-line-inactive ((t (:foreground "white"))))
  '(eyebrowse-mode-line-active ((t (:background "goldenrod" :foreground "black")))))

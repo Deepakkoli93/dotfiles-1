@@ -1167,9 +1167,6 @@ only how to solve the problem. But when I have finished, if the
 solution is not beautiful, I know it is wrong.”
                                              - R. Buckminster Fuller
 
-“The most erroneous stories are those we think we know best
-  - and therefore never scrutinize or question.” - Stephen Jay Gould
-
 “The data stream has been corrupted, return to first principles.”
                                                    - Terence McKenna
 

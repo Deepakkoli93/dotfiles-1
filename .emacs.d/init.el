@@ -38,7 +38,6 @@
 (let ((default-directory (expand-file-name "packages/rest/"
                                            user-emacs-directory)))
   (normal-top-level-add-to-load-path '("hledger-mode"
-                                       "utils"
                                        "mylife-mode"
                                        "emlib")))
 (package-initialize)
@@ -177,6 +176,7 @@ This is to prevent my personal agenda getting affected by work agenda.")
 (global-set-key (kbd "C-' d") 'helm-dash-at-point)
 (global-set-key (kbd "C-' r") 'rinari-prefix-map)
 
+(global-set-key (kbd "C-' c") 'mc/mark-more-like-this-extended)
 (global-set-key (kbd "C-' C") 'mc/edit-lines)
 (global-set-key (kbd "C-' >") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-' <") 'mc/mark-previous-like-this)
@@ -827,8 +827,27 @@ Argument IGNORED is just ignored."
 ;; For the 80-column rule
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
-(setq whitespace-global-modes '(not erc-mode eshell-mode org-agenda-mode Info-mode))
+(setq whitespace-global-modes
+      '(not erc-mode eshell-mode org-agenda-mode Info-mode))
 (global-whitespace-mode 1)
+
+;;; WEB DEVELOPMENT
+;; ──────────────────────────────────────────────────────────────────
+(require 'web-mode)
+
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+
+(add-hook 'web-mode-hook
+          (lambda ()
+            (setq web-mode-markup-indent-offset 2
+                  web-mode-css-indent-offset 2
+                  web-mode-code-indent-offset 2)))
 
 ;;; RUBY MODE
 ;;  ─────────────────────────────────────────────────────────────────
